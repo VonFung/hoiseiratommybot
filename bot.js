@@ -63,7 +63,7 @@ client.on('message', message => {
             }
           
             break;
-        case 'stop':    //stop music
+        case 'STOP':    //stop music
             console.log("left channel");
             voiceChannel.leave();
             break;
