@@ -1,2 +1,2 @@
-npm install ffmpeg-binaries
+installer: npm install ffmpeg-binaries
 worker: node bot.js
