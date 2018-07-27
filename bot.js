@@ -17,10 +17,17 @@ client.on('ready', () => {
 
 client.on('message', message => {
     
+    if(charAt(message.content) !== '#') {
+        break;    
+    }
+    
     var token = new Array();
     token = message.content.trim().split(' ');
     
     switch(token[0]) {
+        case 'ping':    //For testing bot online
+            message.reply('pong');
+            break;
         case 'play':    //play music
             voiceChannel = message.member.voiceChannel;
             voiceChannel.join().then(connection => {
