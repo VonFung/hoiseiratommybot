@@ -8,8 +8,6 @@ var stream;         //  For Play Music
 var dispatcher;     //===================
 var url;
 
-const streamOptions = { seek: 0, volume: 0.5 };   //Music option
-
 client.on('ready', () => {
 
     console.log('I am ready!');
@@ -25,23 +23,36 @@ client.on('message', message => {
     var token = new Array();
     token = message.content.substr(1).trim().split(' ');
     
+    //===================================================
+    //  ALL COMMAND WILL BE CONVERTED TO UPPER CASE!
+    //===================================================
+    
     switch(token[0].toUpperCase()) {
         case 'READY':    //For testing bot online
             message.reply('YES!');
             break;
         case 'PLAY':    //play music
             if(token.length < 2) {
-                message.reply('Invalid command');   
+                message.reply('Invalid command\n{#PLAY $MUSIC_NAME}');   
+                return;
             }
             
             var youtubeOrNot = false;           //True if extract audio from youtube, false for direct url
+            var volume = 0.5;                   //Default Volume (Change if specified files needed)
+            
             switch(token[1].toUpperCase()) {    //Check music title tag
-                case 'UNICORN':
+                case 'UNICORN':                 //Example for direct url
                     url = "http://67.159.62.2/anime_ost/gundam-uc-origianl-soundtrack/liiyfbxz/02%20-%20UNICORN.mp3";
                     break;
-                case 'UNICORN2':
+                case 'UNICORN2':                //Example for youtube
                     url = "https://www.youtube.com/watch?v=b40mZVnQCTs&t=40s";
                     youtubeOrNot = true;
+                    break;
+                case '2015SPRINGBOSS':
+                    url = "https://vignette.wikia.nocookie.net/kancolle/images/1/1a/Sound_b_bgm_41.ogg/revision/latest?cb=20150430204040";
+                    break;
+                case '2017SUMMERBOSS':
+                    url = "https://vignette.wikia.nocookie.net/kancolle/images/8/85/Sound_b_bgm_100.ogg/revision/latest?cb=20170813110736";
                     break;
                 default:
                     message.reply("No such music");
@@ -54,6 +65,7 @@ client.on('message', message => {
                     console.log("joined channel");
                     stream = ytdl(url, {filter : 'audioonly'});
                     dispatcher = connection.playStream(stream, streamOptions);
+                    dispatcher.setVolume(volume);
                     dispatcher.on("end", end => {
                         console.log("left channel");
                         voiceChannel.leave();
@@ -63,6 +75,7 @@ client.on('message', message => {
                 voiceChannel.join().then(connection => {
                     console.log("joined channel");
                     dispatcher = connection.playArbitraryInput(url);
+                    dispatcher.setVolume(volume);
                     dispatcher.on("end", end => {
                         console.log("left channel");
                         voiceChannel.leave();
@@ -75,6 +88,9 @@ client.on('message', message => {
             console.log("left channel");
             voiceChannel.leave();
             break;
+        default:
+            message.reply('Invalid command');
+            return;
     }
     
 });
