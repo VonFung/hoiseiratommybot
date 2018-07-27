@@ -15,7 +15,7 @@ client.on('message', message => {
         message.reply('pong');
     }
     
-}
+});
 
 
 
