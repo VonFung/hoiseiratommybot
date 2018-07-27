@@ -39,6 +39,10 @@ client.on('message', message => {
                 case 'UNICORN':
                     url = "http://67.159.62.2/anime_ost/gundam-uc-origianl-soundtrack/liiyfbxz/02%20-%20UNICORN.mp3";
                     break;
+                case 'UNICORN2':
+                    url = "https://www.youtube.com/watch?v=b40mZVnQCTs&t=40s";
+                    youtubeOrNot = true;
+                    break;
                 default:
                     message.reply("No such music");
                     return;
