@@ -8,7 +8,7 @@ var stream;         //  For Play Music
 var dispatcher;     //===================
 var url;
 
-const streamOptions = { seek: 0, volume: 1 };   //Music option
+const streamOptions = { seek: 0, volume: 0.5 };   //Music option
 
 client.on('ready', () => {
 
@@ -30,13 +30,17 @@ client.on('message', message => {
             message.reply('YES!');
             break;
         case 'PLAY':    //play music
+            if(token.length < 2) {
+                message.reply('Invalid command');   
+            }
+            
             var youtubeOrNot = false;           //True if extract audio from youtube, false for direct url
             switch(token[1].toUpperCase()) {    //Check music title tag
                 case 'UNICORN':
                     url = "http://67.159.62.2/anime_ost/gundam-uc-origianl-soundtrack/liiyfbxz/02%20-%20UNICORN.mp3";
                     break;
                 default:
-                    message.channel.sendMessage("No such music");
+                    message.reply("No such music");
                     return;
             }
                     
