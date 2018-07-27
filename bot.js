@@ -17,7 +17,7 @@ client.on('ready', () => {
 
 client.on('message', message => {
     
-    if(charAt(message.content) !== '#') {
+    if(message.content.charAt(0) !== '#') {
         return;    
     }
     
