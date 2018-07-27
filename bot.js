@@ -22,7 +22,7 @@ client.on('message', message => {
     }
     
     var token = new Array();
-    token = message.content.trim().split(' ');
+    token = message.content.substr(1).trim().split(' ');
     
     switch(token[0]) {
         case 'ping':    //For testing bot online
