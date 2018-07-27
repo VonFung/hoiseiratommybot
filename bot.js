@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-//const ytdl = require('ytdl-core');  //For music streaming
+const ytdl = require('ytdl-core');  //For music streaming
 
 const client = new Discord.Client();
 
@@ -29,7 +29,7 @@ client.on('message', message => {
             message.reply('pong');
             break;
         case 'play':    //play music
-            /*voiceChannel = message.member.voiceChannel;
+            voiceChannel = message.member.voiceChannel;
             voiceChannel.join().then(connection => {
                 console.log("joined channel");
                 stream = ytdl('http://67.159.62.2/anime_ost/gundam-uc-origianl-soundtrack/liiyfbxz/02%20-%20UNICORN.mp3', { filter : 'audioonly' });
@@ -38,7 +38,7 @@ client.on('message', message => {
                     console.log("left channel");
                     voiceChannel.leave();
                 });
-            }).catch(err => console.log(err));*/
+            }).catch(err => console.log(err));
             break;
         case 'stop':    //stop music
             console.log("left channel");
