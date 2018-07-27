@@ -101,7 +101,7 @@ client.on('message', message => {
             con.connect(function(err) {
                 if(err) throw err;
                 console.log("Connected!");
-            }
+            });
             break;
         default:
             message.reply('Invalid command');
