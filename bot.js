@@ -12,12 +12,12 @@ client.on('ready', () => {
 
 client.on('message', message => {
     
-    switch(message.content) {
+    var token = new Array();
+    token = message.content.trim().split(' ');
+    
+    switch(token[0]) {
         case 'ping':
             message.reply('pong');
-            break;
-        case 'pong':
-            message.reply('pang');
             break;
         case 'turn true':
             b = true;
