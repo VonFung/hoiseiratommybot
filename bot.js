@@ -28,7 +28,7 @@ client.on('message', message => {
             message.reply('mission completed');
             break;
         case 'b':
-            
+            message.reply('b='+ b);
             break;
            
     }
