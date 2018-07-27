@@ -21,11 +21,14 @@ client.on('message', message => {
             break;
         case 'turn true':
             b = true;
+            message.reply('mission completed');
             break;
         case 'turn false':
             b = false;
+            message.reply('mission completed');
             break;
         case 'b':
+            
             break;
            
     }
