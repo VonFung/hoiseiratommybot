@@ -18,7 +18,7 @@ client.on('ready', () => {
 client.on('message', message => {
     
     if(charAt(message.content) !== '#') {
-        break;    
+        return;    
     }
     
     var token = new Array();
