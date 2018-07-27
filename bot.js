@@ -16,7 +16,7 @@ client.on('ready', () => {
 
 client.on('message', message => {
     
-    if(message.content.charAt(0) !== '#') {
+    if(message.content.charAt(0) !== '$') {
         return;    
     }
     
@@ -33,7 +33,7 @@ client.on('message', message => {
             break;
         case 'PLAY':    //play music
             if(token.length < 2) {
-                message.reply('Invalid command\n{#PLAY $MUSIC_NAME}');   
+                message.reply('Invalid command\n{$PLAY _MUSIC_NAME}');   
                 return;
             }
             
