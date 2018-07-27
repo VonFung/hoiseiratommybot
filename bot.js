@@ -50,9 +50,11 @@ client.on('message', message => {
                     break;
                 case '2015SPRINGBOSS':
                     url = "https://vignette.wikia.nocookie.net/kancolle/images/1/1a/Sound_b_bgm_41.ogg/revision/latest?cb=20150430204040";
+                    volume = 0.2;
                     break;
                 case '2017SUMMERBOSS':
                     url = "https://vignette.wikia.nocookie.net/kancolle/images/8/85/Sound_b_bgm_100.ogg/revision/latest?cb=20170813110736";
+                    volume = 0.2;
                     break;
                 default:
                     message.reply("No such music");
