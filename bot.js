@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');  //For music streaming
+var mysql = require('mysql');
 
 const client = new Discord.Client();
 
@@ -89,6 +90,18 @@ client.on('message', message => {
         case 'STOP':    //stop music
             console.log("left channel");
             voiceChannel.leave();
+            break;
+        case 'LOGIN':   //Test database access
+            var con = mysql.createConnection({
+                host: "den1.mysql1.gear.host", //gearhost mysql server
+                user: "hoiseiratommybot",
+                password: process.env.DB_PW
+            });
+            
+            con.connect(function(err) {
+                if(err) throw err;
+                console.log("Connected!");
+            }
             break;
         default:
             message.reply('Invalid command');
