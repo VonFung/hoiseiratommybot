@@ -39,7 +39,7 @@ var func_help = {
     LOGIC : function(token, message, func) {
         if(token.length < 2) {
             var i;
-            var msg = func[0].CODE + "\t" + func[0].DESCRIPTION;
+            var msg = func[0].CODE + "\t\t\t" + func[0].DESCRIPTION;
             for(i=1; i<func.length; i++) {
                 msg = msg + "\n" + func[i].CODE + "\t\t\t" + func[i].DESCRIPTION;
             }
