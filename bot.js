@@ -128,6 +128,21 @@ var func_stop = {
 
 var func = [func_ready, func_addmusic, func_play, func_stop];
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 client.on('ready', () => {
 
     console.log('I am ready!');
@@ -149,13 +164,14 @@ client.on('message', message => {
     
     var i;
     
-    for(i=0, i<func.length(); i++) {
+    for(i=0, i<func.length; i++) {
         if(token[0].toUpperCase()) {
             func[i].LOGIC(token, message);
-            break;
+            return;
         }
     }
     
+    message.reply('Invalid command ($help to view commands)');
     
     /*switch(token[0].toUpperCase()) {
         case 'READY':    //For testing bot online
