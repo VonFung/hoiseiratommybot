@@ -147,6 +147,8 @@ client.on('message', message => {
     //  ALL COMMAND WILL BE CONVERTED TO UPPER CASE!
     //===================================================
     
+    var i;
+    
     for(i=0, i<func.length(); i++) {
         if(token[0].toUpperCase()) {
             func[i].LOGIC(token, message);
