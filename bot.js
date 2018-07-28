@@ -11,7 +11,6 @@ const db_password = process.env.DB_PW;
 var voiceChannel;   //===================
 var stream;         //  For Play Music
 var dispatcher;     //===================
-var url;
 
 client.on('ready', () => {
 
