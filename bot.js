@@ -138,7 +138,7 @@ client.on('message', message => {
                         var url = result[0].URL;
                         
                         voiceChannel = message.member.voiceChannel;
-                        if(youtubeOrNot) {
+                        if(isYoutubeOrNot) {
                             voiceChannel.join().then(connection => {
                                 console.log("joined channel");
                                 stream = ytdl(url, {filter : 'audioonly'});
