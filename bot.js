@@ -4,9 +4,9 @@ var mysql = require('mysql');
 
 const client = new Discord.Client();
 
-const db_host = "den1.mysql1.gear.host", //gearhost mysql server
-const db_user = "hoiseiratommybot",
-const db_password = process.env.DB_PW
+const db_host = "den1.mysql1.gear.host"; //gearhost mysql server
+const db_user = "hoiseiratommybot";
+const db_password = process.env.DB_PW;
 
 var voiceChannel;   //===================
 var stream;         //  For Play Music
