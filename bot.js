@@ -7,6 +7,7 @@ const client = new Discord.Client();
 const db_host = "den1.mysql1.gear.host"; //gearhost mysql server
 const db_user = "hoiseiratommybot";
 const db_password = process.env.DB_PW;
+const db_schema = "hoiseiratommybot";
 
 var voiceChannel;   //===================
 var stream;         //  For Play Music
@@ -44,7 +45,8 @@ client.on('message', message => {
             var con = mysql.createConnection({
                 host: db_host,
                 user: db_user,
-                password: db_password
+                password: db_password,
+                database: db_schema
             });
                 
             con.connect(function(err) {
@@ -117,7 +119,8 @@ client.on('message', message => {
             var con = mysql.createConnection({
                 host: db_host,
                 user: db_user,
-                password: db_password
+                password: db_password,
+                database: schema
             });
             
             con.connect(function(err) {
