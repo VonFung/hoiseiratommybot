@@ -4,6 +4,10 @@ var mysql = require('mysql');
 
 const client = new Discord.Client();
 
+const db_host = "den1.mysql1.gear.host", //gearhost mysql server
+const db_user = "hoiseiratommybot",
+const db_password = process.env.DB_PW
+
 var voiceChannel;   //===================
 var stream;         //  For Play Music
 var dispatcher;     //===================
@@ -32,13 +36,38 @@ client.on('message', message => {
         case 'READY':    //For testing bot online
             message.reply('YES!');
             break;
+        case 'ADDMUSIC':
+            if(token.length < 4) {
+                message.reply("Wrong Format\n{$ADDMUSIC _CODENAME _URL _ISYOUTUBEORNOT(BOOLEAN:T/TRUE/F/FALSE) _DEFAULTVOLUME(OPTIONAL)});
+                return;
+            }
+            
+            var con = mysql.createConnection({
+                host: db_host,
+                user: db_user,
+                password: db_password
+            });
+                
+            con.connect(function(err) {
+                if(err) throw err;
+                var sql = "INSERT INTO PLAYLIST (CODE, URL, IS_YOUTUBE" + (token.length > 4?", " + token[4]:"") + ") VALUES ?";
+                var values = [
+                    [token[1], token[2], ((token[3].toUpperCase() === "T" || token[3].toUpperCase() === "TRUE")?"TRUE":"FALSE") ]  
+                ];
+                
+                con.query(sql, values, function(err, result) {
+                    if(err) throw err;
+                    message.reply('ADDED SUCCESSFULLY');
+                });
+            }
+            break;
         case 'PLAY':    //play music
             if(token.length < 2) {
                 message.reply('Invalid command\n{$PLAY _MUSIC_NAME}');   
                 return;
             }
             
-            var youtubeOrNot = false;           //True if extract audio from youtube, false for direct url
+            /*var youtubeOrNot = false;           //True if extract audio from youtube, false for direct url
             var volume = 0.5;                   //Default Volume (Change if specified files needed)
             
             switch(token[1].toUpperCase()) {    //Check music title tag
@@ -84,8 +113,56 @@ client.on('message', message => {
                         voiceChannel.leave();
                     });
                 }).catch(err => console.log(err));
-            }
-          
+            }*/
+            
+            var con = mysql.createConnection({
+                host: db_host,
+                user: db_user,
+                password: db_password
+            });
+            
+            con.connect(function(err) {
+                if(err) throw err;
+                console.log("Connected!");
+                con.query("SELECT * FROM PLAYLIST WHERE CODE = " + token[1].toUpperCase(), function (err, result, field) {
+                    if(err) throw err;
+                    if(result.length === 0) {
+                        message.reply("No such music");
+                        return;   
+                    } else {
+                        
+                        var isYoutubeOrNot = result[0].IS_YOUTUBE;
+                        var volume = result[0].DEFAULT_VOLUME;
+                        var url = result[0].URL;
+                        
+                        voiceChannel = message.member.voiceChannel;
+                        if(youtubeOrNot) {
+                            voiceChannel.join().then(connection => {
+                                console.log("joined channel");
+                                stream = ytdl(url, {filter : 'audioonly'});
+                                dispatcher = connection.playStream(stream, streamOptions);
+                                dispatcher.setVolume(volume);
+                                dispatcher.on("end", end => {
+                                    console.log("left channel");
+                                    voiceChannel.leave();
+                                });
+                            }).catch(err => console.log(err));
+                        } else {
+                            voiceChannel.join().then(connection => {
+                                console.log("joined channel");
+                                dispatcher = connection.playArbitraryInput(url);
+                                dispatcher.setVolume(volume);
+                                dispatcher.on("end", end => {
+                                    console.log("left channel");
+                                    voiceChannel.leave();
+                                });
+                            }).catch(err => console.log(err));
+                        }
+                        
+                    }
+                });
+            });
+            
             break;
         case 'STOP':    //stop music
             console.log("left channel");
