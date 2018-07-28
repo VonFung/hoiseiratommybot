@@ -118,7 +118,7 @@ var func_play = {
         con.connect(function(err) {
             if(err) throw err;
             console.log("Connected!");
-            con.query("SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM playlist WHERE CODE = '" + token[1].toUpperCase() + "'", function (err, result, field) {
+            con.query("SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM playlist WHERE CODE = '${token[1].toUpperCase()}'", function (err, result, field) {
                 if(err) throw err;
                 if(result.length === 0) {
                     message.reply("No such music");
