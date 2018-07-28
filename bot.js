@@ -35,7 +35,7 @@ var func_template = {
 var func_help = {
     CODE : "HELP",
     DESCRIPTION : "{$help | code_name} for syntax of command",
-    SYNTAX : "{$help | [optional] code_name}",
+    SYNTAX : "{$help | ***[optional] code_name***}",
     LOGIC : function(token, message, func) {
         if(token.length < 2) {
             var i;
@@ -69,7 +69,7 @@ var func_ready = {      //Ready function
 var func_addmusic = {
     CODE : "ADDMUSIC",
     DESCRIPTION : "Add new music to the database",
-    SYNTAX : "{$addmusic | music_code | URL | isYoutube?(bool:T/TRUE/F/FALSE) | [optional] default_volume(float between 0 to 1)}",
+    SYNTAX : "{$addmusic | music_code | URL | isYoutube?(bool:T/TRUE/F/FALSE) | ***[optional] default_volume(float between 0 to 1)***}",
     LOGIC : function(token, message, func) {
         if(token.length < 4) {
             message.reply("Incorrect Syntax!\n" + this.SYNTAX);
