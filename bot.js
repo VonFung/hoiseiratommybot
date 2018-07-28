@@ -59,7 +59,7 @@ client.on('message', message => {
                     if(err) throw err;
                     message.reply('ADDED SUCCESSFULLY');
                 });
-            }
+            });
             break;
         case 'PLAY':    //play music
             if(token.length < 2) {
