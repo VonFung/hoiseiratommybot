@@ -50,7 +50,7 @@ client.on('message', message => {
                 
             con.connect(function(err) {
                 if(err) throw err;
-                var sql = "INSERT INTO PLAYLIST (CODE, URL, IS_YOUTUBE" + (token.length > 4?", " + token[4]:"") + ") VALUES ?";
+                var sql = "INSERT INTO playlist (CODE, URL, IS_YOUTUBE" + (token.length > 4?", " + token[4]:"") + ") VALUES ?";
                 var values = [
                     [token[1], token[2], ((token[3].toUpperCase() === "T" || token[3].toUpperCase() === "TRUE")?"TRUE":"FALSE") ]  
                 ];
