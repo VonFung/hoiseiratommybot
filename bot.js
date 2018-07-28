@@ -266,8 +266,8 @@ client.on('message', message => {
             break;
         default:
             message.reply('Invalid command');
-            return;*/
-    }
+            return;
+    }*/
     
 });
 
