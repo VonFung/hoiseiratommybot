@@ -89,7 +89,7 @@ var func_addmusic = {
                       + token[1].toUpperCase() + "', '" + token[2] + "', " + ((token[3].toUpperCase() === "T" || token[3].toUpperCase() === "TRUE")?"TRUE":"FALSE")
                        + (token.length > 4?", " + token[4]:"") + ")";
 
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, function(err, result) {
                 if(err) throw err;
                 message.reply('ADDED SUCCESSFULLY');
@@ -118,7 +118,7 @@ var func_play = {
         con.connect(function(err) {
             if(err) throw err;
           
-            var sql = "SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM playlist WHERE CODE = '${token[1].toUpperCase()}'";
+            var sql = "SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM playlist WHERE CODE = '" + token[1].toUpperCase() + "'";
             console.log(sql);
             
             con.query(sql, function (err, result, field) {
