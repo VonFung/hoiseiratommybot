@@ -38,7 +38,7 @@ client.on('message', message => {
             break;
         case 'ADDMUSIC':
             if(token.length < 4) {
-                message.reply("Wrong Format\n{$ADDMUSIC _CODENAME _URL _ISYOUTUBEORNOT(BOOLEAN:T/TRUE/F/FALSE) _DEFAULTVOLUME(OPTIONAL)}");
+                message.reply("Wrong Format\n{$ADDMUSIC | music_code | URL | isYoutube?(bool:T/TRUE/F/FALSE) | default_volume(float,OPTIONAL)}");
                 return;
             }
             
