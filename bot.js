@@ -53,7 +53,7 @@ client.on('message', message => {
                 var values = [
                     [token[1], token[2], ((token[3].toUpperCase() === "T" || token[3].toUpperCase() === "TRUE")?"TRUE":"FALSE") ]  
                 ];
-                
+                console.log(sql);
                 con.query(sql, values, function(err, result) {
                     if(err) throw err;
                     message.reply('ADDED SUCCESSFULLY');
