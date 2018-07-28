@@ -126,7 +126,7 @@ client.on('message', message => {
             con.connect(function(err) {
                 if(err) throw err;
                 console.log("Connected!");
-                con.query("SELECT * FROM PLAYLIST WHERE CODE = " + token[1].toUpperCase(), function (err, result, field) {
+                con.query("SELECT * FROM PLAYLIST WHERE CODE = '" + token[1].toUpperCase() + "'", function (err, result, field) {
                     if(err) throw err;
                     if(result.length === 0) {
                         message.reply("No such music");
