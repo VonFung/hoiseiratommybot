@@ -120,7 +120,7 @@ client.on('message', message => {
                 host: db_host,
                 user: db_user,
                 password: db_password,
-                database: schema
+                database: db_schema
             });
             
             con.connect(function(err) {
