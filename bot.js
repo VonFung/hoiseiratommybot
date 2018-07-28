@@ -15,11 +15,51 @@ var stream;         //  For Play Music
 var dispatcher;     //===================
 
 //---Objects for functions---
+
+/*                                      |   A template function object
+                                        V
+var func_template = {
+    CODE : "CODE_NAME",
+    DESCRIPTION : "Description for help",
+    SYNTAX : "{$template | syntax}",
+    LOGIC : function(token, message) {
+        *function logic here
+        
+        token: trim and splited input stream from user without $
+        message: the message object that trigger this function (details in Discord.js)
+    }
+}
+*/
+
+var func_help = {
+    CODE : "HELP",
+    DESCRIPTION : "{$help | code_name} for syntax of command",
+    SYNTAX : "{$help | [optional] code_name}",
+    LOGIC : function(token, message, func) {
+        if(token.length < 2) {
+            var i;
+            var msg = func[0].CODE + "\t" + func[0].DESCRIPTION;
+            for(i=1; i<func.length; i++) {
+                msg = msg + "\n" + func[i].CODE + "\t" + func[i].DESCRIPTION;
+            }
+            message.channel.sendMessage(msg);
+        } else {
+            var j;
+            for(j=0; j<func.length; j++) {
+                if(token[1].toUpperCase() === func[j].CODE) {
+                    message.reply(func[j].SYNTAX);   
+                }
+            }
+            message.reply("Command not found");
+        }
+    }
+};
+
 var func_ready = {      //Ready function
     CODE : "READY",
     DESCRIPTION : "Test for the bot is online",
     SYNTAX : "{$ready}",
-    LOGIC : function(token, message) {
+    LOGIC : function(token, message, func) {
         message.reply('YES!');
     }
 };
@@ -27,8 +67,8 @@ var func_ready = {      //Ready function
 var func_addmusic = {
     CODE : "ADDMUSIC",
     DESCRIPTION : "Add new music to the database",
-    SYNTAX : "{$addmusic | music_code | URL | isYoutube?(bool:T/TRUE/F/FALSE) | default_volume(float,OPTIONAL)}",
-    LOGIC : function(token, message) {
+    SYNTAX : "{$addmusic | music_code | URL | isYoutube?(bool:T/TRUE/F/FALSE) | [optional] default_volume(float between 0 to 1)}",
+    LOGIC : function(token, message, func) {
         if(token.length < 4) {
             message.reply("Incorrect Syntax!\n" + this.SYNTAX);
             return;
@@ -59,8 +99,8 @@ var func_addmusic = {
 var func_play = {
     CODE : "PLAY",
     DESCRIPTION : "Play music",
-    SYNTAX : "{$play | music_code}",
-    LOGIC : function(token, message) {
+    SYNTAX : "{$play | music_code | [optional] volume(float between 0 to 1)}",
+    LOGIC : function(token, message, func) {
         if(token.length < 2) {
             message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
             return;
@@ -84,7 +124,7 @@ var func_play = {
                 } else {
 
                     var isYoutubeOrNot = result[0].IS_YOUTUBE;
-                    var volume = result[0].DEFAULT_VOLUME;
+                    var volume = token.length > 2?token[2]:result[0].DEFAULT_VOLUME;
                     var url = result[0].URL;
 
                     voiceChannel = message.member.voiceChannel;
@@ -121,12 +161,13 @@ var func_stop = {
     CODE : "STOP",
     DESCRIPTION : "Stop playing music",
     SYNTAX : "{$stop}",
-    LOGIC : function(token, message) {
+    LOGIC : function(token, message, func) {
         voiceChannel.leave();
     }
 }
 
-var func = [func_ready, func_addmusic, func_play, func_stop];
+//Register new function to this func array
+var func = [func_help, func_ready, func_addmusic, func_play, func_stop];
 
 
 
@@ -141,7 +182,7 @@ var func = [func_ready, func_addmusic, func_play, func_stop];
 
 
 
-
+//==========Discord client logic===========
 
 client.on('ready', () => {
 
@@ -166,7 +207,7 @@ client.on('message', message => {
     
     for(i=0; i<func.length; i++) {
         if(token[0].toUpperCase() === func[i].CODE) {
-            func[i].LOGIC(token, message);
+            func[i].LOGIC(token, message, func);
             return;
         }
     }
