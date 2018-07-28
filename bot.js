@@ -25,7 +25,7 @@ var func_template = {
     LOGIC : function(token, message, func) {
         *function logic here
         
-        token: trim and splited input stream from user without $
+        token: trim and splited input stream from user without $ (already toUpperCase in the main logic)
         message: the message object that trigger this function (details in Discord.js)
         func: the functions array (mainly for display help message)
     }
@@ -86,7 +86,7 @@ var func_addmusic = {
         con.connect(function(err) {
             if(err) throw err;
             var sql = "INSERT INTO playlist (CODE, URL, IS_YOUTUBE" + (token.length > 4?", " + token[4]:"") + ") VALUES ('"
-                      + token[1].toUpperCase() + "', '" + token[2] + "', " + ((token[3].toUpperCase() === "T" || token[3].toUpperCase() === "TRUE")?"TRUE":"FALSE")
+                      + token[1] + "', '" + token[2] + "', " + ((token[3] === "T" || token[3] === "TRUE")?"TRUE":"FALSE")
                        + (token.length > 4?", " + token[4]:"") + ")";
 
             //console.log(sql);
@@ -118,7 +118,7 @@ var func_play = {
         con.connect(function(err) {
             if(err) throw err;
           
-            var sql = "SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM playlist WHERE CODE = '" + token[1].toUpperCase() + "'";
+            var sql = "SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM playlist WHERE CODE = '" + token[1] + "'";
             console.log(sql);
             
             con.query(sql, function (err, result, field) {
@@ -209,9 +209,13 @@ client.on('message', message => {
     //===================================================
     
     var i;
+  
+    for(i=0; i<token.length; i++) {
+      token[i] = token[i].toUpperCase(); 
+    }
     
     for(i=0; i<func.length; i++) {
-        if(token[0].toUpperCase() === func[i].CODE) {
+        if(token[0] === func[i].CODE) {
             func[i].LOGIC(token, message, func);
             return;
         }
