@@ -52,7 +52,7 @@ client.on('message', message => {
             con.connect(function(err) {
                 if(err) throw err;
                 var sql = "INSERT INTO playlist (CODE, URL, IS_YOUTUBE" + (token.length > 4?", " + token[4]:"") + ") VALUES ('"
-                          + token[1].toUpperCase() + "', '" + token[2] + ", " + ((token[3].toUpperCase() === "T" || token[3].toUpperCase() === "TRUE")?"TRUE":"FALSE")
+                          + token[1].toUpperCase() + "', '" + token[2] + "', " + ((token[3].toUpperCase() === "T" || token[3].toUpperCase() === "TRUE")?"TRUE":"FALSE")
                            + (token.length > 4?", " + token[4]:"")
                 
                 console.log(sql);
