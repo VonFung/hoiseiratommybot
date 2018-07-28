@@ -41,7 +41,7 @@ var func_help = {
             var i;
             var msg = func[0].CODE + "\t" + func[0].DESCRIPTION;
             for(i=1; i<func.length; i++) {
-                msg = msg + "\n" + func[i].CODE + "\t" + func[i].DESCRIPTION;
+                msg = msg + "\n" + func[i].CODE + "\t\t\t" + func[i].DESCRIPTION;
             }
             message.channel.sendMessage(msg);
         } else {
