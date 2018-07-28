@@ -165,7 +165,7 @@ client.on('message', message => {
     var i;
     
     for(i=0; i<func.length; i++) {
-        if(token[0].toUpperCase()) {
+        if(token[0].toUpperCase() === func[i].CODE) {
             func[i].LOGIC(token, message);
             return;
         }
