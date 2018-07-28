@@ -22,11 +22,12 @@ var func_template = {
     CODE : "CODE_NAME",
     DESCRIPTION : "Description for help",
     SYNTAX : "{$template | syntax}",
-    LOGIC : function(token, message) {
+    LOGIC : function(token, message, func) {
         *function logic here
         
         token: trim and splited input stream from user without $
         message: the message object that trigger this function (details in Discord.js)
+        func: the functions array (mainly for display help message)
     }
 }
 */
@@ -48,6 +49,7 @@ var func_help = {
             for(j=0; j<func.length; j++) {
                 if(token[1].toUpperCase() === func[j].CODE) {
                     message.reply(func[j].SYNTAX);   
+                    return;
                 }
             }
             message.reply("Command not found");
