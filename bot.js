@@ -51,13 +51,13 @@ client.on('message', message => {
                 
             con.connect(function(err) {
                 if(err) throw err;
-                //var sql = "INSERT INTO playlist (CODE, URL, IS_YOUTUBE" + (token.length > 4?", DEFAULT_VOLUME":"") + ") VALUES ?";
-                var sql = "INSERT INTO playlist (CODE, URL, IS_YOUTUBE" + (token.length > 4?", " + token[4]:"") + ") VALUES ("
-                          + token[1].toUpperCase() + ", " + token[2] + ", " + ((token[3].toUpperCase() === "T" || token[3].toUpperCase() === "TRUE")?"TRUE":"FALSE")
-                           + (token.length > 4?", " + token[4]:"")
+                var sql = "INSERT INTO playlist (CODE, URL, IS_YOUTUBE" + (token.length > 4?", DEFAULT_VOLUME":"") + ") VALUES ?";
+                var values = [
+                    ["'" + token[1].toUpperCase(), "'" + token[2], ((token[3] === "T" || token[3] === "TRUE")?"TRUE":"FALSE)]   
+                ]
                 
                 console.log(sql);
-                con.query(sql, function(err, result) {
+                con.query(sql, [values], function(err, result) {
                     if(err) throw err;
                     message.reply('ADDED SUCCESSFULLY');
                 });
