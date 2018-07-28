@@ -1,12 +1,12 @@
 # hoiseiratommybot
 HoiseiraTommy Discord Bot
 
-bot (discord.js) hosting : heroku
+**bot (discord.js) hosting :** heroku
 
-database hosting : gearhost
+**database hosting :** gearhost
 
-database (MySQL) :
+**database (MySQL) :**
 
-host: den1.mysql1.gear.host
+  *host:* den1.mysql1.gear.host
 
-username: hoiseiratommybot
+  *username:* hoiseiratommybot
