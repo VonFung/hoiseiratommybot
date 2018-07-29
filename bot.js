@@ -312,8 +312,10 @@ var func_loop = {
       
         if(token[1].toUpperCase === 'T' || token[1].toUpperCase === 'TRUE') {
             music_loop = true; 
+            message.reply("Loop is set to true");
         } else {
             music_loop = false; 
+            message.reply("Loop is set to false");
         }
      
     }
