@@ -20,8 +20,9 @@ var dispatcher;     //===================
                                         V
 var func_template = {
     CODE : "CODE_NAME",
-    DESCRIPTION : "Description for help",
+    DESCRIPTION : "Brief description for help",
     SYNTAX : "{$template | syntax}",
+    MANUAL: "Manual for user to understanding the parameters of command"
     LOGIC : function(token, message, func) {
         *function logic here
         
@@ -34,8 +35,9 @@ var func_template = {
 
 var func_help = {
     CODE : "HELP",
-    DESCRIPTION : "{$help | code_name} for syntax of command",
+    DESCRIPTION : "{$help | code_name | ***[optional] -d***} for syntax of command",
     SYNTAX : "{$help | ***[optional] code_name***}",
+    MANUAL : "**code_name : **The target code name you want to know about.",
     LOGIC : function(token, message, func) {
         if(token.length < 2) {
             var i;
@@ -43,12 +45,17 @@ var func_help = {
             for(i=1; i<func.length; i++) {
                 msg = msg + "\n" + func[i].CODE + "\t\t\t" + func[i].DESCRIPTION;
             }
+            msg = msg + "\n\n**All commands are CASE INSENSITIVE";
             message.channel.send(msg);
         } else {
             var j;
             for(j=0; j<func.length; j++) {
                 if(token[1].toUpperCase() === func[j].CODE) {
-                    message.reply(func[j].SYNTAX);   
+                    if(token.length > 2 && token[2] === "-D") {
+                      message.reply(func[j].SYNTAX + func[j].MANUAL);
+                    } else {
+                      message.reply(func[j].SYNTAX);
+                    }
                     return;
                 }
             }
@@ -61,6 +68,7 @@ var func_ready = {      //Ready function
     CODE : "READY",
     DESCRIPTION : "Test for the bot is online",
     SYNTAX : "{$ready}",
+    MANUAL : "",
     LOGIC : function(token, message, func) {
         message.reply('YES!');
     }
@@ -70,6 +78,10 @@ var func_addmusic = {
     CODE : "ADDMUSIC",
     DESCRIPTION : "Add new music to the database",
     SYNTAX : "{$addmusic | music_code | URL | isYoutube?(bool:T/TRUE/F/FALSE) | ***[optional] default_volume(float between 0 to 1)***}",
+    MANUAL : "**music_code : **Define a new code that you want to play this music."
+              + "\n**URL : **Provide an URL which this bot can get the music.",
+              + "\n**isYoutube : **Please choose 'T' or 'TRUE' if the source is from youtube.",
+              + "\n***default_volume : ***[Optional] Set the default volume to this music (Default is 0.5 if not set).";
     LOGIC : function(token, message, func) {
         if(token.length < 4) {
             message.reply("Incorrect Syntax!\n" + this.SYNTAX);
@@ -102,6 +114,8 @@ var func_play = {
     CODE : "PLAY",
     DESCRIPTION : "Play music",
     SYNTAX : "{$play | music_code | [optional] volume(float between 0 to 1)}",
+    MANUAL : "**music_code : **The code of music you want to play."
+              + "\n***volume : ***[Optional] Play the music in this volume.";
     LOGIC : function(token, message, func) {
         if(token.length < 2) {
             message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
@@ -166,6 +180,7 @@ var func_stop = {
     CODE : "STOP",
     DESCRIPTION : "Stop playing music",
     SYNTAX : "{$stop}",
+    MANUAL : "",
     LOGIC : function(token, message, func) {
         voiceChannel.leave();
     }
