@@ -190,7 +190,7 @@ var func_play = {
                     if(music_queue.length === 1) {
                       voiceChannel = message.member.voiceChannel;
                       voiceChannel.join().then(connection => {
-                        PlayMusicInQueue();
+                        PlayMusicInQueue(connection);
                         console.log("end loop");
                       }).catch(err => console.log(err));
                     }
@@ -378,7 +378,7 @@ client.on('message', message => {
 
 
 
-function PlayMusicInQueue() {
+function PlayMusicInQueue(connection) {
     
     if(music_queue.length === 0) {
       return;
@@ -388,13 +388,13 @@ function PlayMusicInQueue() {
 
     if(next_music.isYoutubeOrNot) {
         stream = ytdl(next_music.url, {filter : 'audioonly'});
-        dispatcher = client.voiceConnection[0].playStream(stream);
+        dispatcher = connection.playStream(stream);
         dispatcher.setVolume(next_music.volume * master_volume);
         dispatcher.on("end", end => {
            PlayMusicInQueue(voiceChannel);
         });
     } else {
-        dispatcher = client.voiceConnection[0].playArbitraryInput(next_music.url);
+        dispatcher = connection.playArbitraryInput(next_music.url);
         dispatcher.setVolume(next_music.volume * master_volume);
         dispatcher.on("end", end => {
           PlayMusicInQueue(voiceChannel);
