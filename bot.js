@@ -1,5 +1,8 @@
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');  //For music streaming
+const Webhook = require('webhook-discord');
+
+const hook = new Webhook(process.env.WEBHOOK_URL);
 var mysql = require('mysql');
 
 const client = new Discord.Client();
@@ -233,8 +236,24 @@ var func_vote = {
     
 }
 
+var func_test = {
+  
+    CODE : "TEST",
+  
+    DESCRIPTION : "A test function to test new features",
+  
+    SYNTAX : "{$TEST}",
+  
+    MANUAL : "",
+  
+    LOGIC : function(token, message, func) {
+        hook.info("HoiseiraTommy", "Test Content");
+    }
+  
+}
+
 //Register new function to this func array
-var func = [func_help, func_ready, func_addmusic, func_play, func_stop, func_vote];
+var func = [func_help, func_ready, func_addmusic, func_play, func_stop, func_vote, func_test];
 
 
 
@@ -274,7 +293,12 @@ client.on('message', message => {
     
     for(i=0; i<func.length; i++) {
         if(token[0].toUpperCase() === func[i].CODE) {
-            func[i].LOGIC(token, message, func);
+            try {
+              func[i].LOGIC(token, message, func);
+            } catch (err) {
+              message.reply("Oops! Something goes wrong. Please refer to the console log on heroku");
+              console.log(err);
+            }
             return;
         }
     }
