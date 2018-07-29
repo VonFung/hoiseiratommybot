@@ -245,6 +245,33 @@ var func_stop = {
     }
 }
 
+var func_volume = {
+ 
+    CODE : "VOLUME",
+  
+    DESCRIPTION : "Adjust master volume",
+  
+    SYNTAX : "{$VOLUME | volume(float between 0 to 1)}",
+  
+    MANUAL : "**volume : **Adjust master volume, all music will play in [play volume in list * master volume]",
+  
+    LOGIC : function(token, message, func) {
+      
+        if(token.length < 2) {
+            message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
+            return;
+        }
+      
+        if(token[1] <= 0 || token[1] > 1) {
+            message.reply("Invalid volume!(Should between 0 to 1)");
+            return;
+        }
+        master_volume = token[1];
+
+    }
+  
+}
+
 var func_vote = {
   
     CODE : "VOTE",
@@ -317,7 +344,7 @@ var func_test = {
 }
 
 //Register new function to this func array
-var func = [func_help, func_ready, func_addmusic, func_play, func_stop, func_vote, func_clear, func_test];
+var func = [func_help, func_ready, func_addmusic, func_play, func_stop, func_volume, func_vote, func_clear, func_test];
 
 
 
