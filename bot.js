@@ -46,7 +46,7 @@ function PlayMusicInQueue() {
         });
     }
   
-}
+};
 
 //---Objects for functions---
 
