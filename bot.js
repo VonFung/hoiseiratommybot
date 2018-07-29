@@ -23,30 +23,7 @@ var music_loop = false;
 var master_volume = 1;
 var music_queue = [];
 
-function PlayMusicInQueue() {
-    
-    if(music_queue.length === 0) 
-      return;
-    }
-  
-    var next_music = music_queue.shift();
 
-    if(next_music.isYoutubeOrNot) {
-        stream = ytdl(next_music.url, {filter : 'audioonly'});
-        dispatcher = connection.playStream(stream);
-        dispatcher.setVolume(next_music.volume * master_volume);
-        dispatcher.on("end", end => {
-           PlayMusicInQueue(voiceChannel);
-        });
-    } else {
-        dispatcher = connection.playArbitraryInput(next_music.url);
-        dispatcher.setVolume(next_music.volume * master_volume);
-        dispatcher.on("end", end => {
-          PlayMusicInQueue(voiceChannel);
-        });
-    }
-  
-};
 
 //---Objects for functions---
 
@@ -398,6 +375,33 @@ client.on('message', message => {
     message.reply('Invalid command ($help to view commands)');
     
 });
+
+
+
+function PlayMusicInQueue() {
+    
+    if(music_queue.length === 0) 
+      return;
+    }
+  
+    var next_music = music_queue.shift();
+
+    if(next_music.isYoutubeOrNot) {
+        stream = ytdl(next_music.url, {filter : 'audioonly'});
+        dispatcher = connection.playStream(stream);
+        dispatcher.setVolume(next_music.volume * master_volume);
+        dispatcher.on("end", end => {
+           PlayMusicInQueue(voiceChannel);
+        });
+    } else {
+        dispatcher = connection.playArbitraryInput(next_music.url);
+        dispatcher.setVolume(next_music.volume * master_volume);
+        dispatcher.on("end", end => {
+          PlayMusicInQueue(voiceChannel);
+        });
+    }
+  
+}
 
 
 
