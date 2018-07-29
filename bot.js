@@ -13,9 +13,9 @@ const db_password = process.env.DB_PW;
 const db_schema = "hoiseiratommybot";
 
 
-var voiceChannel;   //===================
-var stream;         //  For Play Music
-var dispatcher;     //===================
+var voiceChannel;          //===================
+var stream;                //  For Play Music
+var dispatcher = null;     //===================
 
 var clear_command = false;
 
@@ -195,6 +195,8 @@ var func_play = {
                       }).catch(err => console.log(err));
                     } else {
                       message.reply("Added to playlist");
+                      console.log("dispatcher === null = " + dispatcher === null);
+                      console.log("music_queue.length = " + music_queue.length);
                     }
                   
                     /*var isYoutubeOrNot = result[0].IS_YOUTUBE;
