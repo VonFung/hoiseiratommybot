@@ -289,6 +289,33 @@ var func_volume = {
   
 }
 
+var func_loop = {
+  
+    CODE : "LOOP",
+  
+    DESCRIPTION : "Set music looping",
+  
+    SYNTAX : "{$LOOP | isLoop(boolean:'T'/'TRUE'/'F'/'FALSE')}",
+  
+    MANUAL : "**isLoop : **Set true will loop for the current playing music.(Music in playlist will not destory but will not play until disable looping",
+  
+    LOGIC : function(token, message, func) {
+      
+        if(token.length < 2) {
+            message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
+            return; 
+        }
+      
+        if(token[1] === 'T' || token[1] === 'TRUE') {
+            music_loop = true; 
+        } else {
+            music_loop = false; 
+        }
+     
+    }
+  
+}
+
 var func_vote = {
   
     CODE : "VOTE",
@@ -437,6 +464,9 @@ function PlayMusicInQueue(connection) {
         dispatcher.setVolume(now_playing_music.volume * master_volume);
         dispatcher.on("end", end => {
              dispatcher = null;
+             if(music_loop) {
+                music_queue.unshift(now_playing_music); 
+             }
              now_playing_music = null;
              PlayMusicInQueue(connection);
         });
@@ -445,6 +475,9 @@ function PlayMusicInQueue(connection) {
         dispatcher.setVolume(now_playing_music.volume * master_volume);
         dispatcher.on("end", end => {
              dispatcher = null;
+             if(music_loop) {
+                music_queue.unshift(now_playing_music); 
+             }
              now_playing_music = null;
              PlayMusicInQueue(connection);
         });
