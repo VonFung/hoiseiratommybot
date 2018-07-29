@@ -129,7 +129,7 @@ var func_addmusic = {
 
         con.connect(function(err) {
             if(err) throw err;
-            var sql = "INSERT INTO playlist (CODE, URL, IS_YOUTUBE" + (token.length > 4?", DEFAULT_VOLUME":"") + ") VALUES ('"
+            var sql = "INSERT INTO musiclist (CODE, URL, IS_YOUTUBE" + (token.length > 4?", DEFAULT_VOLUME":"") + ") VALUES ('"
                       + token[1].toUpperCase() + "', '" + token[2] + "', " + ((token[3].toUpperCase() === "T" || token[3].toUpperCase() === "TRUE")?"TRUE":"FALSE")
                        + (token.length > 4?", " + token[4]:"") + ")";
 
@@ -169,7 +169,7 @@ var func_play = {
         con.connect(function(err) {
             if(err) throw err;
           
-            var sql = "SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM playlist WHERE CODE = '" + token[1].toUpperCase() + "'";
+            var sql = "SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM musiclist WHERE CODE = '" + token[1].toUpperCase() + "'";
             console.log(sql);
             
             con.query(sql, function (err, result, field) {
@@ -202,6 +202,27 @@ var func_play = {
             });
         });
     }
+}
+
+var func_playlist = {
+  
+    CODE : "PLAYLIST",
+  
+    DESCRIPTION : "Show the playlist queue",
+  
+    SYNTAX : "{$PLAYLIST}",
+  
+    MANUAL : "",
+  
+    LOGIC : function(token, message, func) {
+        var msg = "**" + now_playing_music.code + "**";
+        var i;
+        for(i=0; i<music_queue.length; i++) {
+            msg = msg + "\n" + music_queue[i].code;
+        }
+        message.channel.send(msg);
+    }
+  
 }
 
 var func_stop = {
@@ -247,7 +268,7 @@ var func_volume = {
            dispatcher.setVolume(now_playing_music.volume * master_volume);
         }
         
-        message.reply("The volume has been changed to " + master_volume + " from " + old_volume);
+        message.reply("The volume has been changed : " + old_volume + " -> " + master_volume);
     }
   
 }
