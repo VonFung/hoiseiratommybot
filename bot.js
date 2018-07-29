@@ -245,6 +245,7 @@ var func_stop = {
     MANUAL : "",
   
     LOGIC : function(token, message, func) {
+        music_queue = [];
         voiceChannel.leave();
     }
 }
@@ -424,14 +425,14 @@ function PlayMusicInQueue(connection) {
         dispatcher.setVolume(next_music.volume * master_volume);
         dispatcher.on("end", end => {
              dispatcher = null;
-             PlayMusicInQueue(voiceChannel);
+             PlayMusicInQueue(connection);
         });
     } else {
         dispatcher = connection.playArbitraryInput(next_music.url);
         dispatcher.setVolume(next_music.volume * master_volume);
         dispatcher.on("end", end => {
             dispatcher = null;
-            PlayMusicInQueue(voiceChannel);
+            PlayMusicInQueue(connection);
         });
     }
   
