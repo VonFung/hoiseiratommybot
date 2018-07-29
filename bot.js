@@ -395,7 +395,7 @@ function PlayMusicInQueue(connection) {
     now_playing_music = music_queue.shift();
 
     if(now_playing_music.isYoutubeOrNot) {
-        stream = ytdl(next_music.url, {filter : 'audioonly'});
+        stream = ytdl(now_playing_music.url, {filter : 'audioonly'});
         dispatcher = connection.playStream(stream);
         dispatcher.setVolume(now_playing_music.volume * master_volume);
         dispatcher.on("end", end => {
@@ -404,7 +404,7 @@ function PlayMusicInQueue(connection) {
              PlayMusicInQueue(connection);
         });
     } else {
-        dispatcher = connection.playArbitraryInput(next_music.url);
+        dispatcher = connection.playArbitraryInput(now_playing_music.url);
         dispatcher.setVolume(now_playing_music.volume * master_volume);
         dispatcher.on("end", end => {
              dispatcher = null;
