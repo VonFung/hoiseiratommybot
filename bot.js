@@ -84,7 +84,7 @@ var func_help = {
             message.reply("Command not found");
         }
     }
-};
+}
 
 var func_ready = {      //Ready function
   
@@ -99,7 +99,7 @@ var func_ready = {      //Ready function
     LOGIC : function(token, message, func) {
         message.reply('YES!');
     }
-};
+}
 
 var func_addmusic = {
   
