@@ -380,7 +380,7 @@ client.on('message', message => {
 
 function PlayMusicInQueue() {
     
-    if(music_queue.length === 0) 
+    if(music_queue.length === 0) {
       return;
     }
   
