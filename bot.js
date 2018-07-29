@@ -256,7 +256,7 @@ var func_clear_cmd = {
             messages.forEach(function(message) {
               if(message.content.charAt(0) === '$' || message.author.id === client.user.id) {
                 message.delete();
-                console.log("Message: \"" + message.content + "\" deleted";
+                console.log("Message: \"" + message.content + "\" deleted");
               }
             })
           })
