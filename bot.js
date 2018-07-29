@@ -19,6 +19,35 @@ var dispatcher;     //===================
 
 var clear_command = false;
 
+var music_loop = false;
+var master_volume = 1;
+var music_queue = [];
+
+function PlayMusicInQueue() {
+    
+    if(music_queue.length === 0) 
+      return;
+    }
+  
+    var next_music = music_queue.shift();
+
+    if(next_music.isYoutubeOrNot) {
+        stream = ytdl(next_music.url, {filter : 'audioonly'});
+        dispatcher = connection.playStream(stream);
+        dispatcher.setVolume(next_music.volume * master_volume);
+        dispatcher.on("end", end => {
+           PlayMusicInQueue(voiceChannel);
+        });
+    } else {
+        dispatcher = connection.playArbitraryInput(next_music.url);
+        dispatcher.setVolume(next_music.volume * master_volume);
+        dispatcher.on("end", end => {
+          PlayMusicInQueue(voiceChannel);
+        });
+    }
+  
+}
+
 //---Objects for functions---
 
 /*                                      |   A template function object
@@ -140,7 +169,7 @@ var func_play = {
   
     CODE : "PLAY",
    
-    DESCRIPTION : "Play music",
+    DESCRIPTION : "Add music to the music queue",
    
     SYNTAX : "{$PLAY | music_code | [optional] volume(float between 0 to 1)}",
 
@@ -172,8 +201,24 @@ var func_play = {
                     message.reply("No such music");
                     return;   
                 } else {
-
-                    var isYoutubeOrNot = result[0].IS_YOUTUBE;
+                    
+                    var music_instance = {
+                      url : result[0].URL,
+                      isYoutubeOrNot : result[0].IS_YOUTUBE,
+                      volume : token.length > 2?token[2]:result[0].DEFAULT_VOLUME
+                    };
+                  
+                    music_queue.push(music_instance);
+                  
+                    if(music_queue.length === 1) {
+                      voiceChannel = message.member.voiceChannel;
+                      voiceChannel.join().then(connection => {
+                        PlayMusicInQueue();
+                        console.log("end loop");
+                      }).catch(err => console.log(err));
+                    }
+                  
+                    /*var isYoutubeOrNot = result[0].IS_YOUTUBE;
                     var volume = token.length > 2?token[2]:result[0].DEFAULT_VOLUME;
                     var url = result[0].URL;
 
@@ -181,6 +226,7 @@ var func_play = {
                     if(isYoutubeOrNot) {
                         voiceChannel.join().then(connection => {
                             console.log("joined channel");
+                            console.log("channel id = " + connection
                             stream = ytdl(url, {filter : 'audioonly'});
                             dispatcher = connection.playStream(stream);
                             dispatcher.setVolume(volume);
@@ -199,7 +245,7 @@ var func_play = {
                                 voiceChannel.leave();
                             });
                         }).catch(err => console.log(err));
-                    }
+                    }*/
 
                 }
             });
