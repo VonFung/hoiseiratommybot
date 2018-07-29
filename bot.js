@@ -345,7 +345,7 @@ var func_test = {
 }
 
 //Register new function to this func array
-var func = [func_help, func_ready, func_addmusic, func_play, func_stop, func_volume, func_vote, func_clear, func_test];
+var func = [func_help, func_ready, func_addmusic, func_play, func_playlist, func_stop, func_volume, func_vote, func_clear, func_test];
 
 
 
