@@ -310,7 +310,7 @@ var func_loop = {
             return; 
         }
       
-        if(token[1].toUpperCase === 'T' || token[1].toUpperCase === 'TRUE') {
+        if(token[1].toUpperCase() === 'T' || token[1].toUpperCase() === 'TRUE') {
             music_loop = true; 
             message.reply("Loop is set to true");
         } else {
