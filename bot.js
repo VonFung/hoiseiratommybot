@@ -236,7 +236,11 @@ var func_musicdetail = {
     MANUAL : "",
   
     LOGIC : function(token, message, func) {
-        message.reply("**" + now_plyaing_music.code + "**  VOLUME = " + master_volume + " LOOP = " + (music_loop?"TRUE":"FALSE"));
+        if(now_playing_music === null) {
+          message.reply("No music playing");
+        } else {
+          message.reply("**" + now_playing_music.code + "**  VOLUME = " + master_volume + " LOOP = " + (music_loop?"TRUE":"FALSE"));
+        }
     }
   
 }
