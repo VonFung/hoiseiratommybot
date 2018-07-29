@@ -17,6 +17,8 @@ var voiceChannel;   //===================
 var stream;         //  For Play Music
 var dispatcher;     //===================
 
+var clear_command = false;
+
 //---Objects for functions---
 
 /*                                      |   A template function object
@@ -236,6 +238,29 @@ var func_vote = {
     
 }
 
+var func_clear_cmd = {
+ 
+    CODE : "CLEAR",
+  
+    DESCRIPTION : "Clear the commands and message that call bot or create by bot",
+  
+    SYNTAX : "{$CLEAR | [optional]ON/OFF ('T'/'TRUE'/'F'/'FALSE')}",
+  
+    MANUAL : "***ON/OFF : ***[Optional]True to turn on auto clear command mode."
+         +"\n**Toggling ON/OFF will not trigger the clear command that clear the command or message created by to in 100 message above.**",
+  
+    LOGIC : function(token, message, func) {
+      if(token.length < 2) {
+        
+      } else if(token[1].toUpperCase() === 'T' || token[1].toUpperCase() === 'TRUE') {
+        clear_command = true;
+      } else {
+        clear_command = false; 
+      }
+    }
+  
+}
+
 var func_test = {
   
     CODE : "TEST",
@@ -247,7 +272,14 @@ var func_test = {
     MANUAL : "",
   
     LOGIC : function(token, message, func) {
-        hook.info("HoiseiraTommy", "Test Content");
+        //hook.info("HoiseiraTommy", "Test Content");
+        message.channel.fetchMessages({limit : 100})
+          .then(messages => {
+            messages.forEach(function(message) {
+              console.log(message.content);
+            })
+          })
+          .catch(console.error);
     }
   
 }
@@ -298,6 +330,11 @@ client.on('message', message => {
             } catch (err) {
               message.reply("Oops! Something goes wrong. Please refer to the console log on heroku");
               console.log(err);
+            }
+            if(clear_command) {
+              message.delete("Clean view")
+                .then(msg => console.log('Command Deleted'))
+                .catch(console.error);
             }
             return;
         }
