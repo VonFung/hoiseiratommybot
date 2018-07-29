@@ -251,7 +251,16 @@ var func_clear_cmd = {
   
     LOGIC : function(token, message, func) {
       if(token.length < 2) {
-        
+        message.channel.fetchMessages({limit : 100})
+          .then(messages => {
+            messages.forEach(function(message) {
+              if(message.content.charAt(0) === '$' || message.author.id === client.user.id) {
+                message.delete();
+                console.log("Message: \"" + message.content + "\" deleted";
+              }
+            })
+          })
+          .catch(console.error);
       } else if(token[1].toUpperCase() === 'T' || token[1].toUpperCase() === 'TRUE') {
         clear_command = true;
       } else {
