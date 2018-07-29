@@ -187,12 +187,14 @@ var func_play = {
                   
                     music_queue.push(music_instance);
                   
-                    if(music_queue.length === 1) {
+                    if(dispatcher === null) {
                       voiceChannel = message.member.voiceChannel;
                       voiceChannel.join().then(connection => {
                         PlayMusicInQueue(connection);
                         console.log("end loop");
                       }).catch(err => console.log(err));
+                    } else {
+                      message.reply("Added to playlist");
                     }
                   
                     /*var isYoutubeOrNot = result[0].IS_YOUTUBE;
@@ -408,6 +410,8 @@ client.on('message', message => {
 function PlayMusicInQueue(connection) {
     
     if(music_queue.length === 0) {
+      dispatcher = null;
+      voiceChannel.leave();
       return;
     }
   
