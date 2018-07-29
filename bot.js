@@ -22,7 +22,7 @@ var clear_command = false;
 var music_loop = false;
 var master_volume = 1;
 var music_queue = [];
-var now_playing_music;
+var now_playing_music = null;
 
 
 //---Objects for functions---
