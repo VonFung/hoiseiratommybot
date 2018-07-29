@@ -215,12 +215,28 @@ var func_playlist = {
     MANUAL : "",
   
     LOGIC : function(token, message, func) {
-        var msg = "**" + now_playing_music.code + "**";
+        var msg = "**" + now_playing_music.code + "** <- now playing";
         var i;
         for(i=0; i<music_queue.length; i++) {
             msg = msg + "\n" + music_queue[i].code;
         }
         message.channel.send(msg);
+    }
+  
+}
+
+var func_musicdetail = {
+ 
+    CODE : "MUSICDETAIL",
+  
+    DESCRIPTION : "Show the detail of music player",
+  
+    SYNTAX : "{$MUSICDETAIL}",
+  
+    MANUAL : "",
+  
+    LOGIC : function(token, message, func) {
+        message.reply("**" + now_plyaing_music.code + "**  VOLUME = " + master_volume + " LOOP = " + (music_loop?"TRUE":"FALSE"));
     }
   
 }
