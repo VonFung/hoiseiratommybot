@@ -56,7 +56,7 @@ var func_help = {
             for(i=1; i<func.length; i++) {
                 msg = msg + "\n" + func[i].CODE + "\t\t\t" + func[i].DESCRIPTION;
             }
-            msg = msg + "\n\n**All commands are CASE INSENSITIVE";
+            msg = msg + "\n\n**All commands are CASE INSENSITIVE**";
             message.channel.send(msg);
         } else {
             var j;
