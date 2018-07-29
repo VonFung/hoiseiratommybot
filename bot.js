@@ -19,10 +19,15 @@ var dispatcher;     //===================
 /*                                      |   A template function object
                                         V
 var func_template = {
-    CODE : "CODE_NAME",
+
+    CODE : "CODE_NAME",                         //All letters MUST be in CAPITAL because all command would change to uppercase automatically
+    
     DESCRIPTION : "Brief description for help",
-    SYNTAX : "{$template | syntax}",
-    MANUAL: "Manual for user to understanding the parameters of command"
+    
+    SYNTAX : "{$TEMPLATE | syntax}",            //Please use CAPITAL if the command is constant such as function code or additional parameter such as "-d"
+    
+    MANUAL: "Manual for user to understanding the parameters of command"    //You can reference with sample below to adjust format
+    
     LOGIC : function(token, message, func) {
         *function logic here
         
@@ -34,10 +39,16 @@ var func_template = {
 */
 
 var func_help = {
+    
     CODE : "HELP",
-    DESCRIPTION : "{$help | code_name | ***[optional] -d***} for syntax of command",
-    SYNTAX : "{$help | ***[optional] code_name***}",
-    MANUAL : "**code_name : **The target code name you want to know about.",
+    
+    DESCRIPTION : "{$help | code_name | ***[optional] -D***} for syntax of command",
+
+    SYNTAX : "{$HELP | ***[optional] code_name***}",
+
+    MANUAL : "**code_name : **The target code name you want to know about."
+         + "\n**-D : **Add -d if you need more details.",
+
     LOGIC : function(token, message, func) {
         if(token.length < 2) {
             var i;
@@ -65,23 +76,33 @@ var func_help = {
 };
 
 var func_ready = {      //Ready function
+  
     CODE : "READY",
+  
     DESCRIPTION : "Test for the bot is online",
-    SYNTAX : "{$ready}",
+  
+    SYNTAX : "{$READY}",
+  
     MANUAL : "",
+  
     LOGIC : function(token, message, func) {
         message.reply('YES!');
     }
 };
 
 var func_addmusic = {
+  
     CODE : "ADDMUSIC",
+  
     DESCRIPTION : "Add new music to the database",
-    SYNTAX : "{$addmusic | music_code | URL | isYoutube?(bool:T/TRUE/F/FALSE) | ***[optional] default_volume(float between 0 to 1)***}",
+  
+    SYNTAX : "{$ADDMUSIC | music_code | URL | isYoutube?(bool:T/TRUE/F/FALSE) | ***[optional] default_volume(float between 0 to 1)***}",
+   
     MANUAL : "**music_code : **Define a new code that you want to play this music."
-              + "\n**URL : **Provide an URL which this bot can get the music.",
-              + "\n**isYoutube : **Please choose 'T' or 'TRUE' if the source is from youtube.",
-              + "\n***default_volume : ***[Optional] Set the default volume to this music (Default is 0.5 if not set).";
+              + "\n**URL : **Provide an URL which this bot can get the music."
+              + "\n**isYoutube : **Please choose 'T' or 'TRUE' if the source is from youtube."
+              + "\n***default_volume : ***[Optional] Set the default volume to this music (Default is 0.5 if not set).",
+    
     LOGIC : function(token, message, func) {
         if(token.length < 4) {
             message.reply("Incorrect Syntax!\n" + this.SYNTAX);
@@ -111,11 +132,16 @@ var func_addmusic = {
 }
 
 var func_play = {
+  
     CODE : "PLAY",
+   
     DESCRIPTION : "Play music",
-    SYNTAX : "{$play | music_code | [optional] volume(float between 0 to 1)}",
+   
+    SYNTAX : "{$PLAY | music_code | [optional] volume(float between 0 to 1)}",
+
     MANUAL : "**music_code : **The code of music you want to play."
-              + "\n***volume : ***[Optional] Play the music in this volume.";
+              + "\n***volume : ***[Optional] Play the music in this volume.",
+
     LOGIC : function(token, message, func) {
         if(token.length < 2) {
             message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
@@ -177,17 +203,38 @@ var func_play = {
 }
 
 var func_stop = {
+
     CODE : "STOP",
+  
     DESCRIPTION : "Stop playing music",
+
     SYNTAX : "{$stop}",
+
     MANUAL : "",
+  
     LOGIC : function(token, message, func) {
         voiceChannel.leave();
     }
 }
 
+var func_vote = {
+  
+    CODE : "VOTE",
+  
+    DESCRIPTION : "Temporarily an empty function for future implement",
+  
+    SYNTAX : "{$VOTE}",
+  
+    MANUAL : "",
+  
+    LOGIC : function(token, message, func) {
+      
+    }
+    
+}
+
 //Register new function to this func array
-var func = [func_help, func_ready, func_addmusic, func_play, func_stop];
+var func = [func_help, func_ready, func_addmusic, func_play, func_stop, func_vote];
 
 
 
