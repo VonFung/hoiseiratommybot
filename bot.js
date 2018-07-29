@@ -187,7 +187,7 @@ var func_play = {
                   
                     music_queue.push(music_instance);
                   
-                    if(dispatcher === null) {
+                    if(dispatcher === null && music_queue.length === 1) {
                       voiceChannel = message.member.voiceChannel;
                       voiceChannel.join().then(connection => {
                         PlayMusicInQueue(connection);
@@ -410,7 +410,6 @@ client.on('message', message => {
 function PlayMusicInQueue(connection) {
     
     if(music_queue.length === 0) {
-      dispatcher = null;
       voiceChannel.leave();
       return;
     }
@@ -422,13 +421,15 @@ function PlayMusicInQueue(connection) {
         dispatcher = connection.playStream(stream);
         dispatcher.setVolume(next_music.volume * master_volume);
         dispatcher.on("end", end => {
-           PlayMusicInQueue(voiceChannel);
+             dispatcher = null;
+             PlayMusicInQueue(voiceChannel);
         });
     } else {
         dispatcher = connection.playArbitraryInput(next_music.url);
         dispatcher.setVolume(next_music.volume * master_volume);
         dispatcher.on("end", end => {
-          PlayMusicInQueue(voiceChannel);
+            dispatcher = null;
+            PlayMusicInQueue(voiceChannel);
         });
     }
   
