@@ -62,7 +62,7 @@ var func_help = {
             var j;
             for(j=0; j<func.length; j++) {
                 if(token[1].toUpperCase() === func[j].CODE) {
-                    if(token.length > 2 && token[2] === "-D") {
+                    if(token.length > 2 && token[2].toUpperCase() === "-D") {
                       message.reply(func[j].SYNTAX + func[j].MANUAL);
                     } else {
                       message.reply(func[j].SYNTAX);
@@ -118,8 +118,8 @@ var func_addmusic = {
 
         con.connect(function(err) {
             if(err) throw err;
-            var sql = "INSERT INTO playlist (CODE, URL, IS_YOUTUBE" + (token.length > 4?", " + token[4]:"") + ") VALUES ('"
-                      + token[1] + "', '" + token[2] + "', " + ((token[3] === "T" || token[3] === "TRUE")?"TRUE":"FALSE")
+            var sql = "INSERT INTO playlist (CODE, URL, IS_YOUTUBE" + (token.length > 4?", DEFAULT_VOLUME":"") + ") VALUES ('"
+                      + token[1].toUpperCase() + "', '" + token[2] + "', " + ((token[3].toUpperCase() === "T" || token[3].toUpperCase() === "TRUE")?"TRUE":"FALSE")
                        + (token.length > 4?", " + token[4]:"") + ")";
 
             //console.log(sql);
@@ -158,7 +158,7 @@ var func_play = {
         con.connect(function(err) {
             if(err) throw err;
           
-            var sql = "SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM playlist WHERE CODE = '" + token[1] + "'";
+            var sql = "SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM playlist WHERE CODE = '" + token[1].toUpperCase() + "'";
             console.log(sql);
             
             con.query(sql, function (err, result, field) {
@@ -267,17 +267,13 @@ client.on('message', message => {
     token = message.content.substr(1).trim().split(' ');
     
     //===================================================
-    //  ALL COMMAND WILL BE CONVERTED TO UPPER CASE!
+    //  ALL COMMAND SHOULD BE CONVERTED TO UPPER CASE!
     //===================================================
     
     var i;
-  
-    for(i=0; i<token.length; i++) {
-      token[i] = token[i].toUpperCase(); 
-    }
     
     for(i=0; i<func.length; i++) {
-        if(token[0] === func[i].CODE) {
+        if(token[0].toUpperCase() === func[i].CODE) {
             func[i].LOGIC(token, message, func);
             return;
         }
