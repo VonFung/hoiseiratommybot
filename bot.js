@@ -74,7 +74,7 @@ var func_help = {
             for(j=0; j<func.length; j++) {
                 if(token[1].toUpperCase() === func[j].CODE) {
                     if(token.length > 2 && token[2].toUpperCase() === "-D") {
-                      message.reply(func[j].SYNTAX + "\n" + func[j].MANUAL);
+                      message.reply(func[j].SYNTAX + "\n\n" + func[j].MANUAL);
                     } else {
                       message.reply(func[j].SYNTAX);
                     }
