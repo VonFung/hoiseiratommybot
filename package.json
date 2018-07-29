@@ -24,7 +24,9 @@
     
     "ytdl-core": "^0.20.1",
     
-    "mysql": "2.16.0"
+    "mysql": "2.16.0",
+    
+    "webhook-discord": "2.3.0"
   
   }
   
