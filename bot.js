@@ -22,7 +22,7 @@ var clear_command = false;
 var music_loop = false;
 var master_volume = 1;
 var music_queue = [];
-
+var now_playing_music;
 
 
 //---Objects for functions---
@@ -146,7 +146,7 @@ var func_play = {
   
     CODE : "PLAY",
    
-    DESCRIPTION : "Add music to the music queue",
+    DESCRIPTION : "Add music to the music queue and play if no music playing",
    
     SYNTAX : "{$PLAY | music_code | [optional] volume(float between 0 to 1)}",
 
@@ -180,6 +180,7 @@ var func_play = {
                 } else {
                     
                     var music_instance = {
+                      code : token[1].toUpperCase(),
                       url : result[0].URL,
                       isYoutubeOrNot : result[0].IS_YOUTUBE,
                       volume : token.length > 2?token[2]:result[0].DEFAULT_VOLUME
@@ -194,39 +195,8 @@ var func_play = {
                         console.log("end loop");
                       }).catch(err => console.log(err));
                     } else {
-                      message.reply("Added to playlist");
-                      console.log("dispatcher === null = " + dispatcher === null);
-                      console.log("music_queue.length = " + music_queue.length);
+                      message.reply("Added to playlist. Now playing is : " + now_playing_music.code);
                     }
-                  
-                    /*var isYoutubeOrNot = result[0].IS_YOUTUBE;
-                    var volume = token.length > 2?token[2]:result[0].DEFAULT_VOLUME;
-                    var url = result[0].URL;
-
-                    voiceChannel = message.member.voiceChannel;
-                    if(isYoutubeOrNot) {
-                        voiceChannel.join().then(connection => {
-                            console.log("joined channel");
-                            console.log("channel id = " + connection
-                            stream = ytdl(url, {filter : 'audioonly'});
-                            dispatcher = connection.playStream(stream);
-                            dispatcher.setVolume(volume);
-                            dispatcher.on("end", end => {
-                                console.log("left channel");
-                                voiceChannel.leave();
-                            });
-                        }).catch(err => console.log(err));
-                    } else {
-                        voiceChannel.join().then(connection => {
-                            console.log("joined channel");
-                            dispatcher = connection.playArbitraryInput(url);
-                            dispatcher.setVolume(volume);
-                            dispatcher.on("end", end => {
-                                console.log("left channel");
-                                voiceChannel.leave();
-                            });
-                        }).catch(err => console.log(err));
-                    }*/
 
                 }
             });
@@ -238,7 +208,7 @@ var func_stop = {
 
     CODE : "STOP",
   
-    DESCRIPTION : "Stop playing music",
+    DESCRIPTION : "Stop playing music and CLEAR all music in the queue",
 
     SYNTAX : "{$stop}",
 
@@ -271,8 +241,13 @@ var func_volume = {
             message.reply("Invalid volume!(Should between 0 to 1)");
             return;
         }
+        var old_volume = master_volume;
         master_volume = token[1];
-
+        if(dispatcher !== null) {
+           dispatcher.setVolume(now_playing_music.volume * master_volume);
+        }
+        
+        message.reply("The volume has been changed to " + master_volume + " from " + old_volume);
     }
   
 }
@@ -417,22 +392,24 @@ function PlayMusicInQueue(connection) {
       return;
     }
   
-    var next_music = music_queue.shift();
+    now_playing_music = music_queue.shift();
 
-    if(next_music.isYoutubeOrNot) {
+    if(now_playing_music.isYoutubeOrNot) {
         stream = ytdl(next_music.url, {filter : 'audioonly'});
         dispatcher = connection.playStream(stream);
-        dispatcher.setVolume(next_music.volume * master_volume);
+        dispatcher.setVolume(now_playing_music.volume * master_volume);
         dispatcher.on("end", end => {
              dispatcher = null;
+             now_playing_music = null;
              PlayMusicInQueue(connection);
         });
     } else {
         dispatcher = connection.playArbitraryInput(next_music.url);
-        dispatcher.setVolume(next_music.volume * master_volume);
+        dispatcher.setVolume(now_playing_music.volume * master_volume);
         dispatcher.on("end", end => {
-            dispatcher = null;
-            PlayMusicInQueue(connection);
+             dispatcher = null;
+             now_playing_music = null;
+             PlayMusicInQueue(connection);
         });
     }
   
