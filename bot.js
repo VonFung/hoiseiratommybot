@@ -388,13 +388,13 @@ function PlayMusicInQueue() {
 
     if(next_music.isYoutubeOrNot) {
         stream = ytdl(next_music.url, {filter : 'audioonly'});
-        dispatcher = connection.playStream(stream);
+        dispatcher = client.voiceConnection.first().playStream(stream);
         dispatcher.setVolume(next_music.volume * master_volume);
         dispatcher.on("end", end => {
            PlayMusicInQueue(voiceChannel);
         });
     } else {
-        dispatcher = connection.playArbitraryInput(next_music.url);
+        dispatcher = client.voiceConnection.first().playArbitraryInput(next_music.url);
         dispatcher.setVolume(next_music.volume * master_volume);
         dispatcher.on("end", end => {
           PlayMusicInQueue(voiceChannel);
