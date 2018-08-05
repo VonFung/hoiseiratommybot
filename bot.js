@@ -24,6 +24,8 @@ var master_volume = 1;
 var music_queue = [];
 var now_playing_music = null;
 
+const update_time = new Date.getTime();
+
 
 //---Objects for functions---
 
@@ -97,7 +99,7 @@ var func_ready = {      //Ready function
     MANUAL : "",
   
     LOGIC : function(token, message, func) {
-        message.reply('YES!');
+        message.reply('YES!Updated time = ' + update_time);
     }
 }
 
