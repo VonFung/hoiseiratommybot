@@ -24,7 +24,7 @@ var master_volume = 1;
 var music_queue = [];
 var now_playing_music = null;
 
-const update_time = new Date().getTime();
+const update_time = new Date().toLocaleTimeString();
 
 
 //---Objects for functions---
