@@ -24,7 +24,7 @@ var master_volume = 1;
 var music_queue = [];
 var now_playing_music = null;
 
-const update_time = new Date().toLocaleDateString() + new Date().toLocaleTimeString();
+const update_time = new Date().toLocaleString('en-GB', { timeZone: 'UTC+8' });
 
 
 //---Objects for functions---
