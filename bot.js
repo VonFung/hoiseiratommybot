@@ -156,9 +156,9 @@ var func_searchmusic = {
     LOGIC : function(token, message) {
         var sql;
         if(token.length < 2) {
-            sql = "SELECT CODE FROM musiclist";
+            sql = "SELECT CODE FROM musiclist ORDER BY id ASC";
         } else {
-            sql = "SELECT CODE FROM musiclist WHERE CODE LIKE %" + token[1] + "% ORDER BY ID DESC";
+            sql = "SELECT CODE FROM musiclist WHERE CODE LIKE %" + token[1] + "% ORDER BY id ASC";
         }
       
         var con = mysql.createConnection({
