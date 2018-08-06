@@ -62,7 +62,7 @@ var func_help = {
     MANUAL : "**code_name : **The target code name you want to know about."
          + "\n**-D : **Add -d if you need more details.",
 
-    LOGIC : function(token, message, func) {
+    LOGIC : function(token, message/*, func*/) {
         if(token.length < 2) {
             var i;
             var msg = func[0].CODE + "\t\t\t" + func[0].DESCRIPTION;
@@ -253,7 +253,7 @@ var func_stop = {
   
     DESCRIPTION : "Stop playing music and CLEAR all music in the queue",
 
-    SYNTAX : "{$stop}",
+    SYNTAX : "{$STOP}",
 
     MANUAL : "",
   
@@ -261,6 +261,22 @@ var func_stop = {
         music_queue = [];
         voiceChannel.leave();
     }
+}
+
+var func_next = {
+  
+    CODE : "NEXT",
+  
+    DESCRIPTION : "Play the next music in the queue. (Stop if no music in the queue)",
+  
+    SYNTAX : "{$NEXT}",
+  
+    MANUAL : "",
+  
+    LOGIC : function(token, message, func) {
+        dispatcher.end();
+    }
+  
 }
 
 var func_volume = {
@@ -437,7 +453,7 @@ client.on('message', message => {
     for(i=0; i<func.length; i++) {
         if(token[0].toUpperCase() === func[i].CODE) {
             try {
-              func[i].LOGIC(token, message, func);
+              func[i].LOGIC(token, message/*, func*/);
             } catch (err) {
               message.reply("Oops! Something goes wrong. Please refer to the console log on heroku");
               console.log(err);
