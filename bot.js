@@ -41,12 +41,11 @@ var func_template = {
     
     MANUAL: "Manual for user to understanding the parameters of command"    //You can reference with sample below to adjust format
     
-    LOGIC : function(token, message, func) {
+    LOGIC : function(token, message) {
         *function logic here
         
         token: trim and splited input stream from user without $ (already toUpperCase in the main logic)
         message: the message object that trigger this function (details in Discord.js)
-        func: the functions array (mainly for display help message)
     }
 }
 */
@@ -62,7 +61,7 @@ var func_help = {
     MANUAL : "**code_name : **The target code name you want to know about."
          + "\n**-D : **Add -d if you need more details.",
 
-    LOGIC : function(token, message/*, func*/) {
+    LOGIC : function(token, message) {
         if(token.length < 2) {
             var i;
             var msg = func[0].CODE + "\t\t\t" + func[0].DESCRIPTION;
@@ -98,7 +97,7 @@ var func_ready = {      //Ready function
   
     MANUAL : "",
   
-    LOGIC : function(token, message, func) {
+    LOGIC : function(token, message) {
         message.reply('YES!Updated time = ' + update_time);
     }
 }
@@ -155,7 +154,7 @@ var func_play = {
     MANUAL : "**music_code : **The code of music you want to play."
               + "\n***volume : ***[Optional] Play the music in this volume.",
 
-    LOGIC : function(token, message, func) {
+    LOGIC : function(token, message) {
         if(token.length < 2) {
             message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
             return;
@@ -216,7 +215,7 @@ var func_playlist = {
   
     MANUAL : "",
   
-    LOGIC : function(token, message, func) {
+    LOGIC : function(token, message) {
         var msg = "**" + now_playing_music.code + "** <- now playing";
         var i;
         for(i=0; i<music_queue.length; i++) {
@@ -237,7 +236,7 @@ var func_musicdetail = {
   
     MANUAL : "",
   
-    LOGIC : function(token, message, func) {
+    LOGIC : function(token, message) {
         if(now_playing_music === null) {
           message.reply("No music playing");
         } else {
@@ -257,7 +256,7 @@ var func_stop = {
 
     MANUAL : "",
   
-    LOGIC : function(token, message, func) {
+    LOGIC : function(token, message) {
         music_queue = [];
         voiceChannel.leave();
     }
@@ -273,8 +272,40 @@ var func_next = {
   
     MANUAL : "",
   
-    LOGIC : function(token, message, func) {
+    LOGIC : function(token, message) {
         dispatcher.end();
+    }
+  
+}
+
+var func_pause = {
+    
+    CODE : "PAUSE",
+  
+    DESCRIPTION : "Pause the music.",
+  
+    SYNTAX : "{$PAUSE}",
+  
+    MANUAL : "",
+  
+    LOGIC : function(token, message) {
+        dispatcher.pause(); 
+    }
+  
+}
+
+var func_resume = {
+  
+    CODE : "RESUME", 
+  
+    DESCRIPTION : "Resume playing music.",
+  
+    SYNTAX : "{$RESUME}",
+  
+    MANUAL : "",
+  
+    LOGIC : function(token, message) {
+        dispatcher.resume(); 
     }
   
 }
@@ -289,7 +320,7 @@ var func_volume = {
   
     MANUAL : "**volume : **Adjust master volume, all music will play in [play volume in list * master volume]",
   
-    LOGIC : function(token, message, func) {
+    LOGIC : function(token, message) {
       
         if(token.length < 2) {
             message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
@@ -321,7 +352,7 @@ var func_loop = {
   
     MANUAL : "**isLoop : **Set true will loop for the current playing music.(Music in playlist will not destory but will not play until disable looping",
   
-    LOGIC : function(token, message, func) {
+    LOGIC : function(token, message) {
       
         if(token.length < 2) {
             message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
@@ -350,7 +381,7 @@ var func_vote = {
   
     MANUAL : "",
   
-    LOGIC : function(token, message, func) {
+    LOGIC : function(token, message) {
       
     }
     
@@ -367,7 +398,7 @@ var func_clear = {
     MANUAL : "***ON/OFF : ***[Optional]True to turn on auto clear command mode."
          +"\n**Toggling ON/OFF will not trigger the clear command that clear the command or message created by to in 100 message above.**",
   
-    LOGIC : function(token, message, func) {
+    LOGIC : function(token, message) {
       if(token.length < 2) {
         message.channel.fetchMessages({limit : 100})
           .then(messages => {
@@ -398,7 +429,7 @@ var func_test = {
   
     MANUAL : "",
   
-    LOGIC : function(token, message, func) {
+    LOGIC : function(token, message) {
         //hook.info("HoiseiraTommy", "Test Content");
         message.channel.fetchMessages({limit : 100})
           .then(messages => {
@@ -412,7 +443,8 @@ var func_test = {
 }
 
 //Register new function to this func array
-var func = [func_help, func_ready, func_addmusic, func_play, func_playlist, func_musicdetail, func_stop, func_volume, func_loop, func_vote, func_clear, func_test];
+var func = [func_help, func_ready, func_addmusic, func_play, func_playlist, func_musicdetail, func_stop, 
+            func_next, func_pause, func_resume, func_volume, func_loop, func_vote, func_clear, func_test];
 
 
 
