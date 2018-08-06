@@ -143,6 +143,52 @@ var func_addmusic = {
     }
 }
 
+var func_searchmusic = {
+ 
+    CODE : "SEARCHMUSIC",
+  
+    DESCRIPTION : "Search all music in the database",
+  
+    SYNTAX : "{$ALLMUSIC | [optional] searching keyword}",
+  
+    MANUAL : "***searching keyword : ***[Optional] **ONE** keyword you want to search with SQL %keyword%.",
+  
+    LOGIC : function(token, message) {
+        var sql;
+        if(token.length < 2) {
+            sql = "SELECT CODE FROM musiclist";
+        } else {
+            sql = "SELECT CODE FROM musiclist WHERE CODE LIKE %" + token[1] + "%";
+        }
+      
+        var con = mysql.createConnection({
+            host: db_host,
+            user: db_user,
+            password: db_password,
+            database: db_schema
+        });
+      
+        con.query(sql, function (err, result, field) {
+            if(err) throw err;
+            if(result.length === 0) {
+                message.reply("No such music");
+                return;   
+            } else {
+                var i = 1;
+                var display_str = i + ")\t" + result[0].CODE;
+                
+                for( ; i<=result.length; i++) {
+                    display_str = display_str + "\n" + i + ")\t" + result[i-1].CODE;
+                }
+              
+                message.channel.send(display_str);
+
+            }
+        });
+    }
+  
+}
+
 var func_play = {
   
     CODE : "PLAY",
@@ -443,7 +489,7 @@ var func_test = {
 }
 
 //Register new function to this func array
-var func = [func_help, func_ready, func_addmusic, func_play, func_playlist, func_musicdetail, func_stop, 
+var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_playlist, func_musicdetail, func_stop, 
             func_next, func_pause, func_resume, func_volume, func_loop, func_vote, func_clear, func_test];
 
 
