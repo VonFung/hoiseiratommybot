@@ -158,7 +158,7 @@ var func_searchmusic = {
         if(token.length < 2) {
             sql = "SELECT CODE FROM musiclist ORDER BY id ASC";
         } else {
-            sql = "SELECT CODE FROM musiclist WHERE CODE LIKE %" + token[1] + "% ORDER BY id ASC";
+            sql = "SELECT CODE FROM musiclist WHERE CODE LIKE '%" + token[1].toUpperCase() + "%' ORDER BY id ASC";
         }
       
         var con = mysql.createConnection({
