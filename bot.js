@@ -149,7 +149,7 @@ var func_searchmusic = {
   
     DESCRIPTION : "Search all music in the database",
   
-    SYNTAX : "{$ALLMUSIC | [optional] searching keyword}",
+    SYNTAX : "{$SEARCHMUSIC | [optional] searching keyword}",
   
     MANUAL : "***searching keyword : ***[Optional] **ONE** keyword you want to search with SQL %keyword%.",
   
