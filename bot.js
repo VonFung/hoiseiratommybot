@@ -174,8 +174,8 @@ var func_searchmusic = {
                 message.reply("No such music");
                 return;   
             } else {
-                var i = 1;
-                var display_str = i + ")\t" + result[0].CODE;
+                var i = 2;
+                var display_str = "1)\t" + result[0].CODE;
                 
                 for( ; i<=result.length; i++) {
                     display_str = display_str + "\n" + i + ")\t" + result[i-1].CODE;
