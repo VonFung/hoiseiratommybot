@@ -444,13 +444,13 @@ var func_setname = {
 
         con.connect(function(err) {
             if(err) throw err;
-            var sql = "INSERT INTO user (NAME, DISCORD) VALUES ('" + nickname + "', " + message.author.id + ") "
-                     +"ON DUPLICATE KEY UPDATE NAME = '" + nickname + "'";
+            var sql = "INSERT INTO user (NAME, DISCORD) VALUES ('" + token[1] + "', " + message.author.id + ") "
+                     +"ON DUPLICATE KEY UPDATE NAME = '" + token[1] + "'";
 
             //console.log(sql);
             con.query(sql, function(err, result) {
                 if(err) throw err;
-                message.reply('Your nickname now is ' + nickname);
+                message.reply('Your nickname now is ' + token[1]);
             });
         });
     }
