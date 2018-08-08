@@ -508,7 +508,7 @@ var func_showvote = {
                     return;
                 }
                 var msg = "1)\t" + result[0].TITLE + "\t" + result[0].DESCRIPTION;
-                for(int i=2; i<=result.length; i++) {
+                for(var i=2; i<=result.length; i++) {
                      msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "\t" + result[i-1].DESCRIPTION;
                 }
                 message.channel.send(msg);
