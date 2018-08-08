@@ -558,7 +558,7 @@ var func_addvote = {
                       + token[1] + "', " + ((token.length > 3)?token[3] + ", ":"") + "EXPIRE_DATE = '" + token[2] + "', "
                       + GetUserID(message.author.id) + ")";
 
-            //console.log(sql);
+            console.log(sql);
             con.query(sql, function(err, result) {
                 if(err) throw err;
                 message.reply("Added successfully");
