@@ -496,7 +496,7 @@ var func_showvote = {
 
         con.connect(function(err) {
             if(err) throw err;
-            var sql = "SELECT TITLE, DESCRIPTION FROM vote WHERE HIDED = FALSE";
+            var sql = "SELECT id, TITLE, DESCRIPTION FROM vote WHERE HIDED = FALSE";
             if(!(token.length > 1 && token[1].toUpperCase() === "-ALL")) {
                 sql = sql + " AND EXPIRE_DATE >= DATE(CURDATE())";
             }
@@ -509,7 +509,7 @@ var func_showvote = {
                     message.reply("No result");
                     return;
                 }
-                var msg = "1)\t" + result[0].TITLE + "\t" + result[0].DESCRIPTION;
+                var msg = "1)\t" + result[0].TITLE + "(" + result[0].\t" + result[0].DESCRIPTION;
                 for(var i=2; i<=result.length; i++) {
                      msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "\t" + result[i-1].DESCRIPTION;
                 }
