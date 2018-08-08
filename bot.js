@@ -511,7 +511,7 @@ var func_showvote = {
                 }
                 var msg = "1)\t" + result[0].TITLE + "(" + result[0].id + ")\t" + result[0].DESCRIPTION;
                 for(var i=2; i<=result.length; i++) {
-                     msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "\t" + result[i-1].DESCRIPTION;
+                     msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "(" + result[i-1].id + ")\t" + result[i-1].DESCRIPTION;
                 }
                 message.channel.send(msg);
             });
