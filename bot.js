@@ -509,7 +509,7 @@ var func_showvote = {
                     message.reply("No result");
                     return;
                 }
-                var msg = "1)\t" + result[0].TITLE + "(" + result[0].\t" + result[0].DESCRIPTION;
+                var msg = "1)\t" + result[0].TITLE + "(" + result[0].id + ")\t" + result[0].DESCRIPTION;
                 for(var i=2; i<=result.length; i++) {
                      msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "\t" + result[i-1].DESCRIPTION;
                 }
