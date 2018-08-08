@@ -555,7 +555,7 @@ var func_addvote = {
             if(err) throw err;
           
             var sql = "INSERT INTO vote (TITLE, " + ((token.length > 3)?"MAX_VOTE, ":"") + "EXPIRE_DATE, CREATE_USER_ID) VALUES ('"
-                      + token[1] + "', " + ((token.length > 3)?token[3] + ", ":"") + "EXPIRE_DATE = '" + token[2] + "', "
+                      + token[1] + "', " + ((token.length > 3)?token[3] + ", ":"") + "'" + token[2] + "', "
                       + GetUserID(message.author.id) + ")";
 
             console.log(sql);
