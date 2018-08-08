@@ -473,6 +473,51 @@ var func_vote = {
     
 }
 
+var func_showvote = {
+ 
+    CODE : "SHOWVOTE", 
+  
+    DESCRIPTION : "Show all votes that are currently available or expired if needed",
+  
+    SYNTAX : "{$SHOWVOTE | [optional] -ALL}",
+  
+    MANUAL : "***-ALL : ***[Optional] Add the command if you want to show expired votes",
+  
+    LOGIC : function(token, message) {
+
+        var con = mysql.createConnection({
+            host: db_host,
+            user: db_user,
+            password: db_password,
+            database: db_schema
+        });
+
+        con.connect(function(err) {
+            if(err) throw err;
+            var sql = "SELECT TITLE, DESCRIPTION FROM vote WHERE HIDED = FALSE";
+            if(!(token.length > 1 && token[1].toUpperCase() === "-ALL")) {
+                sql = sql + " AND EXPIRE_DATE >= DATE(CURDATE());
+            }
+            sql = sql + " ORDER BY ID ASC";
+
+            //console.log(sql);
+            con.query(sql, function(err, result) {
+                if(err) throw err;
+                if(result.length === 0) {
+                    message.reply("No result");
+                    return;
+                }
+                var msg = "1)\t" + result[0].TITLE + "\t" + result[0].DESCRIPTION;
+                for(int i=2; i<=result.length; i++) {
+                     msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "\t" + result[i-1].DESCRIPTION;
+                }
+                message.channel.send(msg);
+            });
+        });
+    }
+  
+}
+
 var func_clear = {
  
     CODE : "CLEAR",
