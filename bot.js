@@ -444,7 +444,7 @@ var func_setname = {
 
         con.connect(function(err) {
             if(err) throw err;
-            var sql = "INSERT INTO user (NAME, DISCORD) VALUES ('" + token[1] + "', " + message.author.id + ") "
+            var sql = "INSERT INTO user (NAME, DISCORD) VALUES ('" + token[1] + "', '" + message.author.id + "') "
                      +"ON DUPLICATE KEY UPDATE NAME = '" + token[1] + "'";
 
             //console.log(sql);
