@@ -539,6 +539,11 @@ var func_addvote = {
             return;
         }
       
+        if(GetUserID(message.author.id) === -1) {
+            message.reply("You have not register you discord ID into the database!");
+            return;
+        }
+      
         var con = mysql.createConnection({
             host: db_host,
             user: db_user,
@@ -549,22 +554,14 @@ var func_addvote = {
         con.connect(function(err) {
             if(err) throw err;
           
-            var sql = "INSERT INTO vote (TITLE, " + (token.length > 3)?"MAX_VOTE, ":"" + "EXPIRE_DATE) VALUES ('"
-                      + token[1] + "', " + (token.length > 3)?token[3] + ", ":"" + "EXPIRE_DATE = '" + token[2] + "'";
+            var sql = "INSERT INTO vote (TITLE, " + (token.length > 3)?"MAX_VOTE, ":"" + "EXPIRE_DATE, CREATE_USER_ID) VALUES ('"
+                      + token[1] + "', " + (token.length > 3)?token[3] + ", ":"" + "EXPIRE_DATE = '" + token[2] + "', "
+                      + GetUserID(message.author.id) + ")";
 
             //console.log(sql);
             con.query(sql, function(err, result) {
                 if(err) throw err;
-                if(result.length === 0) {
-                    message.reply("No result");
-                    return;
-                }
-                var msg = "1)\t" + result[0].TITLE + "\t" + result[0].DESCRIPTION;
-                for(var i=2; i<=result.length; i++) {
-                     msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "\t" + result[i-1].DESCRIPTION;
-                }
-                message.channel.send(msg);
-            });
+                message.reply("Added successfully");
         });
       
     }
