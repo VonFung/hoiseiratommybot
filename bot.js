@@ -26,6 +26,8 @@ var now_playing_music = null;
 
 const update_time = new Date().toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' });
 
+var user_id_nickname;
+
 
 //---Objects for functions---
 
@@ -518,6 +520,57 @@ var func_showvote = {
   
 }
 
+var func_addvote = {
+ 
+    CODE : "ADDVOTE",
+  
+    DESCRIPTION : "Add new vote",
+  
+    SYNTAX : "{$ADDVOTE | title | expire_date(format:'yyyy-mm-dd') | [optional] max_choice}",
+  
+    MANUAL : "**title : **The title of the vote."
+            +"\n**expire_date : **The expire date of the vote."
+            +"\n***max_choice : ***[Optional] Maximum choices for the vote (default is 1)",
+  
+    LOGIC : function(token, message) {
+
+        if(token.length < 3) {
+            message.reply("Incorrect Syntax!\n" + this.SYNTAX);
+            return;
+        }
+      
+        var con = mysql.createConnection({
+            host: db_host,
+            user: db_user,
+            password: db_password,
+            database: db_schema
+        });
+
+        con.connect(function(err) {
+            if(err) throw err;
+          
+            var sql = "INSERT INTO vote (TITLE, " + (token.length > 3)?"MAX_VOTE, ":"" + "EXPIRE_DATE) VALUES ('"
+                      + token[1] + "', " + (token.length > 3)?token[3] + ", ":"" + "EXPIRE_DATE = '" + token[2] + "'";
+
+            //console.log(sql);
+            con.query(sql, function(err, result) {
+                if(err) throw err;
+                if(result.length === 0) {
+                    message.reply("No result");
+                    return;
+                }
+                var msg = "1)\t" + result[0].TITLE + "\t" + result[0].DESCRIPTION;
+                for(var i=2; i<=result.length; i++) {
+                     msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "\t" + result[i-1].DESCRIPTION;
+                }
+                message.channel.send(msg);
+            });
+        });
+      
+    }
+  
+}
+
 var func_clear = {
  
     CODE : "CLEAR",
@@ -562,13 +615,14 @@ var func_test = {
   
     LOGIC : function(token, message) {
         //hook.info("HoiseiraTommy", "Test Content");
-        message.channel.fetchMessages({limit : 100})
+        /*message.channel.fetchMessages({limit : 100})
           .then(messages => {
             messages.forEach(function(message) {
               console.log(message.content);
             })
           })
-          .catch(console.error);
+          .catch(console.error);*/
+        message.reply("Your id is " + GetUserID(message.author.id));
     }
   
 }
@@ -576,7 +630,7 @@ var func_test = {
 //Register new function to this func array
 var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_playlist, func_musicdetail, func_stop, 
             func_next, func_pause, func_resume, func_volume, func_loop,
-            func_setname, func_vote, func_showvote, func_clear, func_test];
+            func_setname, func_vote, func_showvote, func_addvote, func_clear, func_test];
 
 
 
@@ -596,6 +650,8 @@ var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, f
 client.on('ready', () => {
 
     console.log('I am ready!');
+  
+    UpdateUserNicknameID();
     
 });
 
@@ -635,6 +691,33 @@ client.on('message', message => {
     
 });
 
+
+
+function UpdateUserNicknameID() {
+    
+    var con = mysql.createConnection({
+        host: db_host,
+        user: db_user,
+        password: db_password,
+        database: db_schema
+    });
+  
+    var sql = "SELECT id, NAME, DISCORD FROM user";
+  
+    con.query(sql, function(err, result) {
+        if(err) throw err;
+        user_id_nickname = result;
+    });
+}
+
+function GetUserID(discordID) {
+    for(var i=0; i<user_id_nickname; i++) {
+        if(user_id_nickname.DISCORD === discordID) {
+            return user_id_nickname.id; 
+        }
+    }
+    return -1;
+}
 
 
 function PlayMusicInQueue(connection) {
