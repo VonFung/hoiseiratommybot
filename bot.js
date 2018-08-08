@@ -496,7 +496,7 @@ var func_showvote = {
             if(err) throw err;
             var sql = "SELECT TITLE, DESCRIPTION FROM vote WHERE HIDED = FALSE";
             if(!(token.length > 1 && token[1].toUpperCase() === "-ALL")) {
-                sql = sql + " AND EXPIRE_DATE >= DATE(CURDATE());
+                sql = sql + " AND EXPIRE_DATE >= DATE(CURDATE())";
             }
             sql = sql + " ORDER BY ID ASC";
 
@@ -576,7 +576,7 @@ var func_test = {
 //Register new function to this func array
 var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_playlist, func_musicdetail, func_stop, 
             func_next, func_pause, func_resume, func_volume, func_loop,
-            func_setname, func_vote, func_clear, func_test];
+            func_setname, func_vote, func_showvote, func_clear, func_test];
 
 
 
