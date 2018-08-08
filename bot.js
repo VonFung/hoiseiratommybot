@@ -500,7 +500,7 @@ var func_showvote = {
             if(!(token.length > 1 && token[1].toUpperCase() === "-ALL")) {
                 sql = sql + " AND EXPIRE_DATE >= DATE(CURDATE())";
             }
-            sql = sql + " ORDER BY ID ASC";
+            sql = sql + " ORDER BY ID DESC";
 
             //console.log(sql);
             con.query(sql, function(err, result) {
