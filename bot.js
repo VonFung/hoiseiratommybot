@@ -712,6 +712,8 @@ function UpdateUserNicknameID() {
 
 function GetUserID(discordID) {
     for(var i=0; i<user_id_nickname; i++) {
+        console.log("user_id_nickname[" + i + "].DISCORD.toString() = " + user_id_nickname[i].DISCORD.toString());
+        console.log("discordID = " + discordID);
         if(user_id_nickname[i].DISCORD.toString() === discordID) {
             return user_id_nickname.id; 
         }
