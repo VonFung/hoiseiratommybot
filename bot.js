@@ -417,6 +417,46 @@ var func_loop = {
   
 }
 
+var func_setname = {
+  
+    CODE : "SETNAME",
+  
+    DESCRIPTION : "Link your Discord ID to a nickname",
+  
+    SYNTAX : "{$SETNAME | nickname}",
+  
+    MANUAL : "**nickname : **The nickname you want to set. Create a new user account if your Discord ID hasn't in the database. "
+            +"You can change your nickname if your Discord ID is registered in the database. "
+            +"\n**Line and Browser Version can link with your Discord ID with the same nickname (future, maybe)**",
+  
+    LOGIC : function(token, message) {
+        if(token.length < 2) {
+            message.reply("Incorrect Syntax!\n" + this.SYNTAX);
+            return;
+        }
+
+        var con = mysql.createConnection({
+            host: db_host,
+            user: db_user,
+            password: db_password,
+            database: db_schema
+        });
+
+        con.connect(function(err) {
+            if(err) throw err;
+            var sql = "INSERT INTO user (NAME, DISCORD) VALUES ('" + nickname + "', " + message.author.id + ") "
+                     +"ON DUPLICATE KEY UPDATE NAME = '" + nickname + "'";
+
+            //console.log(sql);
+            con.query(sql, function(err, result) {
+                if(err) throw err;
+                message.reply('Your nickname now is ' + nickname);
+            });
+        });
+    }
+  
+}
+
 var func_vote = {
   
     CODE : "VOTE",
@@ -490,7 +530,8 @@ var func_test = {
 
 //Register new function to this func array
 var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_playlist, func_musicdetail, func_stop, 
-            func_next, func_pause, func_resume, func_volume, func_loop, func_vote, func_clear, func_test];
+            func_next, func_pause, func_resume, func_volume, func_loop,
+            func_setname, func_vote, func_clear, func_test];
 
 
 
