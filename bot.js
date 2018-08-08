@@ -562,6 +562,7 @@ var func_addvote = {
             con.query(sql, function(err, result) {
                 if(err) throw err;
                 message.reply("Added successfully");
+            });
         });
       
     }
