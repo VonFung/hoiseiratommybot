@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');  //For music streaming
 const Webhook = require('webhook-discord');
+var http = require("http");
 
 const hook = new Webhook(process.env.WEBHOOK_URL);
 var mysql = require('mysql');
@@ -755,6 +756,10 @@ function PlayMusicInQueue(connection) {
 }
 
 
+setInterval(function() {
+    http.get("http://hoiseiratommybot.herokuapp.com");
+    console.log("Keep alive");
+}, 540000);
 
 
 
