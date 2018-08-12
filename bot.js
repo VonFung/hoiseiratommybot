@@ -4,7 +4,6 @@ const Webhook = require('webhook-discord');
 var mysql = require('mysql');
 
 const hook = new Webhook(process.env.WEBHOOK_URL);
-var session = ping.createSession ();
 
 const client = new Discord.Client();
 
