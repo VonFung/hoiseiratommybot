@@ -1,9 +1,11 @@
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');  //For music streaming
 const Webhook = require('webhook-discord');
+var ping = require ("net-ping");
+var mysql = require('mysql');
 
 const hook = new Webhook(process.env.WEBHOOK_URL);
-var mysql = require('mysql');
+var session = ping.createSession ();
 
 const client = new Discord.Client();
 
@@ -753,6 +755,19 @@ function PlayMusicInQueue(connection) {
     }
   
 }
+
+
+setInterval(function() {
+    session.pingHost ("https://hoiseiratommybot.herokuapp.com/", function (error, target) {
+      if (error)
+          if (error instanceof ping.RequestTimedOutError)
+              console.log (target + ": Not alive");
+          else
+              console.log (target + ": " + error.toString ());
+      else
+          console.log (target + ": Alive");
+  });
+}, 540000);
 
 
 
