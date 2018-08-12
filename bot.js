@@ -758,7 +758,8 @@ function PlayMusicInQueue(connection) {
 
 
 setInterval(function() {
-    session.pingHost ("https://hoiseiratommybot.herokuapp.com/", function (error, target) {
+    var target = "https://hoiseiratommybot.herokuapp.com/";
+    session.pingHost (target, function (error, target) {
       if (error)
           if (error instanceof ping.RequestTimedOutError)
               console.log (target + ": Not alive");
