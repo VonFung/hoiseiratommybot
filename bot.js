@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');  //For music streaming
 const Webhook = require('webhook-discord');
-var ping = require ("net-ping");
 var mysql = require('mysql');
 
 const hook = new Webhook(process.env.WEBHOOK_URL);
@@ -622,7 +621,8 @@ var func_test = {
             })
           })
           .catch(console.error);*/
-        message.reply("Your id is " + GetUserID(message.author.id));
+        //message.reply("Your id is " + GetUserID(message.author.id));
+        message.channel.send("$TESTREPLY");
     }
   
 }
@@ -757,18 +757,9 @@ function PlayMusicInQueue(connection) {
 }
 
 
-setInterval(function() {
-    var target = "https://hoiseiratommybot.herokuapp.com/";
-    session.pingHost (target, function (error, target) {
-      if (error)
-          if (error instanceof ping.RequestTimedOutError)
-              console.log (target + ": Not alive");
-          else
-              console.log (target + ": " + error.toString ());
-      else
-          console.log (target + ": Alive");
-  });
-}, 540000);
+/*setInterval(function() {
+  
+}, 540000);*/
 
 
 
