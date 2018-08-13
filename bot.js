@@ -28,6 +28,9 @@ const update_time = new Date().toLocaleString('en-US', { timeZone: 'Asia/Hong_Ko
 
 var user_id_nickname;
 
+const keep_alive_str = 'WVRVOISJEWKGRGIOFJGKW';   //Meaningless
+var keep_alive_channel;
+
 
 //---Objects for functions---
 
@@ -601,6 +604,23 @@ var func_clear = {
   
 }
 
+var func_anchor = {
+ 
+    CODE : "ANCHOR",
+  
+    DESCRIPTION : "To anchor a less used channel to keep the bot active",
+  
+    SYNTAX : "{$ANCHOR}",
+  
+    MANUAL : "",
+  
+    LOGIC : function(token, message) {
+        keep_alive_channel = message.channel;
+        message.reply("Anchor success!");
+    }
+  
+}
+
 var func_test = {
   
     CODE : "TEST",
@@ -655,6 +675,11 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
+  
+    if(message.content === keep_alive_str) {
+        message.delete();
+        return;
+    }
     
     if(message.content.charAt(0) !== '$') {
         return;    
@@ -757,6 +782,7 @@ function PlayMusicInQueue(connection) {
 
 
 setInterval(function() {
+    keep_alive_channel.send(keep_alive_str);
     console.log("Keep Alive");
 }, 540000);
 
