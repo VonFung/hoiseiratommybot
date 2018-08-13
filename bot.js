@@ -756,9 +756,9 @@ function PlayMusicInQueue(connection) {
 }
 
 
-/*setInterval(function() {
-  
-}, 540000);*/
+setInterval(function() {
+    console.log("Keep Alive");
+}, 540000);
 
 
 
