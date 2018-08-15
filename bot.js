@@ -735,12 +735,11 @@ function UpdateUserNicknameID() {
             if(err) throw err;
             user_id_nickname = result;
             console.log("UpdateUserNicknameID SQL success");
+            con.end();
         });
     });
   
     console.log("User nickname<>ID updated");
-  
-    con.end();
   
     
     
