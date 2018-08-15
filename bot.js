@@ -561,7 +561,7 @@ var func_addvote = {
                       + token[1] + "', " + ((token.length > 3)?token[3] + ", ":"") + "'" + token[2] + "', "
                       + GetUserID(message.author.id) + ")";
 
-            console.log(sql);
+            //console.log(sql);
             con.query(sql, function(err, result) {
                 if(err) throw err;
                 message.reply("Added successfully");
@@ -728,10 +728,22 @@ function UpdateUserNicknameID() {
   
     var sql = "SELECT id, NAME, DISCORD FROM user";
   
-    con.query(sql, function(err, result) {
+    con.connect(function(err) {
         if(err) throw err;
-        user_id_nickname = result;
+      
+        con.query(sql, function(err, result) {
+            if(err) throw err;
+            user_id_nickname = result;
+            console.log("UpdateUserNicknameID SQL success");
+        });
     });
+  
+    console.log("User nickname<>ID updated");
+  
+    con.end();
+  
+    
+    
 }
 
 function GetUserID(discordID) {
