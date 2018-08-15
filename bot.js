@@ -28,8 +28,8 @@ const update_time = new Date().toLocaleString('en-US', { timeZone: 'Asia/Hong_Ko
 
 var user_id_nickname;
 
-const keep_alive_str = 'WVRVOISJEWKGRGIOFJGKW';   //Meaningless
-var keep_alive_channel;
+//const keep_alive_str = 'WVRVOISJEWKGRGIOFJGKW';   //Meaningless
+//var keep_alive_channel;
 
 
 //---Objects for functions---
@@ -604,7 +604,7 @@ var func_clear = {
   
 }
 
-var func_anchor = {
+/*var func_anchor = {
  
     CODE : "ANCHOR",
   
@@ -619,7 +619,7 @@ var func_anchor = {
         message.reply("Anchor success!");
     }
   
-}
+}*/
 
 var func_test = {
   
@@ -649,7 +649,7 @@ var func_test = {
 //Register new function to this func array
 var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_playlist, func_musicdetail, func_stop, 
             func_next, func_pause, func_resume, func_volume, func_loop,
-            func_setname, func_vote, func_showvote, func_addvote, func_clear, func_anchor, func_test];
+            func_setname, func_vote, func_showvote, func_addvote, func_clear/*, func_anchor*/, func_test];
 
 
 
@@ -781,10 +781,10 @@ function PlayMusicInQueue(connection) {
 }
 
 
-setInterval(function() {
+/*setInterval(function() {
     keep_alive_channel.send(keep_alive_str);
     console.log("Keep Alive");
-}, 540000);
+}, 540000);*/
 
 
 
