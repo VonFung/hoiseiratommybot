@@ -28,9 +28,6 @@ const update_time = new Date().toLocaleString('en-US', { timeZone: 'Asia/Hong_Ko
 
 var user_id_nickname;
 
-//const keep_alive_str = 'WVRVOISJEWKGRGIOFJGKW';   //Meaningless
-//var keep_alive_channel;
-
 
 //---Objects for functions---
 
@@ -604,23 +601,6 @@ var func_clear = {
   
 }
 
-/*var func_anchor = {
- 
-    CODE : "ANCHOR",
-  
-    DESCRIPTION : "To anchor a less used channel to keep the bot active",
-  
-    SYNTAX : "{$ANCHOR}",
-  
-    MANUAL : "",
-  
-    LOGIC : function(token, message) {
-        keep_alive_channel = message.channel;
-        message.reply("Anchor success!");
-    }
-  
-}*/
-
 var func_test = {
   
     CODE : "TEST",
@@ -649,7 +629,7 @@ var func_test = {
 //Register new function to this func array
 var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_playlist, func_musicdetail, func_stop, 
             func_next, func_pause, func_resume, func_volume, func_loop,
-            func_setname, func_vote, func_showvote, func_addvote, func_clear/*, func_anchor*/, func_test];
+            func_setname, func_vote, func_showvote, func_addvote, func_clear, func_test];
 
 
 
@@ -675,11 +655,6 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-  
-    if(message.content === keep_alive_str) {
-        message.delete();
-        return;
-    }
     
     if(message.content.charAt(0) !== '$') {
         return;    
