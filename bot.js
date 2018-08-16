@@ -163,7 +163,7 @@ var func_searchmusic = {
             sql = "SELECT CODE FROM musiclist WHERE CODE LIKE '%" + token[1].toUpperCase() + "%' ORDER BY id ASC";
         }
       
-        var con = mysql.createConnection({
+        /*var con = mysql.createConnection({
             host: db_host,
             user: db_user,
             password: db_password,
@@ -186,7 +186,18 @@ var func_searchmusic = {
                 message.channel.send(display_str);
 
             }
-        });
+        });*/
+      
+        var result = ExecuteSQL(sql);
+      
+        var i = 2;
+        var display_str = "1)\t" + result[0].CODE;
+
+        for( ; i<=result.length; i++) {
+            display_str = display_str + "\n" + i + ")\t" + result[i-1].CODE;
+        }
+
+        message.channel.send(display_str);
     }
   
 }
@@ -767,10 +778,29 @@ function PlayMusicInQueue(connection) {
 }
 
 
-/*setInterval(function() {
-    keep_alive_channel.send(keep_alive_str);
-    console.log("Keep Alive");
-}, 540000);*/
+function ExecuteSQL(sql) {
+     var con = mysql.createConnection({
+        host: db_host,
+        user: db_user,
+        password: db_password,
+        database: db_schema
+    });
+    
+    var temp_result;
+    
+    con.connect(function(err) {
+        if(err) throw err;
+      
+        con.query(sql, function(err, result) {
+            if(err) throw err;
+            temp_result = result;
+            console.log("SQL: '" + sql + "' success");
+            con.end();
+        });
+    });
+  
+    return temp_result;
+}
 
 
 
