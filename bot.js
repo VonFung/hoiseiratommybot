@@ -328,7 +328,7 @@ var func_playlist = {
         }
       
         var sql = "SELECT CODE, URL, IS_YOUTUBE, DEFAULT_VOLUME FROM musiclist WHERE id IN "
-                    +"(SELECT a.MUSIC_ID FROM playlist_music a INNER JOIN playlist b WHERE a.MUSIC_ID = b.id AND "
+                    +"(SELECT a.MUSIC_ID FROM playlist_music a INNER JOIN playlist b WHERE a.PLAYLIST_ID = b.id AND "
                     +"b.NAME = '" + token[1] + "')";
       
         if(token.length > 2 && token[2].toUpperCase() === '-RAND') {
@@ -376,7 +376,11 @@ var func_playqueue = {
     LOGIC : function(token, message) {
         var msg = "";
         if(playlist_mode) {
-           msg = msg + "**PLAYLIST: " + playlist_mode + "**\n\n";
+            msg = msg + "**PLAYLIST: " + playlist_mode;
+            if(random_playlist) {
+                msg = msg + "(Random mode)";
+            }
+            msg = msg + "**\n\n";
         }
         msg = msg + "**" + now_playing_music.code + "** <- now playing";
         var i;
