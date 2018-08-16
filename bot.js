@@ -188,7 +188,9 @@ var func_searchmusic = {
             }
         });*/
       
-        var result = yield ExecuteSQL(sql);
+        var execSQL = ExecuteSQL(sql);
+        var result = execSQL.next().value;
+        execSQL.next();
       
         var i = 2;
         var display_str = "1)\t" + result[0].CODE;
@@ -778,7 +780,7 @@ function PlayMusicInQueue(connection) {
 }
 
 
-function ExecuteSQL(sql) {
+function* ExecuteSQL(sql) {
      var con = mysql.createConnection({
         host: db_host,
         user: db_user,
@@ -786,20 +788,16 @@ function ExecuteSQL(sql) {
         database: db_schema
     });
     
-    var temp_result;
-    
     con.connect(function(err) {
         if(err) throw err;
       
         con.query(sql, function(err, result) {
             if(err) throw err;
-            temp_result = result;
+            yield result;
             console.log("SQL: '" + sql + "' success");
             con.end();
         });
     });
-  
-    return yield temp_result;
 }
 
 
