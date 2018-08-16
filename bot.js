@@ -25,6 +25,7 @@ var music_queue = [];
 var now_playing_music = null;
 var playlist_mode = "";
 var random_playlist = false;
+var playlist_playing_idx = 0;
 
 const update_time = new Date().toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' });
 
@@ -329,13 +330,13 @@ var func_playlist = {
       
         var sql = "SELECT CODE, URL, IS_YOUTUBE, DEFAULT_VOLUME FROM musiclist WHERE id IN "
                     +"(SELECT a.MUSIC_ID FROM playlist_music a INNER JOIN playlist b WHERE a.PLAYLIST_ID = b.id AND "
-                    +"b.NAME = '" + token[1] + "')";
+                    +"b.NAME = '" + token[1] + "') ORDER BY id ASC";
       
         if(token.length > 2 && token[2].toUpperCase() === '-RAND') {
-            sql = sql + " ORDER BY rand()";
+            //sql = sql + " ORDER BY rand()";
             random_playlist = true;
         } else {
-            sql = sql + " ORDER BY id ASC";
+            //sql = sql + " ORDER BY id ASC";
             random_playlist = false; 
         }
         
@@ -380,12 +381,17 @@ var func_playqueue = {
             if(random_playlist) {
                 msg = msg + "(Random mode)";
             }
-            msg = msg + "**\n\n";
-        }
-        msg = msg + "**" + now_playing_music.code + "** <- now playing";
-        var i;
-        for(i=0; i<music_queue.length; i++) {
-            msg = msg + "\n" + music_queue[i].code;
+            msg = msg + "**\n";
+            var i;
+            for(i=0; i<music_queue.length; i++) 
+                msg = msg + "\n" + (i === playlist_playing_idx)?"**":"" + music_queue[i].code + (i === playlist_playing_idx)?"**":"" + " <- now playing"; 
+            }
+        } else {
+            msg = msg + "**" + now_playing_music.code + "** <- now playing";
+            var i;
+            for(i=0; i<music_queue.length; i++) {
+                msg = msg + "\n" + music_queue[i].code;
+            }
         }
         message.channel.send(msg);
     }
@@ -823,18 +829,15 @@ function PlayMusicInQueue(connection) {
   
     if(playlist_mode) {
       if(random_playlist) {
-        var i = 0;
-        for(; i<music_queue.length; i++) {
-          if(Math.random() < 0.5) break;
-        }
-        if(i === music_queue.length ) {
-          i = 0; 
-        }
-        
-        now_playing_music = music_queue[i];
-        music_queue.splice(i, 1);
+        var i;
+        do {
+          i = Math.floor(Math.random() * music_queue.length);
+        } while (music_queue.length > 1 && i !== playlist_playing_idx);
+        playlist_playing_idx = i;
+        now_playing_music = music_queue[playlist_playing_idx];
       } else {
-        now_playing_music = music_queue.shift();
+        playlist_playing_idx = (i+1)%music_queue.length;
+        now_playing_music = music_queue[i];
       }
       
       if(now_playing_music.isYoutubeOrNot) {
@@ -843,7 +846,6 @@ function PlayMusicInQueue(connection) {
           dispatcher.setVolume(now_playing_music.volume * master_volume);
           dispatcher.on("end", end => {
                dispatcher = null;
-               music_queue.push(now_playing_music);
                now_playing_music = null;
                PlayMusicInQueue(connection);
           });
@@ -852,7 +854,6 @@ function PlayMusicInQueue(connection) {
           dispatcher.setVolume(now_playing_music.volume * master_volume);
           dispatcher.on("end", end => {
                dispatcher = null;
-               music_queue.push(now_playing_music);
                now_playing_music = null;
                PlayMusicInQueue(connection);
           });
