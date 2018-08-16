@@ -425,7 +425,6 @@ var func_musicdetail = {
                 messages.forEach(function(msg) {
                   if(msg.author.id === client.user.id && msg.content === "Now loading") {
                     detail_message = msg;
-                    break;
                   }
                 });
                 UpdateMusicDetail();
