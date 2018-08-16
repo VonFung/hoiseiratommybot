@@ -383,7 +383,7 @@ var func_playqueue = {
             }
             msg = msg + "**\n";
             var i;
-            for(i=0; i<music_queue.length; i++) 
+            for(i=0; i<music_queue.length; i++) {
                 msg = msg + "\n" + (i === playlist_playing_idx)?"**":"" + music_queue[i].code + (i === playlist_playing_idx)?"**":"" + " <- now playing"; 
             }
         } else {
