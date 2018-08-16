@@ -155,7 +155,7 @@ var func_searchmusic = {
   
     MANUAL : "***searching keyword : ***[Optional] **ONE** keyword you want to search with SQL %keyword%.",
   
-    LOGIC : async function(token, message) {
+    LOGIC : function(token, message) {
         var sql;
         if(token.length < 2) {
             sql = "SELECT CODE FROM musiclist ORDER BY id ASC";
