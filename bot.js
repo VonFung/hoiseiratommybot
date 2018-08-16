@@ -27,6 +27,9 @@ var playlist_mode = "";
 var random_playlist = false;
 var playlist_playing_idx = -1;
 
+var detail_message = [];
+var playqueue_message = [];
+
 const update_time = new Date().toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' });
 
 var user_id_nickname;
@@ -415,10 +418,19 @@ var func_musicdetail = {
     LOGIC : function(token, message) {
         if(now_playing_music === null) {
           message.reply("No music playing");
-        } else if(playlist_mode) {
-          message.reply("**" + now_playing_music.code + "(" + playlist_mode + ")** VOLUME = " + master_volume);
         } else {
-          message.reply("**" + now_playing_music.code + "**  VOLUME = " + master_volume + " LOOP = " + (music_loop?"TRUE":"FALSE"));
+          message.channel.send("Now loading");
+          message.channel.fetchMessages({ limit: 10, after: message.id})
+            .then(messages => {
+                messages.forEach(function(msg) {
+                  if(msg.author.id === client.user.id && msg.content === "Now loading") {
+                    detail_message = msg;
+                    break;
+                  }
+                });
+                UpdateMusicDetail();
+            })
+            .catch(console.log("Some error in music detail"));
         }
     }
   
@@ -895,6 +907,21 @@ function PlayMusicInQueue(connection) {
       }
     }
   
+}
+
+function UpdateMusicDetail() {
+      if(now_playing_music === null) {
+        detail_message.delete();
+        detail_message = [];
+      } else if(playlist_mode) {
+        detail_message.edit("\u266A**" + now_playing_music.code + "(" + playlist_mode + ")** VOLUME = " + master_volume)
+          .then(return)
+          .catch(console.log("Error on editing message"));
+      } else {
+        detail_message.edit("\u266A**" + now_playing_music.code + "**  VOLUME = " + master_volume + " LOOP = " + (music_loop?"TRUE":"FALSE"))
+          .then(return)
+          .catch(console.log("Error on editing message"));
+      }
 }
 
 
