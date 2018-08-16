@@ -172,6 +172,10 @@ var func_searchmusic = {
       
       
         ExecuteSQL(sql).then((result) => {
+            if(result.length === 0) {
+                message.reply("No result");
+                return;
+            }
             let i=2;
             let display_str = "1)\t" + result[0].CODE;
           
@@ -330,7 +334,7 @@ var func_playlist = {
       
         var sql = "SELECT CODE, URL, IS_YOUTUBE, DEFAULT_VOLUME FROM musiclist WHERE id IN "
                     +"(SELECT a.MUSIC_ID FROM playlist_music a INNER JOIN playlist b WHERE a.PLAYLIST_ID = b.id AND "
-                    +"b.NAME = '" + token[1] + "') ORDER BY id ASC";
+                    +"b.NAME = '" + token[1].toUpperCase() + "') ORDER BY id ASC";
       
         if(token.length > 2 && token[2].toUpperCase() === '-RAND') {
             //sql = sql + " ORDER BY rand()";
