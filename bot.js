@@ -451,6 +451,7 @@ var func_stop = {
         playlist_mode = "";
         random_playlist = false;
         playlist_playing_idx = -1;
+        UpdateMusicDetail();
     }
 }
 
@@ -914,11 +915,8 @@ function UpdateMusicDetail() {
       if(now_playing_music === null) {
         detail_message.delete();
         detail_message = "";
-      } else if(playlist_mode) {
-        detail_message.edit("\u266A**" + now_playing_music.code + "(" + playlist_mode + ")** VOLUME = " + master_volume)
-          .catch(console.log("Error on editing message"));
       } else {
-        detail_message.edit("\u266A**" + now_playing_music.code + "**  VOLUME = " + master_volume + " LOOP = " + (music_loop?"TRUE":"FALSE"))
+        detail_message.edit("\u266A**" + now_playing_music.code + ((playlist_mode)?"(" + playlist_mode + ")":"") + "**")
           .catch(console.log("Error on editing message"));
       }
 }
