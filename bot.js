@@ -781,28 +781,41 @@ function PlayMusicInQueue(connection) {
 }
 
 
-async function ExecuteSQL(sql) {
+function ExecuteSQL(sql) {
      var con = mysql.createConnection({
         host: db_host,
         user: db_user,
         password: db_password,
         database: db_schema
     });
-  
-    var temp_result;
-    
-    con.connect(function(err) {
-        if(err) throw err;
-      
-        con.query(sql, function(err, result) {
-            if(err) throw err;
-            temp_result = result;
-            console.log("SQL: '" + sql + "' success");
-            con.end();
+ 
+    return new Promise((resolve, reject) => {
+        con.connect(function(err) {
+            if(err) {
+                reject(err);
+            } else {
+              con.query(sql, function(err, result) {
+                  if(err) {
+                      reject(err); 
+                  } else {
+                      resolve(result);
+                      console.log("SQL: '" + sql + "' success");
+                      con.end();
+                  }
+              });
+            }
         });
     });
+    
+    
   
     return temp_result;
+}
+
+var SQLQuery = function(sql) {
+    return new Promise((resolve, reject) => {
+      
+    });
 }
 
 
