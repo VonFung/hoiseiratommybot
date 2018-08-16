@@ -800,8 +800,8 @@ function ExecuteSQL(sql) {
                   } else {
                       resolve(result);
                       console.log("SQL: '" + sql + "' success");
-                      con.end();
                   }
+                  con.end();
               });
             }
         });
@@ -811,13 +811,6 @@ function ExecuteSQL(sql) {
   
     return temp_result;
 }
-
-var SQLQuery = function(sql) {
-    return new Promise((resolve, reject) => {
-      
-    });
-}
-
 
 
 client.login(process.env.BOT_TOKEN);
