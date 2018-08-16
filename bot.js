@@ -784,17 +784,6 @@ client.on('message', message => {
 function UpdateUserNicknameID() {
   
     var sql = "SELECT id, NAME, DISCORD FROM user";
- 
-    con.connect(function(err) {
-        if(err) throw err;
-      
-        con.query(sql, function(err, result) {
-            if(err) throw err;
-            user_id_nickname = result;
-            console.log("UpdateUserNicknameID SQL success");
-            con.end();
-        });
-    });
   
     ExecuteSQL(sql).then((result) => {
         user_id_nickname = result;
