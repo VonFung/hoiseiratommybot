@@ -48,6 +48,18 @@ var func_template = {
         
         token: trim and splited input stream from user without $ (already toUpperCase in the main logic)
         message: the message object that trigger this function (details in Discord.js)
+        
+        Database access EXAMPLE:
+        |===============================================================================
+        V
+        ExecuteSQL(sql).then((result) => {
+            do something here with result
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
+        ^
+        |===============================================================================
     }
 }
 */
@@ -122,25 +134,17 @@ var func_addmusic = {
             message.reply("Incorrect Syntax!\n" + this.SYNTAX);
             return;
         }
+      
+        var sql = "INSERT INTO musiclist (CODE, URL, IS_YOUTUBE" + (token.length > 4?", DEFAULT_VOLUME":"") + ") VALUES ('"
+                + token[1].toUpperCase() + "', '" + token[2] + "', " + ((token[3].toUpperCase() === "T" || token[3].toUpperCase() === "TRUE")?"TRUE":"FALSE")
+                 + (token.length > 4?", " + token[4]:"") + ")";
 
-        var con = mysql.createConnection({
-            host: db_host,
-            user: db_user,
-            password: db_password,
-            database: db_schema
-        });
-
-        con.connect(function(err) {
-            if(err) throw err;
-            var sql = "INSERT INTO musiclist (CODE, URL, IS_YOUTUBE" + (token.length > 4?", DEFAULT_VOLUME":"") + ") VALUES ('"
-                      + token[1].toUpperCase() + "', '" + token[2] + "', " + ((token[3].toUpperCase() === "T" || token[3].toUpperCase() === "TRUE")?"TRUE":"FALSE")
-                       + (token.length > 4?", " + token[4]:"") + ")";
-
-            //console.log(sql);
-            con.query(sql, function(err, result) {
-                if(err) throw err;
-                message.reply('ADDED SUCCESSFULLY');
-            });
+        ExecuteSQL(sql).then((result) => {
+            message.reply('ADDED SUCCESSFULLY');
+            console.log("result = \n" + result);
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
         });
     }
 }
@@ -163,34 +167,7 @@ var func_searchmusic = {
             sql = "SELECT CODE FROM musiclist WHERE CODE LIKE '%" + token[1].toUpperCase() + "%' ORDER BY id ASC";
         }
       
-        /*var con = mysql.createConnection({
-            host: db_host,
-            user: db_user,
-            password: db_password,
-            database: db_schema
-        });
       
-        con.query(sql, function (err, result, field) {
-            if(err) throw err;
-            if(result.length === 0) {
-                message.reply("No such music");
-                return;   
-            } else {
-                var i = 2;
-                var display_str = "1)\t" + result[0].CODE;
-                
-                for( ; i<=result.length; i++) {
-                    display_str = display_str + "\n" + i + ")\t" + result[i-1].CODE;
-                }
-              
-                message.channel.send(display_str);
-
-            }
-        });*/
-      
-        /*var execSQL = ExecuteSQL(sql);
-        var result = execSQL.next().value;
-        execSQL.next();*/
         ExecuteSQL(sql).then((result) => {
             let i=2;
             let display_str = "1)\t" + result[0].CODE;
@@ -224,48 +201,37 @@ var func_play = {
             message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
             return;
         }
+      
+        var sql = "SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM musiclist WHERE CODE = '" + token[1].toUpperCase() + "'";
+      
+        ExecuteSQL(sql).then((result) => {
+            if(result.length === 0) {
+                message.reply("No such music");
+                return;   
+            } else {
 
-        var con = mysql.createConnection({
-            host: db_host,
-            user: db_user,
-            password: db_password,
-            database: db_schema
-        });
+                var music_instance = {
+                  code : token[1].toUpperCase(),
+                  url : result[0].URL,
+                  isYoutubeOrNot : result[0].IS_YOUTUBE,
+                  volume : token.length > 2?token[2]:result[0].DEFAULT_VOLUME
+                };
 
-        con.connect(function(err) {
-            if(err) throw err;
-          
-            var sql = "SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM musiclist WHERE CODE = '" + token[1].toUpperCase() + "'";
-            console.log(sql);
-            
-            con.query(sql, function (err, result, field) {
-                if(err) throw err;
-                if(result.length === 0) {
-                    message.reply("No such music");
-                    return;   
+                music_queue.push(music_instance);
+
+                if(dispatcher === null && music_queue.length === 1) {
+                  voiceChannel = message.member.voiceChannel;
+                  voiceChannel.join().then(connection => {
+                    PlayMusicInQueue(connection);
+                    console.log("end loop");
+                  }).catch(err => console.log(err));
                 } else {
-                    
-                    var music_instance = {
-                      code : token[1].toUpperCase(),
-                      url : result[0].URL,
-                      isYoutubeOrNot : result[0].IS_YOUTUBE,
-                      volume : token.length > 2?token[2]:result[0].DEFAULT_VOLUME
-                    };
-                  
-                    music_queue.push(music_instance);
-                  
-                    if(dispatcher === null && music_queue.length === 1) {
-                      voiceChannel = message.member.voiceChannel;
-                      voiceChannel.join().then(connection => {
-                        PlayMusicInQueue(connection);
-                        console.log("end loop");
-                      }).catch(err => console.log(err));
-                    } else {
-                      message.reply("Added to playlist. Now playing is : " + now_playing_music.code);
-                    }
-
+                  message.reply("Added to playlist. Now playing is : " + now_playing_music.code);
                 }
-            });
+            }
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
         });
     }
 }
@@ -453,24 +419,15 @@ var func_setname = {
             message.reply("Incorrect Syntax!\n" + this.SYNTAX);
             return;
         }
-
-        var con = mysql.createConnection({
-            host: db_host,
-            user: db_user,
-            password: db_password,
-            database: db_schema
-        });
-
-        con.connect(function(err) {
-            if(err) throw err;
-            var sql = "INSERT INTO user (NAME, DISCORD) VALUES ('" + token[1] + "', " + message.author.id + ") "
-                     +"ON DUPLICATE KEY UPDATE NAME = '" + token[1] + "'";
-
-            //console.log(sql);
-            con.query(sql, function(err, result) {
-                if(err) throw err;
-                message.reply('Your nickname now is ' + token[1]);
-            });
+      
+        var sql = "INSERT INTO user (NAME, DISCORD) VALUES ('" + token[1] + "', " + message.author.id + ") "
+                 +"ON DUPLICATE KEY UPDATE NAME = '" + token[1] + "'";
+      
+        ExecuteSQL(sql).then((result) => {
+            message.reply('Your nickname now is ' + token[1]);
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
         });
     }
   
@@ -503,35 +460,27 @@ var func_showvote = {
     MANUAL : "***-ALL : ***[Optional] Add the command if you want to show expired votes",
   
     LOGIC : function(token, message) {
-
-        var con = mysql.createConnection({
-            host: db_host,
-            user: db_user,
-            password: db_password,
-            database: db_schema
-        });
-
-        con.connect(function(err) {
-            if(err) throw err;
-            var sql = "SELECT id, TITLE, DESCRIPTION FROM vote WHERE HIDED = FALSE";
-            if(!(token.length > 1 && token[1].toUpperCase() === "-ALL")) {
-                sql = sql + " AND EXPIRE_DATE >= DATE(CURDATE())";
+      
+        var sql = "SELECT id, TITLE, DESCRIPTION FROM vote WHERE HIDED = FALSE";
+      
+        if(!(token.length > 1 && token[1].toUpperCase() === "-ALL")) {
+            sql = sql + " AND EXPIRE_DATE >= DATE(CURDATE())";
+        }
+        sql = sql + " ORDER BY ID DESC";
+      
+        ExecuteSQL(sql).then((result) => {
+            if(result.length === 0) {
+                message.reply("No result");
+                return;
             }
-            sql = sql + " ORDER BY ID DESC";
-
-            //console.log(sql);
-            con.query(sql, function(err, result) {
-                if(err) throw err;
-                if(result.length === 0) {
-                    message.reply("No result");
-                    return;
-                }
-                var msg = "1)\t" + result[0].TITLE + "(" + result[0].id + ")\t" + result[0].DESCRIPTION;
-                for(var i=2; i<=result.length; i++) {
-                     msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "(" + result[i-1].id + ")\t" + result[i-1].DESCRIPTION;
-                }
-                message.channel.send(msg);
-            });
+            var msg = "1)\t" + result[0].TITLE + "(" + result[0].id + ")\t" + result[0].DESCRIPTION;
+            for(var i=2; i<=result.length; i++) {
+                 msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "(" + result[i-1].id + ")\t" + result[i-1].DESCRIPTION;
+            }
+            message.channel.send(msg);
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
         });
     }
   
@@ -561,27 +510,16 @@ var func_addvote = {
             return;
         }
       
-        var con = mysql.createConnection({
-            host: db_host,
-            user: db_user,
-            password: db_password,
-            database: db_schema
-        });
-
-        con.connect(function(err) {
-            if(err) throw err;
-          
-            var sql = "INSERT INTO vote (TITLE, " + ((token.length > 3)?"MAX_VOTE, ":"") + "EXPIRE_DATE, CREATE_USER_ID) VALUES ('"
-                      + token[1] + "', " + ((token.length > 3)?token[3] + ", ":"") + "'" + token[2] + "', "
-                      + GetUserID(message.author.id) + ")";
-
-            //console.log(sql);
-            con.query(sql, function(err, result) {
-                if(err) throw err;
-                message.reply("Added successfully");
-            });
-        });
+        var sql = "INSERT INTO vote (TITLE, " + ((token.length > 3)?"MAX_VOTE, ":"") + "EXPIRE_DATE, CREATE_USER_ID) VALUES ('"
+                + token[1] + "', " + ((token.length > 3)?token[3] + ", ":"") + "'" + token[2] + "', "
+                + GetUserID(message.author.id) + ")";
       
+        ExecuteSQL(sql).then((result) => {
+            message.reply("Added successfully");
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
     }
   
 }
