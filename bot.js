@@ -23,6 +23,8 @@ var music_loop = false;
 var master_volume = 1;
 var music_queue = [];
 var now_playing_music = null;
+var playlist_mode = "";
+var random_playlist = false;
 
 const update_time = new Date().toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' });
 
@@ -202,6 +204,11 @@ var func_play = {
             return;
         }
       
+        if(playlist_mode) {
+            message.reply("The bot is playing in playlist mode!");
+            return;
+        }
+      
         var sql = "SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM musiclist WHERE CODE = '" + token[1].toUpperCase() + "'";
       
         ExecuteSQL(sql).then((result) => {
@@ -223,7 +230,6 @@ var func_play = {
                   voiceChannel = message.member.voiceChannel;
                   voiceChannel.join().then(connection => {
                     PlayMusicInQueue(connection);
-                    console.log("end loop");
                   }).catch(err => console.log(err));
                 } else {
                   message.reply("Added to playlist. Now playing is : " + now_playing_music.code);
@@ -236,18 +242,142 @@ var func_play = {
     }
 }
 
-var func_playlist = {
+var func_addplaylist = {
+ 
+    CODE : "ADDPLAYLIST",
   
+    DESCRIPTION : "Add a new playlist"
+                 +"\n**Please use $ADDMUSICTOPL to add new music into an exist playlist**",
+  
+    SYNTAX : "{$ADDPLAYLIST | playlist_name}",
+  
+    MANUAL : "**playlist_name : **The name of playlist.",
+  
+    LOGIC : function(token, message) {
+        if(token.length < 2) {
+            message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
+            return;
+        }
+        
+        var sql = "INSERT INTO playlist (NAME) VALUES ('" + token[1] + "')";
+      
+        ExecuteSQL(sql).then((result) => {
+            message.reply("Added successfully!");
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
+        
+    }
+  
+}
+
+var func_addmusictopl = {
+ 
+    CODE : "ADDMUSICTOPL",
+  
+    DESCRIPTION : "Add music by code to an exist playlist",
+  
+    SYNTAX : "{$ADDMUSICTOPL | music_code | playlist_name}",
+  
+    MANUAL : "**music_code : **The code of music."
+            +"\n**playlist_name : **The name of playlist."
+            +"\n**The order of added music to playlist will be the default playing order(CANNOT BE CONVERTED)**",
+  
+    LOGIC : function(token, message) {
+        if(token.length < 3) {
+            message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
+            return;
+        }
+      
+        var sql = "INSERT INTO playlist_music (MUSIC_ID, PLAYLIST_ID) "
+                    +"SELECT music.id, playlist.id FROM music, playlist WHERE music.CODE = '" + token[1] + "' AND playlist.NAME = '" + token[2] + "'";
+      
+        ExecuteSQL(sql).then((result) => {
+            message.reply("Added successfully!");
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
+    }
+  
+}
+
+var func_playlist = {
+    
     CODE : "PLAYLIST",
   
-    DESCRIPTION : "Show the playlist queue",
+    DESCRIPTION : "Play music in playlist mode by a defined playlist"
+                 +"\n**Please stop all music before playing a playlist**",
   
-    SYNTAX : "{$PLAYLIST}",
+    SYNTAX : "{$PLAYLIST | playlist_name | [optional]-RAND}",
+  
+    MANUAL : "**playlist_name : **The name of playlist."
+            +"\n***-RAND : ***[Optional] Play the playlist in random order.",
+  
+    LOGIC : function(token, message) {
+        if(token.length < 2) {
+            message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
+            return;
+        }
+      
+        if(music_queue.length > 0) {
+            message.reply("Please stop all music before playing a playlist");
+            return;
+        }
+      
+        var sql = "SELECT CODE, URL, IS_YOUTUBE, DEFAULT_VOLUME FROM musiclist WHERE id IN "
+                    +"(SELECT a.MUSIC_ID FROM playlist_music a INNER JOIN playlist b WHERE a.MUSIC_ID = b.id AND "
+                    +"b.NAME = '" + token[1] + "')";
+      
+        if(token.length > 2 && token[2].toUpperCase() === '-RAND') {
+            sql = sql + " ORDER BY rand()";
+            random_playlist = true;
+        } else {
+            sql = sql + " ORDER BY id ASC";
+            random_playlist = false; 
+        }
+        
+        ExecuteSQL(sql).then((result) => {
+            for(var i=0; i<result.length; i++) {
+                var music_instance = {
+                  code : result[i].CODE,
+                  url : result[i].URL,
+                  isYoutubeOrNot : result[i].IS_YOUTUBE,
+                  volume : result[i].DEFAULT_VOLUME
+                };
+                music_queue.push(music_instance);
+            }
+            
+            voiceChannel = message.member.voiceChannel;
+            voiceChannel.join().then(connection => {
+              playlist_mode = token[1].toUpperCase();
+              PlayMusicInQueue(connection);
+            }).catch(err => console.log(err));
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
+    }
+  
+}
+
+var func_playqueue = {
+  
+    CODE : "PLAYQUEUE",
+  
+    DESCRIPTION : "Show the music playing queue OR the whole playlist in playlist mode",
+  
+    SYNTAX : "{$PLAYQUEUE}",
   
     MANUAL : "",
   
     LOGIC : function(token, message) {
-        var msg = "**" + now_playing_music.code + "** <- now playing";
+        var msg = "";
+        if(playlist_mode) {
+           msg = msg + "**PLAYLIST: " + playlist_mode + "**\n\n";
+        }
+        msg = msg + "**" + now_playing_music.code + "** <- now playing";
         var i;
         for(i=0; i<music_queue.length; i++) {
             msg = msg + "\n" + music_queue[i].code;
@@ -270,6 +400,8 @@ var func_musicdetail = {
     LOGIC : function(token, message) {
         if(now_playing_music === null) {
           message.reply("No music playing");
+        } else if(playlist_mode) {
+          message.reply("**" + now_playing_music.code + "(" + playlist_mode + ")** VOLUME = " + master_volume);
         } else {
           message.reply("**" + now_playing_music.code + "**  VOLUME = " + master_volume + " LOOP = " + (music_loop?"TRUE":"FALSE"));
         }
@@ -290,6 +422,7 @@ var func_stop = {
     LOGIC : function(token, message) {
         music_queue = [];
         voiceChannel.leave();
+        playlist_mode = "";
     }
 }
 
@@ -582,7 +715,8 @@ var func_test = {
 }
 
 //Register new function to this func array
-var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_playlist, func_musicdetail, func_stop, 
+var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_addplaylist, func_playlist, 
+            func_playqueue, func_musicdetail, func_stop, 
             func_next, func_pause, func_resume, func_volume, func_loop,
             func_setname, func_vote, func_showvote, func_addvote, func_clear, func_test];
 
@@ -692,31 +826,70 @@ function PlayMusicInQueue(connection) {
       return;
     }
   
-    now_playing_music = music_queue.shift();
-
-    if(now_playing_music.isYoutubeOrNot) {
-        stream = ytdl(now_playing_music.url, {filter : 'audioonly'});
-        dispatcher = connection.playStream(stream);
-        dispatcher.setVolume(now_playing_music.volume * master_volume);
-        dispatcher.on("end", end => {
-             dispatcher = null;
-             if(music_loop) {
-                music_queue.unshift(now_playing_music); 
-             }
-             now_playing_music = null;
-             PlayMusicInQueue(connection);
-        });
+    if(playlist_mode) {
+      if(random_playlist) {
+        var i = 0;
+        for(; i<music_queue.length; i++) {
+          if(Math.random() < 0.5) break;
+        }
+        if(i === music_queue.length ) {
+          i = 0; 
+        }
+        
+        now_playing_music = music_queue.splice(i, 1);
+      } else {
+        now_playing_music = music_queue.shift();
+      }
+      
+      if(now_playing_music.isYoutubeOrNot) {
+          stream = ytdl(now_playing_music.url, {filter : 'audioonly'});
+          dispatcher = connection.playStream(stream);
+          dispatcher.setVolume(now_playing_music.volume * master_volume);
+          dispatcher.on("end", end => {
+               dispatcher = null;
+               music_queue.push(now_playing_music);
+               now_playing_music = null;
+               PlayMusicInQueue(connection);
+          });
+      } else {
+          dispatcher = connection.playArbitraryInput(now_playing_music.url);
+          dispatcher.setVolume(now_playing_music.volume * master_volume);
+          dispatcher.on("end", end => {
+               dispatcher = null;
+               music_queue.push(now_playing_music);
+               now_playing_music = null;
+               PlayMusicInQueue(connection);
+          });
+      }
+      
     } else {
-        dispatcher = connection.playArbitraryInput(now_playing_music.url);
-        dispatcher.setVolume(now_playing_music.volume * master_volume);
-        dispatcher.on("end", end => {
-             dispatcher = null;
-             if(music_loop) {
-                music_queue.unshift(now_playing_music); 
-             }
-             now_playing_music = null;
-             PlayMusicInQueue(connection);
-        });
+  
+      now_playing_music = music_queue.shift();
+
+      if(now_playing_music.isYoutubeOrNot) {
+          stream = ytdl(now_playing_music.url, {filter : 'audioonly'});
+          dispatcher = connection.playStream(stream);
+          dispatcher.setVolume(now_playing_music.volume * master_volume);
+          dispatcher.on("end", end => {
+               dispatcher = null;
+               if(music_loop) {
+                  music_queue.unshift(now_playing_music); 
+               }
+               now_playing_music = null;
+               PlayMusicInQueue(connection);
+          });
+      } else {
+          dispatcher = connection.playArbitraryInput(now_playing_music.url);
+          dispatcher.setVolume(now_playing_music.volume * master_volume);
+          dispatcher.on("end", end => {
+               dispatcher = null;
+               if(music_loop) {
+                  music_queue.unshift(now_playing_music); 
+               }
+               now_playing_music = null;
+               PlayMusicInQueue(connection);
+          });
+      }
     }
   
 }
