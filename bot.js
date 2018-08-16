@@ -799,7 +799,7 @@ function ExecuteSQL(sql) {
         });
     });
   
-    return temp_result;
+    return yield temp_result;
 }
 
 
