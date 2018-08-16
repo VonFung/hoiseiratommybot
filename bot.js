@@ -188,7 +188,7 @@ var func_searchmusic = {
             }
         });*/
       
-        var result = ExecuteSQL(sql);
+        var result = yield ExecuteSQL(sql);
       
         var i = 2;
         var display_str = "1)\t" + result[0].CODE;
