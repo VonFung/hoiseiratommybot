@@ -191,16 +191,19 @@ var func_searchmusic = {
         /*var execSQL = ExecuteSQL(sql);
         var result = execSQL.next().value;
         execSQL.next();*/
-        var result = await ExecuteSQL(sql);
-      
-        var i = 2;
-        var display_str = "1)\t" + result[0].CODE;
+        ExecuteSQL(sql).then((result) => {
+            let i=2;
+            let display_str = "1)\t" + result[0].CODE;
+          
+            for( ; i<=result.length; i++) {
+                display_str = display_str + "\n" + i + ")\t" + result[i-1].CODE;
+            }
 
-        for( ; i<=result.length; i++) {
-            display_str = display_str + "\n" + i + ")\t" + result[i-1].CODE;
-        }
-
-        message.channel.send(display_str);
+            message.channel.send(display_str);
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
     }
   
 }
