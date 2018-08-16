@@ -291,7 +291,8 @@ var func_addmusictopl = {
         }
       
         var sql = "INSERT INTO playlist_music (MUSIC_ID, PLAYLIST_ID) "
-                    +"SELECT music.id, playlist.id FROM music, playlist WHERE music.CODE = '" + token[1] + "' AND playlist.NAME = '" + token[2] + "'";
+                    +"SELECT musiclist.id, playlist.id FROM musiclist, playlist WHERE musiclist.CODE = '"
+                    + token[1].toUpperCase() + "' AND playlist.NAME = '" + token[2].toUpperCase() + "'";
       
         ExecuteSQL(sql).then((result) => {
             message.reply("Added successfully!");
