@@ -155,7 +155,7 @@ var func_searchmusic = {
   
     MANUAL : "***searching keyword : ***[Optional] **ONE** keyword you want to search with SQL %keyword%.",
   
-    LOGIC : function(token, message) {
+    LOGIC : async function(token, message) {
         var sql;
         if(token.length < 2) {
             sql = "SELECT CODE FROM musiclist ORDER BY id ASC";
@@ -188,9 +188,10 @@ var func_searchmusic = {
             }
         });*/
       
-        var execSQL = ExecuteSQL(sql);
+        /*var execSQL = ExecuteSQL(sql);
         var result = execSQL.next().value;
-        execSQL.next();
+        execSQL.next();*/
+        var result = await ExecuteSQL(sql);
       
         var i = 2;
         var display_str = "1)\t" + result[0].CODE;
@@ -780,24 +781,28 @@ function PlayMusicInQueue(connection) {
 }
 
 
-function* ExecuteSQL(sql) {
+async function ExecuteSQL(sql) {
      var con = mysql.createConnection({
         host: db_host,
         user: db_user,
         password: db_password,
         database: db_schema
     });
+  
+    var temp_result;
     
     con.connect(function(err) {
         if(err) throw err;
       
         con.query(sql, function(err, result) {
             if(err) throw err;
-            yield result;
+            temp_result = result;
             console.log("SQL: '" + sql + "' success");
             con.end();
         });
     });
+  
+    return temp_result;
 }
 
 
