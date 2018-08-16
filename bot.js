@@ -838,7 +838,7 @@ function PlayMusicInQueue(connection) {
         var i;
         do {
           i = Math.floor(Math.random() * music_queue.length);
-        } while (music_queue.length > 1 && i !== playlist_playing_idx);
+        } while (music_queue.length > 1 && i === playlist_playing_idx);
         playlist_playing_idx = i;
         now_playing_music = music_queue[playlist_playing_idx];
       } else {
