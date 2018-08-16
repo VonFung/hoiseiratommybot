@@ -831,7 +831,8 @@ function PlayMusicInQueue(connection) {
           i = 0; 
         }
         
-        now_playing_music = music_queue.splice(i, 1);
+        now_playing_music = music_queue[i];
+        music_queue.splice(i, 1);
       } else {
         now_playing_music = music_queue.shift();
       }
