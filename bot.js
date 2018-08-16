@@ -914,11 +914,9 @@ function UpdateMusicDetail() {
         detail_message = [];
       } else if(playlist_mode) {
         detail_message.edit("\u266A**" + now_playing_music.code + "(" + playlist_mode + ")** VOLUME = " + master_volume)
-          .then(return)
           .catch(console.log("Error on editing message"));
       } else {
         detail_message.edit("\u266A**" + now_playing_music.code + "**  VOLUME = " + master_volume + " LOOP = " + (music_loop?"TRUE":"FALSE"))
-          .then(return)
           .catch(console.log("Error on editing message"));
       }
 }
