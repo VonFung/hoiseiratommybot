@@ -259,7 +259,7 @@ var func_addplaylist = {
             return;
         }
         
-        var sql = "INSERT INTO playlist (NAME) VALUES ('" + token[1] + "')";
+        var sql = "INSERT INTO playlist (NAME) VALUES ('" + token[1].toUpperCase() + "')";
       
         ExecuteSQL(sql).then((result) => {
             message.reply("Added successfully!");
@@ -782,16 +782,9 @@ client.on('message', message => {
 
 
 function UpdateUserNicknameID() {
-    
-    var con = mysql.createConnection({
-        host: db_host,
-        user: db_user,
-        password: db_password,
-        database: db_schema
-    });
   
     var sql = "SELECT id, NAME, DISCORD FROM user";
-  
+ 
     con.connect(function(err) {
         if(err) throw err;
       
@@ -801,6 +794,14 @@ function UpdateUserNicknameID() {
             console.log("UpdateUserNicknameID SQL success");
             con.end();
         });
+    });
+  
+    ExecuteSQL(sql).then((result) => {
+        user_id_nickname = result;
+        console.log("UpdateUserNicknameID SQL success");
+    }).catch((err) => {
+        message.reply("Something error! Please refer to the log on Heroku");
+        console.log(err);
     });
   
     console.log("User nickname<>ID updated");
