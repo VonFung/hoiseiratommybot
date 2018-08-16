@@ -419,6 +419,10 @@ var func_musicdetail = {
         if(now_playing_music === null) {
           message.reply("No music playing");
         } else {
+          if(detail_message) {
+              detail_message.delete();
+              detail_message = "";
+          }
           message.channel.send("Now loading");
           message.channel.fetchMessages({ limit: 10, after: message.id})
             .then(messages => {
