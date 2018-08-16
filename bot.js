@@ -246,12 +246,12 @@ var func_addplaylist = {
  
     CODE : "ADDPLAYLIST",
   
-    DESCRIPTION : "Add a new playlist"
-                 +"\n**Please use $ADDMUSICTOPL to add new music into an exist playlist**",
+    DESCRIPTION : "Add a new playlist",
   
     SYNTAX : "{$ADDPLAYLIST | playlist_name}",
   
-    MANUAL : "**playlist_name : **The name of playlist.",
+    MANUAL : "**playlist_name : **The name of playlist."
+            +"\n**Please use $ADDMUSICTOPL to add new music into an exist playlist**",
   
     LOGIC : function(token, message) {
         if(token.length < 2) {
@@ -307,13 +307,13 @@ var func_playlist = {
     
     CODE : "PLAYLIST",
   
-    DESCRIPTION : "Play music in playlist mode by a defined playlist"
-                 +"\n**Please stop all music before playing a playlist**",
+    DESCRIPTION : "Play music in playlist mode by a defined playlist",
   
     SYNTAX : "{$PLAYLIST | playlist_name | [optional]-RAND}",
   
     MANUAL : "**playlist_name : **The name of playlist."
-            +"\n***-RAND : ***[Optional] Play the playlist in random order.",
+            +"\n***-RAND : ***[Optional] Play the playlist in random order."
+            +"\n**Please stop all music before playing a playlist**",
   
     LOGIC : function(token, message) {
         if(token.length < 2) {
@@ -715,8 +715,8 @@ var func_test = {
 }
 
 //Register new function to this func array
-var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_addplaylist, func_playlist, 
-            func_playqueue, func_musicdetail, func_stop, 
+var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_addplaylist, func_addmusictopl, 
+            func_playlist, func_playqueue, func_musicdetail, func_stop, 
             func_next, func_pause, func_resume, func_volume, func_loop,
             func_setname, func_vote, func_showvote, func_addvote, func_clear, func_test];
 
