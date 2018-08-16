@@ -27,8 +27,8 @@ var playlist_mode = "";
 var random_playlist = false;
 var playlist_playing_idx = -1;
 
-var detail_message = [];
-var playqueue_message = [];
+var detail_message = "";
+var playqueue_message = "";
 
 const update_time = new Date().toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' });
 
@@ -905,13 +905,15 @@ function PlayMusicInQueue(connection) {
           });
       }
     }
-  
+    if(detail_message) {
+       UpdateMusicDetail();
+    }
 }
 
 function UpdateMusicDetail() {
       if(now_playing_music === null) {
         detail_message.delete();
-        detail_message = [];
+        detail_message = "";
       } else if(playlist_mode) {
         detail_message.edit("\u266A**" + now_playing_music.code + "(" + playlist_mode + ")** VOLUME = " + master_volume)
           .catch(console.log("Error on editing message"));
