@@ -25,7 +25,7 @@ var music_queue = [];
 var now_playing_music = null;
 var playlist_mode = "";
 var random_playlist = false;
-var playlist_playing_idx = 0;
+var playlist_playing_idx = -1;
 
 const update_time = new Date().toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' });
 
@@ -434,6 +434,8 @@ var func_stop = {
         music_queue = [];
         voiceChannel.leave();
         playlist_mode = "";
+        random_playlist = false;
+        playlist_playing_idx = -1;
     }
 }
 
@@ -836,8 +838,8 @@ function PlayMusicInQueue(connection) {
         playlist_playing_idx = i;
         now_playing_music = music_queue[playlist_playing_idx];
       } else {
-        playlist_playing_idx = (i+1)%music_queue.length;
-        now_playing_music = music_queue[i];
+        playlist_playing_idx = (playlist_playing_idx+1)%music_queue.length;
+        now_playing_music = music_queue[playlist_playing_idx];
       }
       
       if(now_playing_music.isYoutubeOrNot) {
