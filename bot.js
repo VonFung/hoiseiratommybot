@@ -972,7 +972,7 @@ function UpdatePlayQueue() {
                   msg = msg + "\n" + music_queue[i].code;
               }
           }
-          await playqueue_message.edit(msg);
+          playqueue_message.edit(msg);
       }
 }
 
