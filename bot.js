@@ -20,7 +20,7 @@ var dispatcher = null;     //===================
 var clear_command = false;
 
 var music_loop = false;
-var master_volume = 1;
+var master_volume = 0.2;
 var music_queue = [];
 var now_playing_music = null;
 var playlist_mode = "";
@@ -926,7 +926,9 @@ function PlayMusicInQueue(connection) {
 }
 
 function UpdateMusicDetail() {
-      if(now_playing_music === null) {
+      if(!detail_message) {
+        return;
+      } else if(now_playing_music === null) {
         detail_message.delete();
         detail_message = "";
       } else if (detail_message.deleted) {
@@ -937,7 +939,9 @@ function UpdateMusicDetail() {
 }
 
 function UpdatePlayQueue() {
-      if(now_playing_music === null) {
+      if(!playqueue_message) {
+          return;
+      } else if(now_playing_music === null) {
           playqueue_message.delete();
           playqueue_message = "";
       } else if (playqueue_message.deleted) {
