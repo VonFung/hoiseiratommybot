@@ -399,7 +399,7 @@ var func_playqueue = {
                   }
                 });
             })
-            .catch(console.log("Some error in music detail"));
+            .catch(console.log("Some error in playqueue"));
         }
     }
   
@@ -705,8 +705,8 @@ var func_clear = {
          +"\n**amount and ON/OFF cannot be both trigger!**",
   
     LOGIC : function(token, message) {
-      if(token.length < 2 && !(TryParseInt(token[1], null) === null)) {
-        let amount = parseInt(token[1]);
+      if(token.length < 2 || !(TryParseInt(token[1], null) === null)) {
+        let amount = (token.length < 2)?100:parseInt(token[1]);
         if(amount < 1) amount = 1;
         if(amount > 100) amount = 100;
         message.channel.fetchMessages({limit : amount, before : message.id})
