@@ -956,9 +956,13 @@ function UpdatePlayQueue() {
               msg = msg + "**\n";
               var i;
               for(i=0; i<music_queue.length; i++) {
-                  msg = msg + "\n" + ((i === playlist_playing_idx)?"**\t\t-->\u266A**__**":"") + music_queue[i].code + ((i === playlist_playing_idx)?"**__** <-- now playing**":""); 
+                  msg = msg + "\n"; 
                   if(i === playlist_playing_idx) {
-                      console.log("CODE = " + music_queue[i].code); 
+                      msg = msg + "**=>\u266A**__**"; 
+                  }
+                  msg = msg + music_queue[i].code;
+                  if(i === playlist_playing_idx) {
+                      msg = msg + "**__**<=Now Playing**"; 
                   }
               }
           } else {
@@ -968,7 +972,7 @@ function UpdatePlayQueue() {
                   msg = msg + "\n" + music_queue[i].code;
               }
           }
-          playqueue_message.edit(msg);
+          await playqueue_message.edit(msg);
       }
 }
 
