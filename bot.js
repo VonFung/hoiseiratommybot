@@ -934,7 +934,9 @@ function UpdateMusicDetail() {
       } else if (detail_message.deleted) {
         detail_message = "";
       } else {
-        detail_message.edit("**\u266A" + now_playing_music.code + ((playlist_mode)?"(" + playlist_mode + ")":"") + "**");
+        detail_message.edit("**\u266A" + now_playing_music.code + ((playlist_mode)?"(" + playlist_mode + ")":"") + "**")
+              .then(msg => {console.log("UpdateMusicDetail success!")})
+              .catch(console.log("UpdateMusicDetail error : " + reject.toString()));;
       }
 }
 
@@ -948,29 +950,22 @@ function UpdatePlayQueue() {
           playqueue_message = "";
       } else {
           var msg = "";
-          console.log("msg=" + msg);
           if(playlist_mode) {
               msg = msg + "**PLAYLIST: " + playlist_mode;
-              console.log("msg=" + msg);
               if(random_playlist) {
                   msg = msg + "(Random mode)";
-                  console.log("msg=" + msg);
               }
               msg = msg + "**\n";
-              console.log("msg=" + msg);
               var i;
               for(i=0; i<music_queue.length; i++) {
                   msg = msg + "\n"; 
-                  console.log("msg=" + msg);
                   if(i === playlist_playing_idx) {
                       msg = msg + "**=>\u266A**__**"; 
-                      console.log("msg=" + msg);
                   }
                   msg = msg + music_queue[i].code;
                   console.log("msg=" + msg);
                   if(i === playlist_playing_idx) {
                       msg = msg + "**__**<=Now Playing**";
-                      console.log("msg=" + msg); 
                   }
               }
           } else {
@@ -980,8 +975,9 @@ function UpdatePlayQueue() {
                   msg = msg + "\n" + music_queue[i].code;
               }
           }
-          console.log("msg=" + msg);
-          playqueue_message.edit(msg);
+          playqueue_message.edit(msg)
+              .then(msg => {console.log("UpdatePlayQueue success!")})
+              .catch(console.log("UpdatePlayQueue error : " + reject.toString()));
       }
 }
 
