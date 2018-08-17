@@ -382,25 +382,25 @@ var func_playqueue = {
     MANUAL : "",
   
     LOGIC : function(token, message) {
-        var msg = "";
-        if(playlist_mode) {
-            msg = msg + "**PLAYLIST: " + playlist_mode;
-            if(random_playlist) {
-                msg = msg + "(Random mode)";
-            }
-            msg = msg + "**\n";
-            var i;
-            for(i=0; i<music_queue.length; i++) {
-                msg = msg + "\n" + ((i === playlist_playing_idx)?"**":"") + music_queue[i].code + ((i === playlist_playing_idx)?"** <- now playing":""); 
-            }
+        if(now_playing_music === null) {
+          message.reply("No music playing"); 
         } else {
-            msg = msg + "**" + now_playing_music.code + "** <- now playing";
-            var i;
-            for(i=0; i<music_queue.length; i++) {
-                msg = msg + "\n" + music_queue[i].code;
-            }
+          if(playqueue_message) {
+              playqueue_message.delete();
+              playqueue_message = "";
+          }
+          message.channel.send("Now loading");
+          message.channel.fetchMessage({ limit: 10})
+            .then(messages => {
+                messages.forEach(function(msg) {
+                  if(msg.author.id === client.user.id && msg.content === "Now loading") {
+                    playqueue_message = msg; 
+                  }
+                });
+                UpdatePlayQueue();
+            })
+            .catch(console.log("Some error in music detail"));
         }
-        message.channel.send(msg);
     }
   
 }
@@ -424,7 +424,7 @@ var func_musicdetail = {
               detail_message = "";
           }
           message.channel.send("Now loading");
-          message.channel.fetchMessages({ limit: 10, after: message.id})
+          message.channel.fetchMessages({ limit: 10})
             .then(messages => {
                 messages.forEach(function(msg) {
                   if(msg.author.id === client.user.id && msg.content === "Now loading") {
@@ -696,21 +696,27 @@ var func_clear = {
   
     DESCRIPTION : "Clear the commands and message that call bot or create by bot",
   
-    SYNTAX : "{$CLEAR | [optional]ON/OFF ('T'/'TRUE'/'F'/'FALSE')}",
+    SYNTAX : "{$CLEAR | [optional](amount(int) || ON/OFF ('T'/'TRUE'/'F'/'FALSE'))}",
   
-    MANUAL : "***ON/OFF : ***[Optional]True to turn on auto clear command mode."
-         +"\n**Toggling ON/OFF will not trigger the clear command that clear the command or message created by to in 100 message above.**",
+    MANUAL : "***amount : ***[Optional]The amount of message(s) want to delete(Limit: 100)."
+         +"\n***ON/OFF : ***[Optional]True to turn on auto clear command mode."
+         +"\n**Toggling ON/OFF will not trigger the clear command that clear the command or message created by to in 100 message above.**"
+         +"\n**amount and ON/OFF cannot be both trigger!**",
   
     LOGIC : function(token, message) {
-      if(token.length < 2) {
-        message.channel.fetchMessages({limit : 100})
+      if(token.length < 2 && !(TryParseInt(token[1], null) === null)) {
+        let amount = parseInt(token[1]);
+        if(amount < 1) amount = 1;
+        if(amount > 100) amount = 100;
+        message.channel.fetchMessages({limit : amount, after : message.id})
           .then(messages => {
-            messages.forEach(function(message) {
-              if(message.content.charAt(0) === '$' || message.author.id === client.user.id) {
-                message.delete();
-                console.log("Message: \"" + message.content + "\" deleted");
+            messages.forEach(function(msg) {
+              if(msg.content.charAt(0) === '$' || msg.author.id === client.user.id) {
+                msg.delete();
+                console.log("Message: \"" + msg.content + "\" deleted");
               }
             })
+            message.delete();
           })
           .catch(console.error);
       } else if(token[1].toUpperCase() === 'T' || token[1].toUpperCase() === 'TRUE') {
@@ -913,18 +919,50 @@ function PlayMusicInQueue(connection) {
     if(detail_message) {
        UpdateMusicDetail();
     }
+    if(playqueue_message) {
+       UpdatePlayQueue(); 
+    }
 }
 
 function UpdateMusicDetail() {
       if(now_playing_music === null) {
         detail_message.delete();
         detail_message = "";
+      } else if (detail_message.deleted) {
+        detail_message = "";
       } else {
-        detail_message.edit("\u266A**" + now_playing_music.code + ((playlist_mode)?"(" + playlist_mode + ")":"") + "**")
-          .catch(console.log("Error on editing message"));
+        detail_message.edit("**\u266A" + now_playing_music.code + ((playlist_mode)?"(" + playlist_mode + ")":"") + "**");
       }
 }
 
+function UpdatePlayQueue() {
+      if(now_playing_music === null) {
+          playqueue_message.delete();
+          playqueue_message = "";
+      } else if (playqueue_message.deleted) {
+          playqueue_message = "";
+      } else {
+          var msg = "";
+          if(playlist_mode) {
+              msg = msg + "**PLAYLIST: " + playlist_mode;
+              if(random_playlist) {
+                  msg = msg + "(Random mode)";
+              }
+              msg = msg + "**\n";
+              var i;
+              for(i=0; i<music_queue.length; i++) {
+                  msg = msg + "\n" + ((i === playlist_playing_idx)?"**\u266A":"") + music_queue[i].code + ((i === playlist_playing_idx)?"** <- now playing":""); 
+              }
+          } else {
+              msg = msg + "**" + now_playing_music.code + "** <- now playing";
+              var i;
+              for(i=0; i<music_queue.length; i++) {
+                  msg = msg + "\n" + music_queue[i].code;
+              }
+          }
+          playqueue_message.edit(msg);
+      }
+}
 
 function ExecuteSQL(sql) {
      var con = mysql.createConnection({
