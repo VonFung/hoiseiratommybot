@@ -958,14 +958,15 @@ function UpdatePlayQueue() {
               msg = msg + "**\n";
               var i;
               for(i=0; i<music_queue.length; i++) {
-                  msg = msg + "\n"; 
-                  if(i === playlist_playing_idx) {
-                      msg = msg + "**=>\u266A**__**"; 
+                  msg = msg + "\n" + ((i === playlist_playing_idx)?"**=>\u266A":"") + music_queue[i].code
+                    + ((i === playlist_playing_idx)?"<= Now Playing**":""); 
+                  /*if(i === playlist_playing_idx) {
+                      msg = msg + "**=>\u266A"; 
                   }
                   msg = msg + music_queue[i].code;
                   if(i === playlist_playing_idx) {
-                      msg = msg + "**__**<=Now Playing**";
-                  }
+                      msg = msg + "<=Now Playing**";
+                  }*/
               }
           } else {
               msg = msg + "**" + now_playing_music.code + "** <- now playing";
