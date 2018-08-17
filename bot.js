@@ -394,10 +394,10 @@ var func_playqueue = {
             .then(messages => {
                 messages.forEach(function(msg) {
                   if(msg.author.id === client.user.id && msg.content === "Now loading") {
-                    playqueue_message = msg; 
+                    playqueue_message = msg;
+                    UpdatePlayQueue();
                   }
                 });
-                UpdatePlayQueue();
             })
             .catch(console.log("Some error in music detail"));
         }
@@ -429,9 +429,9 @@ var func_musicdetail = {
                 messages.forEach(function(msg) {
                   if(msg.author.id === client.user.id && msg.content === "Now loading") {
                     detail_message = msg;
+                    UpdateMusicDetail();
                   }
                 });
-                UpdateMusicDetail();
             })
             .catch(console.log("Some error in music detail"));
         }
