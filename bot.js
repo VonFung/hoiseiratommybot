@@ -826,6 +826,22 @@ client.on('message', message => {
     
 });
 
+client.on('voiceStateUpdate', (oldMember, newMember) => {
+  let newUserChannel = newMember.voiceChannel
+  let oldUserChannel = oldMember.voiceChannel
+
+
+  if(oldUserChannel === undefined && newUserChannel !== undefined) {
+
+     // User Joins a voice channel
+    console.log("'" + newMember.id + "' has joined the voice channel!");
+  } else if(newUserChannel === undefined){
+
+    // User leaves a voice channel
+    console.log("'" + newMember.id + "' has left the voice channel!");
+  }
+})
+
 
 
 function UpdateUserNicknameID() {
