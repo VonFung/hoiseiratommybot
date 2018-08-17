@@ -705,7 +705,7 @@ var func_clear = {
          +"\n**amount and ON/OFF cannot be both trigger!**",
   
     LOGIC : function(token, message) {
-      if(token.length < 2 || !(TryParseInt(token[1], null) === null)) {
+      if(token.length < 2 || !isNaN(parseInt(token[1])) {
         let amount = (token.length < 2)?100:parseInt(token[1]);
         if(amount < 1) amount = 1;
         if(amount > 100) amount = 100;
