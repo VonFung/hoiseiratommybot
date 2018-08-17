@@ -838,6 +838,21 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
      // User Joins a voice channel
     console.log("'" + newMember.id + "' has joined the voice channel!");
+    /*if(newMember.id === "340126981905448962") {
+        console.log( 
+    }*/
+    if(newMember.id === "340127083848269834") {
+        let vc = newMember.voiceChannel;
+        vc.join()
+        .then(connection => {
+            const temp_dispatcher = connection.playArbitraryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
+            temp_dispatcher.setVolume(0.1);  
+            temp_dispatcher.on('end', () => {
+                temp_dispatcher = null;
+                vc.leave();
+            });
+        }) 
+    }
   } else if(newUserChannel === undefined){
 
     // User leaves a voice channel
