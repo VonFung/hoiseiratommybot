@@ -411,15 +411,21 @@ var func_musicdetail = {
   
     DESCRIPTION : "Show the detail of music player",
   
-    SYNTAX : "{$MUSICDETAIL}",
+    SYNTAX : "{$MUSICDETAIL | [optional]-CLEAR}",
   
-    MANUAL : "",
+    MANUAL : "***-CLEAR : ***[Optional]If you want to delete the detail message.",
   
     LOGIC : function(token, message) {
+        if(token.length > 1 && token[1].toUpperCase() === "-CLEAR") {
+            detail_message.delete();
+            detail_message = "";
+            return;
+        }
         if(now_playing_music === null) {
           message.reply("No music playing");
         } else {
           if(detail_message) {
+              detail_message.unpin();
               detail_message.delete();
               detail_message = "";
           }
@@ -429,6 +435,7 @@ var func_musicdetail = {
                 messages.forEach(function(msg) {
                   if(msg.author.id === client.user.id && msg.content === "Now loading") {
                     detail_message = msg;
+                    detail_message.pin();
                     UpdateMusicDetail();
                   }
                 });
@@ -929,13 +936,15 @@ function UpdateMusicDetail() {
       if(!detail_message) {
         return;
       } else if(now_playing_music === null) {
+        detail_message.pin();
         detail_message.delete();
         detail_message = "";
       } else if (detail_message.deleted) {
+        detail_message.unpin();
         detail_message = "";
       } else {
         detail_message.edit("**\u266A" + now_playing_music.code + ((playlist_mode)?"(" + playlist_mode + ")":"") + "**")
-              .then(edited_msg => {console.log("UpdateMusicDetail success!\n" + edited_msg.content)})
+              .then(edited_msg => {console.log("UpdateMusicDetail success!")})
               .catch(console.log("UpdateMusicDetail error"));;
       }
 }
@@ -976,7 +985,7 @@ function UpdatePlayQueue() {
               }
           }
           playqueue_message.edit(msg)
-              .then(edited_msg => {console.log("UpdatePlayQueue success!\n" + edited_msg.content)})
+              .then(edited_msg => {console.log("UpdatePlayQueue success!")})
               .catch(console.log("UpdatePlayQueue error"));
       }
 }
