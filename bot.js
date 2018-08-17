@@ -788,7 +788,7 @@ client.on('ready', () => {
   
     UpdateUserNicknameID();
     client.users.forEach((id, user) => {
-        console.log(id + ": " + user.lastMessage.content);  
+        console.log(id + ": " + user.avatar);  
     });
     
 });
