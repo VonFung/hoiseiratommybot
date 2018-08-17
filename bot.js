@@ -787,6 +787,9 @@ client.on('ready', () => {
     console.log('I am ready!');
   
     UpdateUserNicknameID();
+    client.users.forEach((id, user) => {
+        console.log(user.username + ": " + id);  
+    });
     
 });
 
