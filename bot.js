@@ -951,26 +951,26 @@ function UpdatePlayQueue() {
           console.log("msg=" + msg);
           if(playlist_mode) {
               msg = msg + "**PLAYLIST: " + playlist_mode;
-              consolg.log("msg=" + msg);
+              console.log("msg=" + msg);
               if(random_playlist) {
                   msg = msg + "(Random mode)";
-                  consolg.log("msg=" + msg);
+                  console.log("msg=" + msg);
               }
               msg = msg + "**\n";
-              consolg.log("msg=" + msg);
+              console.log("msg=" + msg);
               var i;
               for(i=0; i<music_queue.length; i++) {
                   msg = msg + "\n"; 
-                  consolg.log("msg=" + msg);
+                  console.log("msg=" + msg);
                   if(i === playlist_playing_idx) {
                       msg = msg + "**=>\u266A**__**"; 
-                      consolg.log("msg=" + msg);
+                      console.log("msg=" + msg);
                   }
                   msg = msg + music_queue[i].code;
-                  consolg.log("msg=" + msg);
+                  console.log("msg=" + msg);
                   if(i === playlist_playing_idx) {
                       msg = msg + "**__**<=Now Playing**";
-                      consolg.log("msg=" + msg); 
+                      console.log("msg=" + msg); 
                   }
               }
           } else {
@@ -980,7 +980,7 @@ function UpdatePlayQueue() {
                   msg = msg + "\n" + music_queue[i].code;
               }
           }
-          consolg.log("msg=" + msg);
+          console.log("msg=" + msg);
           playqueue_message.edit(msg);
       }
 }
