@@ -390,7 +390,7 @@ var func_playqueue = {
               playqueue_message = "";
           }
           message.channel.send("Now loading");
-          message.channel.fetchMessage({ limit: 10})
+          message.channel.fetchMessage({ limit: 10, after: message.id})
             .then(messages => {
                 messages.forEach(function(msg) {
                   if(msg.author.id === client.user.id && msg.content === "Now loading") {
@@ -424,7 +424,7 @@ var func_musicdetail = {
               detail_message = "";
           }
           message.channel.send("Now loading");
-          message.channel.fetchMessages({ limit: 10})
+          message.channel.fetchMessages({ limit: 10, after: message.id})
             .then(messages => {
                 messages.forEach(function(msg) {
                   if(msg.author.id === client.user.id && msg.content === "Now loading") {
@@ -708,7 +708,7 @@ var func_clear = {
         let amount = parseInt(token[1]);
         if(amount < 1) amount = 1;
         if(amount > 100) amount = 100;
-        message.channel.fetchMessages({limit : amount, after : message.id})
+        message.channel.fetchMessages({limit : amount, before : message.id})
           .then(messages => {
             messages.forEach(function(msg) {
               if(msg.content.charAt(0) === '$' || msg.author.id === client.user.id) {
