@@ -390,7 +390,7 @@ var func_playqueue = {
               playqueue_message = "";
           }
           message.channel.send("Now loading");
-          message.channel.fetchMessage({ limit: 10, after: message.id})
+          message.channel.fetchMessages({ limit: 10, after: message.id})
             .then(messages => {
                 messages.forEach(function(msg) {
                   if(msg.author.id === client.user.id && msg.content === "Now loading") {
