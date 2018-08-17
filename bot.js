@@ -957,6 +957,9 @@ function UpdatePlayQueue() {
               var i;
               for(i=0; i<music_queue.length; i++) {
                   msg = msg + "\n" + ((i === playlist_playing_idx)?"**\t\t-->\u266A**__**":"") + music_queue[i].code + ((i === playlist_playing_idx)?"**__** <-- now playing**":""); 
+                  if(i === playlist_playing_idx) {
+                      console.log("CODE = " + music_queue[i].code); 
+                  }
               }
           } else {
               msg = msg + "**" + now_playing_music.code + "** <- now playing";
