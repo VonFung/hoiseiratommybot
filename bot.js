@@ -935,8 +935,8 @@ function UpdateMusicDetail() {
         detail_message = "";
       } else {
         detail_message.edit("**\u266A" + now_playing_music.code + ((playlist_mode)?"(" + playlist_mode + ")":"") + "**")
-              .then(msg => {console.log("UpdateMusicDetail success!")})
-              .catch(console.log("UpdateMusicDetail error : " + reject.toString()));;
+              .then(edited_msg => {console.log("UpdateMusicDetail success!\n" + edited_msg.content)})
+              .catch(console.log("UpdateMusicDetail error"));;
       }
 }
 
@@ -963,7 +963,6 @@ function UpdatePlayQueue() {
                       msg = msg + "**=>\u266A**__**"; 
                   }
                   msg = msg + music_queue[i].code;
-                  console.log("msg=" + msg);
                   if(i === playlist_playing_idx) {
                       msg = msg + "**__**<=Now Playing**";
                   }
@@ -976,8 +975,8 @@ function UpdatePlayQueue() {
               }
           }
           playqueue_message.edit(msg)
-              .then(msg => {console.log("UpdatePlayQueue success!")})
-              .catch(console.log("UpdatePlayQueue error : " + reject.toString()));
+              .then(edited_msg => {console.log("UpdatePlayQueue success!\n" + edited_msg.content)})
+              .catch(console.log("UpdatePlayQueue error"));
       }
 }
 
