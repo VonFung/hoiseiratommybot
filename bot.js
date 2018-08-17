@@ -456,6 +456,7 @@ var func_stop = {
         random_playlist = false;
         playlist_playing_idx = -1;
         UpdateMusicDetail();
+        UpdatePlayQueue();
     }
 }
 
