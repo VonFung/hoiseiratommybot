@@ -787,9 +787,9 @@ client.on('ready', () => {
     console.log('I am ready!');
   
     UpdateUserNicknameID();
-    client.users.forEach((id, user) => {
+    /*client.users.forEach((id, user) => {
         console.log(id + ": " + user.id);  
-    });
+    });*/
     
 });
 
@@ -838,10 +838,20 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
      // User Joins a voice channel
     console.log("'" + newMember.id + "' has joined the voice channel!");
-    /*if(newMember.id === "340126981905448962") {   //社長ID
-        console.log( 
-    }*/
-    if(newMember.id === "340127083848269834") {
+    if(newMember.id === "340126981905448962") {   //社長ID
+        let vc = newMember.voiceChannel;
+        vc.join()
+          .then(conn => {
+            stream = ytdl('https://www.youtube.com/watch?v=0nc6lx2i4-Q', {filter : 'audioonly'});
+            var temp_dispatcher = connection.playStream(stream);
+            temp_dispatcher.setVolume(now_playing_music.volume * master_volume);
+            temp_dispatcher.on("end", end => {
+                vc.leave();
+            });
+          })
+          
+    }
+    /*if(newMember.id === "340127083848269834") {
         let vc = newMember.voiceChannel;
         vc.join()
         .then(connection => {
@@ -851,7 +861,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 vc.leave();
             });
         }) 
-    }
+    }*/
   } else if(newUserChannel === undefined){
 
     // User leaves a voice channel
