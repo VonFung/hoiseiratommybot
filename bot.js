@@ -844,7 +844,6 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
           .then(conn => {
             stream = ytdl('https://www.youtube.com/watch?v=0nc6lx2i4-Q', {filter : 'audioonly'});
             var temp_dispatcher = connection.playStream(stream);
-            temp_dispatcher.setVolume(now_playing_music.volume * master_volume);
             temp_dispatcher.on("end", end => {
                 vc.leave();
             });
