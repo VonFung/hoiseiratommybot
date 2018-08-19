@@ -128,22 +128,21 @@ var func_addmusic = {
   
     DESCRIPTION : "Add new music to the database",
   
-    SYNTAX : "{$ADDMUSIC | music_code | URL | isYoutube?(bool:T/TRUE/F/FALSE) | ***[optional] default_volume(float between 0 to 1)***}",
+    SYNTAX : "{$ADDMUSIC | music_code | URL | ***[optional] default_volume(float between 0 to 1)***}",
    
     MANUAL : "**music_code : **Define a new code that you want to play this music."
               + "\n**URL : **Provide an URL which this bot can get the music."
-              + "\n**isYoutube : **Please choose 'T' or 'TRUE' if the source is from youtube."
               + "\n***default_volume : ***[Optional] Set the default volume to this music (Default is 0.5 if not set).",
     
     LOGIC : function(token, message, func) {
-        if(token.length < 4) {
+        if(token.length < 3) {
             message.reply("Incorrect Syntax!\n" + this.SYNTAX);
             return;
         }
       
-        var sql = "INSERT INTO musiclist (CODE, URL, IS_YOUTUBE" + (token.length > 4?", DEFAULT_VOLUME":"") + ") VALUES ('"
-                + token[1].toUpperCase() + "', '" + token[2] + "', " + ((token[3].toUpperCase() === "T" || token[3].toUpperCase() === "TRUE")?"TRUE":"FALSE")
-                 + (token.length > 4?", " + token[4]:"") + ")";
+        var sql = "INSERT INTO musiclist (CODE, URL" + (token.length > 3?", DEFAULT_VOLUME":"") + ") VALUES ('"
+                + token[1].toUpperCase() + "', '" + token[2] + "', "
+                 + (token.length > 3?", " + token[3]:"") + ")";
 
         ExecuteSQL(sql).then((result) => {
             message.reply('ADDED SUCCESSFULLY');
@@ -217,7 +216,7 @@ var func_play = {
             return;
         }
       
-        var sql = "SELECT URL, IS_YOUTUBE, DEFAULT_VOLUME FROM musiclist WHERE CODE = '" + token[1].toUpperCase() + "'";
+        var sql = "SELECT URL, DEFAULT_VOLUME FROM musiclist WHERE CODE = '" + token[1].toUpperCase() + "'";
       
         ExecuteSQL(sql).then((result) => {
             if(result.length === 0) {
@@ -228,7 +227,6 @@ var func_play = {
                 var music_instance = {
                   code : token[1].toUpperCase(),
                   url : result[0].URL,
-                  isYoutubeOrNot : result[0].IS_YOUTUBE,
                   volume : token.length > 2?token[2]:result[0].DEFAULT_VOLUME
                 };
 
@@ -335,7 +333,7 @@ var func_playlist = {
             return;
         }
       
-        var sql = "SELECT CODE, URL, IS_YOUTUBE, DEFAULT_VOLUME FROM musiclist WHERE id IN "
+        var sql = "SELECT CODE, URL, DEFAULT_VOLUME FROM musiclist WHERE id IN "
                     +"(SELECT a.MUSIC_ID FROM playlist_music a INNER JOIN playlist b WHERE a.PLAYLIST_ID = b.id AND "
                     +"b.NAME = '" + token[1].toUpperCase() + "') ORDER BY id ASC";
       
@@ -352,7 +350,6 @@ var func_playlist = {
                 var music_instance = {
                   code : result[i].CODE,
                   url : result[i].URL,
-                  isYoutubeOrNot : result[i].IS_YOUTUBE,
                   volume : result[i].DEFAULT_VOLUME
                 };
                 music_queue.push(music_instance);
@@ -918,7 +915,7 @@ function PlayMusicInQueue(connection) {
         now_playing_music = music_queue[playlist_playing_idx];
       }
       
-      if(now_playing_music.isYoutubeOrNot) {
+      if(now_playing_music.url.contains('https://www.youtube.com/') {
           stream = ytdl(now_playing_music.url, {filter : 'audioonly'});
           dispatcher = connection.playStream(stream);
           dispatcher.setVolume(now_playing_music.volume * master_volume);
@@ -941,7 +938,7 @@ function PlayMusicInQueue(connection) {
   
       now_playing_music = music_queue.shift();
 
-      if(now_playing_music.isYoutubeOrNot) {
+      if(now_playing_music.url.contains('https://www.youtube.com/') {
           stream = ytdl(now_playing_music.url, {filter : 'audioonly'});
           dispatcher = connection.playStream(stream);
           dispatcher.setVolume(now_playing_music.volume * master_volume);
