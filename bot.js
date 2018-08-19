@@ -756,13 +756,13 @@ var func_test = {
         //message.channel.send("$TESTREPLY");
         var conn;
         client.voiceConnections.forEach((id, vc) => {
-            //if(id === '261140017894785025') {
-            if(id === 'HoiseiraTommy_Discord群') {
+            if(id === '261140017894785025') {
+            //if(id === 'HoiseiraTommy_Discord群') {
                 conn = vc; 
             }
         });
   
-        var new_dispatcher = vc.playArbitaryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
+        var new_dispatcher = conn.playArbitaryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
         new_dispatcher.setVolume(0.1);
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
