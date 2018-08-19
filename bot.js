@@ -844,7 +844,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
      // User Joins a voice channel
     console.log("'" + newMember.id + "' has joined the voice channel!");
-    consolg.log("guild id: " + newMember.guild.id);
+    console.log("guild id: " + newMember.guild.id);
     if(newMember.id === "340126981905448962") {   //社長ID
         let vc = newMember.voiceChannel;
         vc.join()
