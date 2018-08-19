@@ -754,9 +754,14 @@ var func_test = {
           .catch(console.error);*/
         //message.reply("Your id is " + GetUserID(message.author.id));
         //message.channel.send("$TESTREPLY");
-        
+        var conn;
+        client.voiceConnections.forEach((id, vc) => {
+            if(id === '261140017894785025') {
+                conn = vc; 
+            }
+        });
   
-        var new_dispatcher = connection.playArbitaryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
+        var new_dispatcher = vc.playArbitaryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
         new_dispatcher.setVolume(0.1);
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
