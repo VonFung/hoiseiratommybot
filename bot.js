@@ -760,7 +760,7 @@ var func_test = {
         new_dispatcher.setVolume(0.1);
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
-        }
+        });
     }
   
 }
