@@ -756,7 +756,8 @@ var func_test = {
         //message.channel.send("$TESTREPLY");
         var conn;
         client.voiceConnections.forEach((id, vc) => {
-            if(id === '261140017894785025') {
+            //if(id === '261140017894785025') {
+            if(id === 'HoiseiraTommy_Discord群') {
                 conn = vc; 
             }
         });
