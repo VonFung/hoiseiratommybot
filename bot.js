@@ -16,6 +16,7 @@ const db_schema = "hoiseiratommybot";
 var voiceChannel;          //===================
 var stream;                //  For Play Music
 var dispatcher = null;     //===================
+var voice_conn;
 
 var clear_command = false;
 
@@ -235,6 +236,7 @@ var func_play = {
                 if(dispatcher === null && music_queue.length === 1) {
                   voiceChannel = message.member.voiceChannel;
                   voiceChannel.join().then(connection => {
+                    voice_conn = connection;
                     PlayMusicInQueue(connection);
                   }).catch(err => console.log(err));
                 } else {
@@ -754,15 +756,15 @@ var func_test = {
           .catch(console.error);*/
         //message.reply("Your id is " + GetUserID(message.author.id));
         //message.channel.send("$TESTREPLY");
-        var conn;
+        /*var conn;
         client.voiceConnections.forEach((id, vc) => {
             if(id === '261140017894785025') {
             //if(id === 'HoiseiraTommy_Discord群') {
                 conn = vc; 
             }
-        });
+        });*/
   
-        var new_dispatcher = conn.playArbitaryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
+        var new_dispatcher = voice_conn.playArbitaryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
         new_dispatcher.setVolume(0.1);
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
