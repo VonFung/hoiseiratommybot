@@ -862,7 +862,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
           })
           
     }
-    if(newMember.id === "340127083848269834") {
+    /*if(newMember.id === "340127083848269834") {
         let vc = newMember.voiceChannel;
         vc.join()
         .then(conn => {
@@ -874,7 +874,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 vc.leave();
             });
         }) 
-    }
+    }*/
   } else if(newUserChannel === undefined){
 
     // User leaves a voice channel
@@ -932,7 +932,8 @@ function PlayMusicInQueue(connection) {
         now_playing_music = music_queue[playlist_playing_idx];
       }
       
-      if(now_playing_music.url.indexOf('https://www.youtube.com/') + 1) {
+      if((now_playing_music.url.indexOf('https://www.youtube.com/') + 1) || 
+         (now_playing_music.url.indexOf('https://youtu.be/') + 1)) {
           stream = ytdl(now_playing_music.url, {filter : 'audioonly'});
           dispatcher = connection.playStream(stream);
           dispatcher.setVolume(now_playing_music.volume * master_volume);
@@ -955,7 +956,8 @@ function PlayMusicInQueue(connection) {
   
       now_playing_music = music_queue.shift();
 
-      if(now_playing_music.url.indexOf('https://www.youtube.com/') + 1) {
+      if((now_playing_music.url.indexOf('https://www.youtube.com/') + 1) || 
+         (now_playing_music.url.indexOf('https://youtu.be/') + 1)) {
           stream = ytdl(now_playing_music.url, {filter : 'audioonly'});
           dispatcher = connection.playStream(stream);
           dispatcher.setVolume(now_playing_music.volume * master_volume);
