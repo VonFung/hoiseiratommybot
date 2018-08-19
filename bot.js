@@ -922,7 +922,7 @@ function PlayMusicInQueue(connection) {
         now_playing_music = music_queue[playlist_playing_idx];
       }
       
-      if(now_playing_music.url.contains('https://www.youtube.com/')) {
+      if(now_playing_music.url.indexOf('https://www.youtube.com/') + 1) {
           stream = ytdl(now_playing_music.url, {filter : 'audioonly'});
           dispatcher = connection.playStream(stream);
           dispatcher.setVolume(now_playing_music.volume * master_volume);
@@ -945,7 +945,7 @@ function PlayMusicInQueue(connection) {
   
       now_playing_music = music_queue.shift();
 
-      if(now_playing_music.url.contains('https://www.youtube.com/')) {
+      if(now_playing_music.url.indexOf('https://www.youtube.com/') + 1) {
           stream = ytdl(now_playing_music.url, {filter : 'audioonly'});
           dispatcher = connection.playStream(stream);
           dispatcher.setVolume(now_playing_music.volume * master_volume);
