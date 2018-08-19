@@ -16,7 +16,6 @@ const db_schema = "hoiseiratommybot";
 var voiceChannel;          //===================
 var stream;                //  For Play Music
 var dispatcher = null;     //===================
-var voice_conn;
 
 var clear_command = false;
 
@@ -236,7 +235,6 @@ var func_play = {
                 if(dispatcher === null && music_queue.length === 1) {
                   voiceChannel = message.member.voiceChannel;
                   voiceChannel.join().then(connection => {
-                    voice_conn = connection;
                     PlayMusicInQueue(connection);
                   }).catch(err => console.log(err));
                 } else {
@@ -763,12 +761,12 @@ var func_test = {
                 conn = vc; 
             }
         });*/
-  
+        /*
         var new_dispatcher = voice_conn.playArbitraryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
         new_dispatcher.setVolume(0.1);
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
-        });
+        });*/
     }
   
 }
@@ -852,30 +850,31 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
      // User Joins a voice channel
     console.log("'" + newMember.id + "' has joined the voice channel!");
-    console.log("guild id: " + newMember.guild.id);
     if(newMember.id === "340126981905448962") {   //社長ID
         let vc = newMember.voiceChannel;
         vc.join()
           .then(conn => {
-            stream = ytdl('https://www.youtube.com/watch?v=0nc6lx2i4-Q', {filter : 'audioonly'});
-            var temp_dispatcher = connection.playStream(stream);
+            let stream = ytdl('https://www.youtube.com/watch?v=0nc6lx2i4-Q', {filter : 'audioonly'});
+            var temp_dispatcher = conn.playStream(stream);
             temp_dispatcher.on("end", end => {
                 vc.leave();
             });
           })
           
     }
-    /*if(newMember.id === "340127083848269834") {
+    if(newMember.id === "340127083848269834") {
         let vc = newMember.voiceChannel;
         vc.join()
-        .then(connection => {
-            const temp_dispatcher = connection.playArbitraryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
-            temp_dispatcher.setVolume(0.1);  
+        .then(conn => {
+            //const temp_dispatcher = connection.playArbitraryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
+            let stream = ytdl('https://youtu.be/0zMR4uH9HbA', {filter : 'audioonly'});
+            var temp_dispatcher = conn.playStream(stream);
+            temp_dispatcher.setVolume(0.2);  
             temp_dispatcher.on('end', () => {
                 vc.leave();
             });
         }) 
-    }*/
+    }
   } else if(newUserChannel === undefined){
 
     // User leaves a voice channel
