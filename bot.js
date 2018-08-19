@@ -794,7 +794,9 @@ client.on('ready', () => {
     /*client.users.forEach((id, user) => {
         console.log(id + ": " + user.id);  
     });*/
-    
+    client.guilds.forEach((id, guild) => {
+        console.log("Guild id: " + id + "/" + guild.id);
+    });
 });
 
 client.on('message', message => {
