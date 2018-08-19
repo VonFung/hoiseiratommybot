@@ -764,7 +764,7 @@ var func_test = {
             }
         });*/
   
-        var new_dispatcher = voice_conn.playArbitaryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
+        var new_dispatcher = voice_conn.playArbitraryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
         new_dispatcher.setVolume(0.1);
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
