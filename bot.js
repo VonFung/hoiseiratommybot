@@ -753,7 +753,14 @@ var func_test = {
           })
           .catch(console.error);*/
         //message.reply("Your id is " + GetUserID(message.author.id));
-        message.channel.send("$TESTREPLY");
+        //message.channel.send("$TESTREPLY");
+        
+  
+        var new_dispatcher = connection.playArbitaryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
+        new_dispatcher.setVolume(0.1);
+        new_dispatcher.on("end", end => {
+            new_dispatcher = null;            
+        }
     }
   
 }
