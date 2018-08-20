@@ -880,7 +880,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
   } else if(newUserChannel === undefined){
 
     // User leaves a voice channel
-    console.log("'" + newMember.id + "' has left the voice channel!(" + newMember.voiceChannel.id + ")");
+    console.log("'" + newMember.id + "' has left the voice channel!(" + oldMember.voiceChannel.id + ")");
   }
 })
 
