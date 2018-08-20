@@ -460,6 +460,7 @@ var func_stop = {
     LOGIC : function(token, message) {
         music_queue = [];
         PlayMusicInQueue();
+        dispatcher.end();
     }
 }
 
@@ -845,11 +846,11 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
   let oldUserChannel = oldMember.voiceChannel
 
 
-  if(oldUserChannel === undefined && newUserChannel !== undefined) {
+  if(oldUserChannel === undefined && newUserChannel !== undefined && newUserChannel.id === '261140017894785026') {
 
      // User Joins a voice channel
     console.log("'" + newMember.id + "' has joined the voice channel!(" + newMember.voiceChannel.id + ")");
-    if(newMember.id === "340126981905448962") {   //社長ID
+    /*if(newMember.id === "340126981905448962") {   //社長ID
         let vc = newMember.voiceChannel;
         vc.join()
           .then(conn => {
@@ -860,23 +861,30 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
             });
           })
           
-    }
-    /*if(newMember.id === "340127083848269834") {
+    }*/
+    if(newMember.id === "340127083848269834") {
         interupt_music = {
           code : 'TESTING',
           url : 'https://www.youtube.com/watch?v=0nc6lx2i4-Q',
           volume : 0.8
         };
-        if(!voice_conn) {
-
+        if(now_playing_music) {
+          if(!playlist_mode) {
+            let temp_loop = music_loop;
+            music_loop = true;
+            dispatcher.end();
+            music_loop = temp_loop;
+          } else {
+            dispatcher.end(); 
+          }
+        } else {
+          voiceChannel = newMember.voiceChannel;
+          voiceChannel.join().then(connection => {
+            voice_conn = connection;
+            PlayMusicInQueue();
+          }).catch(err => console.log(err));
         }
-        let vc = newMember.voiceChannel;
-        vc.join()
-        .then(conn => {
-            //const temp_dispatcher = connection.playArbitraryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
-
-        }) 
-    }*/
+    }
   } else if(newUserChannel === undefined){
 
     // User leaves a voice channel
@@ -915,19 +923,45 @@ function GetUserID(discordID) {
 
 
 function PlayMusicInQueue() {
+    if(interupt_music) {
+      now_playing_music = interupt_music;
+      if((interupt_music.url.indexOf('https://www.youtube.com/') + 1) || 
+         (interupt_music.url.indexOf('https://youtu.be/') + 1)) {
+          stream = ytdl(interupt_music.url, {filter : 'audioonly'});
+          dispatcher = voice_conn.playStream(stream);
+          dispatcher.setVolume(interupt_music.volume * master_volume);
+          dispatcher.on("end", end => {
+               dispatcher = null;
+               interupt_music = null;
+               PlayMusicInQueue();
+          });
+      } else {
+          dispatcher = voice_conn.playArbitraryInput(interupt_music.url);
+          dispatcher.setVolume(interupt_music.volume * master_volume);
+          dispatcher.on("end", end => {
+               dispatcher = null;
+               interupt_music = null;
+               PlayMusicInQueue();
+          });
+      }
+      return; 
+    }
     
     if(music_queue.length === 0) {
       voiceChannel.leave();
       playlist_mode = "";
       random_playlist = false;
       playlist_playing_idx = -1;
+      interupt_music = null;
       UpdateMusicDetail();
       UpdatePlayQueue();
       return;
     }
   
     if(playlist_mode) {
-      if(random_playlist) {
+      if(now_playing_music) {
+        now_playing_music = music_queue[playlist_playing_idx];
+      } else if(random_playlist) {
         var i;
         do {
           i = Math.floor(Math.random() * music_queue.length);
