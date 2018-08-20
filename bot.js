@@ -16,6 +16,7 @@ const db_schema = "hoiseiratommybot";
 var voiceChannel;          //===================
 var stream;                //  For Play Music
 var dispatcher = null;     //===================
+var voice_conn = null;
 
 var clear_command = false;
 
@@ -26,6 +27,7 @@ var now_playing_music = null;
 var playlist_mode = "";
 var random_playlist = false;
 var playlist_playing_idx = -1;
+var interupt_music = null;
 
 var detail_message = "";
 var playqueue_message = "";
@@ -235,7 +237,8 @@ var func_play = {
                 if(dispatcher === null && music_queue.length === 1) {
                   voiceChannel = message.member.voiceChannel;
                   voiceChannel.join().then(connection => {
-                    PlayMusicInQueue(connection);
+                    voice_conn = connection;
+                    PlayMusicInQueue();
                   }).catch(err => console.log(err));
                 } else {
                   message.reply("Added to playlist. Now playing is : " + now_playing_music.code);
@@ -357,8 +360,9 @@ var func_playlist = {
             
             voiceChannel = message.member.voiceChannel;
             voiceChannel.join().then(connection => {
+              voice_conn = connection;
               playlist_mode = token[1].toUpperCase();
-              PlayMusicInQueue(connection);
+              PlayMusicInQueue();
             }).catch(err => console.log(err));
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
@@ -455,12 +459,7 @@ var func_stop = {
   
     LOGIC : function(token, message) {
         music_queue = [];
-        voiceChannel.leave();
-        playlist_mode = "";
-        random_playlist = false;
-        playlist_playing_idx = -1;
-        UpdateMusicDetail();
-        UpdatePlayQueue();
+        PlayMusicInQueue();
     }
 }
 
@@ -849,7 +848,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
   if(oldUserChannel === undefined && newUserChannel !== undefined) {
 
      // User Joins a voice channel
-    console.log("'" + newMember.id + "' has joined the voice channel!");
+    console.log("'" + newMember.id + "' has joined the voice channel!(" + newMember.voiceChannel.id + ")");
     if(newMember.id === "340126981905448962") {   //社長ID
         let vc = newMember.voiceChannel;
         vc.join()
@@ -863,22 +862,25 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
           
     }
     /*if(newMember.id === "340127083848269834") {
+        interupt_music = {
+          code : 'TESTING',
+          url : 'https://www.youtube.com/watch?v=0nc6lx2i4-Q',
+          volume : 0.8
+        };
+        if(!voice_conn) {
+
+        }
         let vc = newMember.voiceChannel;
         vc.join()
         .then(conn => {
             //const temp_dispatcher = connection.playArbitraryInput('https://vignette.wikia.nocookie.net/kancolle/images/a/ab/Sound_se_18.ogg/revision/latest?cb=20150615152815');
-            let stream = ytdl('https://youtu.be/0zMR4uH9HbA', {filter : 'audioonly'});
-            var temp_dispatcher = conn.playStream(stream);
-            temp_dispatcher.setVolume(0.2);  
-            temp_dispatcher.on('end', () => {
-                vc.leave();
-            });
+
         }) 
     }*/
   } else if(newUserChannel === undefined){
 
     // User leaves a voice channel
-    console.log("'" + newMember.id + "' has left the voice channel!");
+    console.log("'" + newMember.id + "' has left the voice channel!(" + newMember.voiceChannel.id + ")");
   }
 })
 
@@ -912,10 +914,15 @@ function GetUserID(discordID) {
 }
 
 
-function PlayMusicInQueue(connection) {
+function PlayMusicInQueue() {
     
     if(music_queue.length === 0) {
       voiceChannel.leave();
+      playlist_mode = "";
+      random_playlist = false;
+      playlist_playing_idx = -1;
+      UpdateMusicDetail();
+      UpdatePlayQueue();
       return;
     }
   
@@ -935,20 +942,20 @@ function PlayMusicInQueue(connection) {
       if((now_playing_music.url.indexOf('https://www.youtube.com/') + 1) || 
          (now_playing_music.url.indexOf('https://youtu.be/') + 1)) {
           stream = ytdl(now_playing_music.url, {filter : 'audioonly'});
-          dispatcher = connection.playStream(stream);
+          dispatcher = voice_conn.playStream(stream);
           dispatcher.setVolume(now_playing_music.volume * master_volume);
           dispatcher.on("end", end => {
                dispatcher = null;
                now_playing_music = null;
-               PlayMusicInQueue(connection);
+               PlayMusicInQueue();
           });
       } else {
-          dispatcher = connection.playArbitraryInput(now_playing_music.url);
+          dispatcher = voice_conn.playArbitraryInput(now_playing_music.url);
           dispatcher.setVolume(now_playing_music.volume * master_volume);
           dispatcher.on("end", end => {
                dispatcher = null;
                now_playing_music = null;
-               PlayMusicInQueue(connection);
+               PlayMusicInQueue();
           });
       }
       
@@ -959,7 +966,7 @@ function PlayMusicInQueue(connection) {
       if((now_playing_music.url.indexOf('https://www.youtube.com/') + 1) || 
          (now_playing_music.url.indexOf('https://youtu.be/') + 1)) {
           stream = ytdl(now_playing_music.url, {filter : 'audioonly'});
-          dispatcher = connection.playStream(stream);
+          dispatcher = voice_conn.playStream(stream);
           dispatcher.setVolume(now_playing_music.volume * master_volume);
           dispatcher.on("end", end => {
                dispatcher = null;
@@ -967,10 +974,10 @@ function PlayMusicInQueue(connection) {
                   music_queue.unshift(now_playing_music); 
                }
                now_playing_music = null;
-               PlayMusicInQueue(connection);
+               PlayMusicInQueue();
           });
       } else {
-          dispatcher = connection.playArbitraryInput(now_playing_music.url);
+          dispatcher = voice_conn.playArbitraryInput(now_playing_music.url);
           dispatcher.setVolume(now_playing_music.volume * master_volume);
           dispatcher.on("end", end => {
                dispatcher = null;
@@ -978,7 +985,7 @@ function PlayMusicInQueue(connection) {
                   music_queue.unshift(now_playing_music); 
                }
                now_playing_music = null;
-               PlayMusicInQueue(connection);
+               PlayMusicInQueue();
           });
       }
     }
@@ -994,7 +1001,7 @@ function UpdateMusicDetail() {
       if(!detail_message) {
         return;
       } else if(now_playing_music === null) {
-        detail_message.pin();
+        detail_message.unpin();
         detail_message.delete();
         detail_message = "";
       } else if (detail_message.deleted) {
