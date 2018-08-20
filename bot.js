@@ -459,7 +459,6 @@ var func_stop = {
   
     LOGIC : function(token, message) {
         music_queue = [];
-        PlayMusicInQueue();
         dispatcher.end();
     }
 }
@@ -953,6 +952,7 @@ function PlayMusicInQueue() {
       random_playlist = false;
       playlist_playing_idx = -1;
       interupt_music = null;
+      now_playing_music = null;
       UpdateMusicDetail();
       UpdatePlayQueue();
       return;
