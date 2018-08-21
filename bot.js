@@ -142,9 +142,9 @@ var func_addmusic = {
             return;
         }
       
-        var sql = "INSERT INTO musiclist (CODE, URL" + (token.length > 3?", DEFAULT_VOLUME":"") + ") VALUES (\'"
-                + token[1].toUpperCase() + "', '" + token[2] + "\', "
-                 + (token.length > 3?", " + token[3]:"") + ")";
+        var sql = "INSERT INTO musiclist (CODE, URL" + (token.length > 3?", DEFAULT_VOLUME":"") + ") VALUES ('"
+                + token[1].toUpperCase() + "', '" + token[2]
+                 + (token.length > 3?"', " + token[3]:"'") + ")";
 
         ExecuteSQL(sql).then((result) => {
             message.reply('ADDED SUCCESSFULLY');
