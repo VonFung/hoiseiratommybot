@@ -776,6 +776,12 @@ var func_test = {
             nico.video.flv.get({id: 'sm30939147', user_session: session.user_session})
               .then(result => {
                     console.log("result = " + result);
+                    var target_video = null;
+                    http.get(result.substring(result.indexOf("url=") + 4), res => {
+                        target_video = res;
+                        console.log("res = " + res);
+                    });
+                    ffmpeg(target_video).noVideo();
                })
               .catch(err => {
                   console.log(err);
