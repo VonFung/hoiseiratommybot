@@ -772,9 +772,9 @@ var func_test = {
         });*/
         nico.video.flv.get({id: 'sm30939147'})
           .then(result => {
-                console.log('result = " + result);
+                console.log("result = " + result);
            })
-          .catch(console.log('err = " + err));
+          .catch(console.log("err = " + err));
     }
   
 }
