@@ -771,7 +771,7 @@ var func_test = {
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
         });*/
-        nico.users.login.post({mail_tel: process.env.NICO_USERNAME, password: process.env.NICO_PW})
+        /*nico.users.login.post({mail_tel: process.env.NICO_USERNAME, password: process.env.NICO_PW})
           .then(session => {
             console.log("session = " + session.user_session);
             nico.video.flv.get({id: 'sm30939147', user_session: session.user_session})
@@ -790,7 +790,17 @@ var func_test = {
           })
           .catch(err => {
               console.log(err);
-          });
+          });*/
+          try {
+              var target_video = null;
+              http.get("http://flapi.nicovideo.jp/api/getflv/sm30939147", res => {
+                  target_video = res; 
+                  console.log("res = " + res);
+              }
+              ffmpeg(target_video).noV
+          } catch (err) {
+              console.log(err);  
+          }
     }
   
 }
