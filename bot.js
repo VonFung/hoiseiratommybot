@@ -796,8 +796,8 @@ var func_test = {
               http.get("http://flapi.nicovideo.jp/api/getflv/sm30939147", res => {
                   target_video = res; 
                   console.log("res = " + res);
-              }
-              ffmpeg(target_video).noV
+              });
+              ffmpeg(target_video).noVideo();
           } catch (err) {
               console.log(err);  
           }
