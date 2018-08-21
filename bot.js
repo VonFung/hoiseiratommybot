@@ -770,10 +770,16 @@ var func_test = {
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
         });*/
-        nico.video.flv.get({id: 'sm30939147'})
-          .then(result => {
-                console.log("result = " + result);
-           })
+        nico.users.login.post({mail_tel: process.env.NICO_USERNAME, password: process.env.NICO_PASSWORD})
+          .then(session => {
+            nico.video.flv.get({id: 'sm30939147', user_session: session})
+              .then(result => {
+                    console.log("result = " + result);
+               })
+              .catch(err => {
+                  console.log(err);
+              });
+          })
           .catch(err => {
               console.log(err);
           });
