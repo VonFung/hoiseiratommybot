@@ -772,6 +772,7 @@ var func_test = {
         });*/
         nico.users.login.post({mail_tel: process.env.NICO_USERNAME, password: process.env.NICO_PW})
           .then(session => {
+            console.log("session = " + session);
             nico.video.flv.get({id: 'sm30939147', user_session: session})
               .then(result => {
                     console.log("result = " + result);
