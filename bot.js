@@ -5,7 +5,7 @@ var mysql = require('mysql');
 var NicoAPI = require('nicoapi');
 var extractAudio = require('ffmpeg-extract-audio');
 var http = require('http');
-var ffmpeg = require('ffmpeg');
+//var ffmpeg = require('ffmpeg');
 
 var nico = new NicoAPI();
 
@@ -798,7 +798,7 @@ var func_test = {
                   target_video = res; 
                   console.log("res = " + JSON.stringify(res));
               });
-              ffmpeg(target_video).noVideo();
+              //ffmpeg(target_video).noVideo();
           } catch (err) {
               console.log(err);  
           }
