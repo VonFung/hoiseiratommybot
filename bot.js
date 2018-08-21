@@ -5,6 +5,7 @@ var mysql = require('mysql');
 var NicoAPI = require('nicoapi');
 var extractAudio = require('ffmpeg-extract-audio');
 var http = require('http');
+var ffmpeg = require('ffmpeg');
 
 var nico = new NicoAPI();
 
@@ -795,7 +796,7 @@ var func_test = {
               var target_video = null;
               http.get("http://flapi.nicovideo.jp/api/getflv/sm30939147", res => {
                   target_video = res; 
-                  console.log("res = " + res);
+                  console.log("res = " + JSON.stringify(res));
               });
               ffmpeg(target_video).noVideo();
           } catch (err) {
