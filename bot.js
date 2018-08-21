@@ -774,7 +774,9 @@ var func_test = {
           .then(result => {
                 console.log("result = " + result);
            })
-          .catch(console.log("err = " + err));
+          .catch(err => {
+              console.log(err);
+          });
     }
   
 }
