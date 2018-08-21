@@ -2,6 +2,10 @@ const Discord = require('discord.js');
 const ytdl = require('ytdl-core');  //For music streaming
 const Webhook = require('webhook-discord');
 var mysql = require('mysql');
+var NicoAPI = require('nicoapi');
+var extractAudio = require('ffmpeg-extract-audio');
+
+var nico = new NicoAPI();
 
 const hook = new Webhook(process.env.WEBHOOK_URL);
 
@@ -766,6 +770,11 @@ var func_test = {
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
         });*/
+        nico.video.flv.get({id: 'sm30939147'})
+          .then(result => {
+                console.log('result = " + result);
+           })
+          .catch(console.log('err = " + err));
     }
   
 }
