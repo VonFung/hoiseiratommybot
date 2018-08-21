@@ -4,6 +4,7 @@ const Webhook = require('webhook-discord');
 var mysql = require('mysql');
 var NicoAPI = require('nicoapi');
 var extractAudio = require('ffmpeg-extract-audio');
+var http = require('http');
 
 var nico = new NicoAPI();
 
