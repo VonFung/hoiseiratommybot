@@ -754,7 +754,7 @@ var func_sql = {
               sql = sql + " " + token[i];
           }
           ExecuteSQL(sql).then((result) => {
-              message.channel.send(result);
+              message.channel.send(JSON.stringify(result));
           }).catch((err) => {
               message.reply("Something error! Please refer to the log on Heroku");
               console.log(err);
