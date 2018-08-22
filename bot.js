@@ -1151,6 +1151,7 @@ function ExecuteSQL(sql) {
                   } else {
                       resolve(result);
                       console.log("SQL: '" + sql + "' success");
+                      console.log("result: '" + JSON.stringify(result) + "'");
                   }
                   con.end();
               });
