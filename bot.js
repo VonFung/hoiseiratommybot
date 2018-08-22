@@ -34,7 +34,7 @@ var playqueue_message = "";
 
 const update_time = new Date().toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' });
 
-var user_id_nickname;
+var users;
 
 
 //---Objects for functions---
@@ -595,6 +595,7 @@ var func_setname = {
       
         ExecuteSQL(sql).then((result) => {
             message.reply('Your nickname now is ' + token[1]);
+            UpdateUsers();
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
@@ -844,7 +845,7 @@ client.on('ready', () => {
 
     console.log('I am ready!');
   
-    UpdateUserNicknameID();
+    UpdateUsers();
     /*client.users.forEach((id, user) => {
         console.log(id + ": " + user.id);  
     });*/
@@ -894,11 +895,36 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
   let oldUserChannel = oldMember.voiceChannel
 
 
-  if(oldUserChannel === undefined && newUserChannel !== undefined && newUserChannel.id === '261140017894785026') {
+  if(oldUserChannel === undefined && newUserChannel !== undefined/* && newUserChannel.id === '261140017894785026'*/) {
 
      // User Joins a voice channel
     console.log("'" + newMember.id + "' has joined the voice channel!(" + newMember.voiceChannel.id + ")");
-    if(newMember.id === "340126981905448962") {   //社長ID
+    for(let i=0; i<users.length; i++) {
+        if(!users[i].DISCORD && newMember.id === users[i].DISCORD && !users[i].BGM) {
+            interupt_music = {
+                code : users[i].NAME + "'s BGM",
+                url : users[i].BGM,
+                volume : users[i].BGM_VOLUME
+            };
+            if(now_playing_music) {
+              if(!playlist_mode) {
+                let temp_loop = music_loop;
+                music_loop = true;
+                dispatcher.end();
+                music_loop = temp_loop;
+              } else {
+                dispatcher.end(); 
+              }
+            } else {
+              voiceChannel = newMember.voiceChannel;
+              voiceChannel.join().then(connection => {
+                voice_conn = connection;
+                PlayMusicInQueue();
+              }).catch(err => console.log(err));
+            }
+        }
+    }
+    /*if(newMember.id === "340126981905448962") {   //社長ID
         interupt_music = {
           code : 'TESTING',
           url : 'https://www.youtube.com/watch?v=0nc6lx2i4-Q',
@@ -920,7 +946,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
             PlayMusicInQueue();
           }).catch(err => console.log(err));
         }
-    }
+    }*/
     /*if(newMember.id === "340127083848269834") {
         interupt_music = {
           code : 'TESTING',
@@ -953,13 +979,13 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
 
 
-function UpdateUserNicknameID() {
+function UpdateUsers() {
   
-    var sql = "SELECT id, NAME, DISCORD FROM user";
+    var sql = "SELECT id, NAME, DISCORD, BGM, BGM_VOLUME FROM user";
   
     ExecuteSQL(sql).then((result) => {
-        user_id_nickname = result;
-        console.log("UpdateUserNicknameID SQL success");
+        users = result;
+        console.log("UpdateUsers SQL success");
     }).catch((err) => {
         message.reply("Something error! Please refer to the log on Heroku");
         console.log(err);
@@ -972,9 +998,9 @@ function UpdateUserNicknameID() {
 }
 
 function GetUserID(discordID) {
-    for(var i=0; i<user_id_nickname.length; i++) {
-        if(user_id_nickname[i].DISCORD === discordID) {
-            return user_id_nickname[i].id; 
+    for(var i=0; i<users.length; i++) {
+        if(users[i].DISCORD === discordID) {
+            return users[i].id; 
         }
     }
     return -1;
