@@ -804,6 +804,17 @@ var func_test = {
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
         });*/
+      var con = mysql.createConnection({
+        host: "db4free.net",
+        user: "hoiseiratommy",
+        password: "hoiseiratommy",
+        dbname: "hoiseiratommy"
+      });
+
+      con.connect(function(err) {
+        if (err) throw err;
+        console.log("Connected!");
+      });
     }
   
 }
