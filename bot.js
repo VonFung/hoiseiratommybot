@@ -900,6 +900,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
      // User Joins a voice channel
     console.log("'" + newMember.id + "' has joined the voice channel!(" + newMember.voiceChannel.id + ")");
     for(let i=0; i<users.length; i++) {
+        console.log("!DISCORD = " + !users[i].DISCORD + " id===DISCORD " + (newMember.id === users[i].DISCORD) + " BGM = " + users[i].BGM);
         if(!users[i].DISCORD && newMember.id === users[i].DISCORD && !users[i].BGM) {
             interupt_music = {
                 code : users[i].NAME + "'s BGM",
