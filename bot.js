@@ -732,6 +732,38 @@ var func_clear = {
   
 }
 
+var func_sql = {
+ 
+    CODE : "SQL",
+  
+    DESCRIPTION : "Direct execute SQL",
+  
+    SYNTAX : "{$SQL | sql_command}",
+  
+    MANUAL : "**sql_command : **The SQL command you want to execute"
+            +"\n**The display of SELECT will be in JSON format",
+  
+    LOGIC : function(token, message) {
+        if(token.length < 2) {
+            message.reply("Incorrect Syntax!\n" + this.SYNTAX);
+            return;
+        } else {
+          var sql = token[1];
+          var i;
+          for(i=2; i<token.length; i++) {
+              sql = sql + " " + token[i];
+          }
+          ExecuteSQL(sql).then((result) => {
+              message.channel.send(result);
+          }).catch((err) => {
+              message.reply("Something error! Please refer to the log on Heroku");
+              console.log(err);
+          });
+        }
+    }
+  
+}
+
 var func_test = {
   
     CODE : "TEST",
@@ -774,7 +806,7 @@ var func_test = {
 var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_addplaylist, func_addmusictopl, 
             func_playlist, func_playqueue, func_musicdetail, func_stop, 
             func_next, func_pause, func_resume, func_volume, func_loop,
-            func_setname, func_vote, func_showvote, func_addvote, func_clear, func_test];
+            func_setname, func_vote, func_showvote, func_addvote, func_clear, func_sql, func_test];
 
 
 
