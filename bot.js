@@ -760,7 +760,7 @@ var func_sql = {
               }
               message.channel.send(result_str);*/
               //message.channel.send(JSON.stringify(result).replace(/%22/g, '"'));
-              message.channel.send(JSON.stringify(result).replace(/"/g, ''));
+              message.channel.send(JSON.stringify(result).replace(/"/g, ' " '));
           }).catch((err) => {
               message.reply("Something error! Please refer to the log on Heroku");
               console.log(err);
