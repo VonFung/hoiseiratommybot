@@ -754,12 +754,12 @@ var func_sql = {
               sql = sql + " " + token[i];
           }
           ExecuteSQL(sql).then((result) => {
-              result_str = "";
+              /*result_str = "";
               for(let a=0; a<result.length; a++) {
                   result_str = result_str + decodeURIComponent(JSON.stringify(result[i])); 
               }
-              message.channel.send(result_str);
-              //message.channel.send(decodeURIComponent(JSON.stringify(result)));
+              message.channel.send(result_str);*/
+              message.channel.send(JSON.stringify(result).replace(/%22/g, '"'));
           }).catch((err) => {
               message.reply("Something error! Please refer to the log on Heroku");
               console.log(err);
