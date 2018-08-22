@@ -2,12 +2,6 @@ const Discord = require('discord.js');
 const ytdl = require('ytdl-core');  //For music streaming
 const Webhook = require('webhook-discord');
 var mysql = require('mysql');
-var NicoAPI = require('nicoapi');
-var extractAudio = require('ffmpeg-extract-audio');
-var http = require('http');
-var ffmpeg = require('ffmpeg');
-
-var nico = new NicoAPI();
 
 const hook = new Webhook(process.env.WEBHOOK_URL);
 
@@ -772,36 +766,6 @@ var func_test = {
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
         });*/
-        /*nico.users.login.post({mail_tel: process.env.NICO_USERNAME, password: process.env.NICO_PW})
-          .then(session => {
-            console.log("session = " + session.user_session);
-            nico.video.flv.get({id: 'sm30939147', user_session: session.user_session})
-              .then(result => {
-                    console.log("result = " + result);
-                    var target_video = null;
-                    http.get(result.substring(result.indexOf("url=") + 4), res => {
-                        target_video = res;
-                        console.log("res = " + res);
-                    });
-                    ffmpeg(target_video).noVideo();
-               })
-              .catch(err => {
-                  console.log(err);
-              });
-          })
-          .catch(err => {
-              console.log(err);
-          });*/
-          try {
-              var target_video = null;
-              http.get("http://flapi.nicovideo.jp/api/getflv/sm30939147", res => {
-                  target_video = res; 
-                  console.log("res = " + res);
-              });
-              ffmpeg(target_video).noVideo();
-          } catch (err) {
-              console.log(err);  
-          }
     }
   
 }
