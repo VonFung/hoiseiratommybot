@@ -7,15 +7,15 @@ const hook = new Webhook(process.env.WEBHOOK_URL);
 
 const client = new Discord.Client();
 
-/*const db_host = "den1.mysql1.gear.host"; //gearhost mysql server
+const db_host = "den1.mysql1.gear.host"; //gearhost mysql server
 const db_user = "hoiseiratommybot";
 const db_password = process.env.DB_PW;
-const db_schema = "hoiseiratommybot";*/
+const db_schema = "hoiseiratommybot";
 
-const db_host = process.env.DB_HOST;
+/*const db_host = process.env.DB_HOST;
 const db_user = process.env.DB_USER;
 const db_password = process.env.DB_PW;
-const db_dbname = process.env.DB_DBNAME;
+const db_dbname = process.env.DB_DBNAME;*/
 
 
 var voiceChannel;          //===================
@@ -1175,8 +1175,8 @@ function ExecuteSQL(sql) {
      var con = mysql.createConnection({
         host: db_host,
         user: db_user,
-        password: db_password,
-        database: db_dbname
+        password: db_password/*,
+        database: db_dbname*/
     });
  
     return new Promise((resolve, reject) => {
