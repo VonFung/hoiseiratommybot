@@ -15,7 +15,7 @@ const db_schema = "hoiseiratommybot";*/
 const db_host = process.env.DB_HOST;
 const db_user = process.env.DB_USER;
 const db_password = process.env.DB_PW;
-const db_dbname = proceses.env.DB_DBNAME;
+const db_dbname = process.env.DB_DBNAME;
 
 
 var voiceChannel;          //===================
