@@ -1175,8 +1175,9 @@ function ExecuteSQL(sql) {
      var con = mysql.createConnection({
         host: db_host,
         user: db_user,
-        password: db_password/*,
-        database: db_dbname*/
+        password: db_password,
+        schema: db_schema
+        //database: db_dbname
     });
  
     return new Promise((resolve, reject) => {
