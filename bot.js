@@ -810,17 +810,6 @@ var func_test = {
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
         });*/
-      var con = mysql.createConnection({
-        host: "db4free.net",
-        user: "hoiseiratommy",
-        password: "H@iseiratommy",
-        dbname: "hoiseiratommy"
-      });
-
-      con.connect(function(err) {
-        if (err) throw err;
-        console.log("Connected!");
-      });
     }
   
 }
@@ -850,7 +839,7 @@ client.on('ready', () => {
 
     console.log('I am ready!');
   
-    //UpdateUsers();
+    UpdateUsers();
   
     /*client.users.forEach((id, user) => {
         console.log(id + ": " + user.id);  
@@ -1187,7 +1176,7 @@ function ExecuteSQL(sql) {
         host: db_host,
         user: db_user,
         password: db_password,
-        dbname: db_dbname
+        database: db_dbname
     });
  
     return new Promise((resolve, reject) => {
