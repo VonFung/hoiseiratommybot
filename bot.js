@@ -1176,7 +1176,7 @@ function ExecuteSQL(sql) {
         host: db_host,
         user: db_user,
         password: db_password,
-        dbname: db_schema
+        database: db_schema
         //database: db_dbname
     });
  
