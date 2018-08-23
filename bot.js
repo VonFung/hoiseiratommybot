@@ -1197,6 +1197,7 @@ function ExecuteSQL(sql) {
               con.query(sql, function(err, result) {
                   if(err) {
                       reject(err); 
+                      console.log("ExecuteSQL error: " + err);
                   } else {
                       resolve(result);
                       console.log("SQL: '" + sql + "' success");
