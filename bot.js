@@ -813,7 +813,7 @@ var func_test = {
       var con = mysql.createConnection({
         host: "db4free.net",
         user: "hoiseiratommy",
-        password: "hoiseiratommy",
+        password: "H@iseiratommy",
         dbname: "hoiseiratommy"
       });
 
@@ -850,7 +850,8 @@ client.on('ready', () => {
 
     console.log('I am ready!');
   
-    UpdateUsers();
+    //UpdateUsers();
+  
     /*client.users.forEach((id, user) => {
         console.log(id + ": " + user.id);  
     });*/
