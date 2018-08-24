@@ -96,7 +96,7 @@ var func_help = {
                 msg = msg + "\n" + func[i].CODE + "\t\t\t" + func[i].DESCRIPTION;
             }
             msg = msg + "\n\n**All commands are CASE INSENSITIVE**";
-            message.channel.send(msg);
+            sendMessageToChannel(message.channel, msg);
         } else {
             var j;
             for(j=0; j<func.length; j++) {
@@ -192,7 +192,7 @@ var func_searchmusic = {
                 display_str = display_str + "\n" + i + ")\t" + result[i-1].CODE;
             }
 
-            message.channel.send(display_str);
+            sendMessageToChannel(message.channel, display_str);
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
@@ -395,7 +395,7 @@ var func_playqueue = {
               playqueue_message.delete();
               playqueue_message = "";
           }
-          message.channel.send("Now loading");
+          sendMessageToChannel(message.channel, "Now loading");
           message.channel.fetchMessages({ limit: 10, after: message.id})
             .then(messages => {
                 messages.forEach(function(msg) {
@@ -435,7 +435,7 @@ var func_musicdetail = {
               detail_message.delete();
               detail_message = "";
           }
-          message.channel.send("Now loading");
+          sendMessageToChannel(message.channel, "Now loading");
           message.channel.fetchMessages({ limit: 10, after: message.id})
             .then(messages => {
                 messages.forEach(function(msg) {
@@ -637,14 +637,12 @@ var func_showvote = {
   
     LOGIC : function(token, message) {
       
-        var sql = "SELECT id, TITLE, DESCRIPTION FROM vote WHERE HIDED = FALSE";
-      
-        if(!(token.length > 1 && token[1].toUpperCase() === "-ALL")) {
-            sql = sql + " AND EXPIRE_DATE >= DATE(CURDATE())";
+        var data = {
+          expire: (token.length > 1 && token[1].toUpperCase() === "-ALL")?1:0
         }
-        sql = sql + " ORDER BY ID DESC";
-      
-        ExecuteSQL(sql).then((result) => {
+        POSTtoPHP(data, "GetVote").then((res) => {
+            var result = JSON.parse(res);
+            //console.log("result=" + result);
             if(result.length === 0) {
                 message.reply("No result");
                 return;
@@ -653,7 +651,8 @@ var func_showvote = {
             for(var i=2; i<=result.length; i++) {
                  msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "(" + result[i-1].id + ")\t" + result[i-1].DESCRIPTION;
             }
-            message.channel.send(msg);
+            //console.log("msg=" + msg);
+            sendMessageToChannel(message.channel, msg);
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
@@ -686,12 +685,20 @@ var func_addvote = {
             return;
         }
       
-        var sql = "INSERT INTO vote (TITLE, " + ((token.length > 3)?"MAX_VOTE, ":"") + "EXPIRE_DATE, CREATE_USER_ID) VALUES ('"
-                + token[1] + "', " + ((token.length > 3)?token[3] + ", ":"") + "'" + token[2] + "', "
-                + GetUserID(message.author.id) + ")";
-      
-        ExecuteSQL(sql).then((result) => {
-            message.reply("Added successfully");
+        var data = {
+          title: token[1],
+          expire_date: token[2],
+          create_user_id: GetUserID(message.author.id)
+        }
+        if(token.length > 3) {
+          data["max_vote"] = token[3]; 
+        }
+        POSTtoPHP(data, "NewVote").then((res) => {
+            if(res === "success") {
+              message.reply("New Vote added successfully!"); 
+            } else {
+              message.reply(res); 
+            }
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
@@ -766,7 +773,7 @@ var func_sql = {
               }
               message.channel.send(result_str);*/
               //message.channel.send(JSON.stringify(result).replace(/%22/g, '"'));
-              message.channel.send(JSON.stringify(result).replace(/"/g, ' " '));
+              sendMessageToChannel(message.channel, JSON.stringify(result).replace(/"/g, ' " '));
           }).catch((err) => {
               message.reply("Something error! Please refer to the log on Heroku");
               console.log(err);
@@ -825,7 +832,7 @@ var func_test = {
                  msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "(" + result[i-1].id + ")\t" + result[i-1].DESCRIPTION;
             }
             //console.log("msg=" + msg);
-            message.channel.send(msg);
+            sendMessageToChannel(message.channel, msg);
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
@@ -1257,8 +1264,18 @@ function POSTtoPHP(data, php_script) {
     req.write(qs);
     req.end();
   });
-  
 
+}
+
+function sendMessageToChannel(channel, msg) {
+    var index, temp_msg;
+    while (msg.length > 2000) {
+      index = msg.lastIndexOf("\n");
+      temp_msg = msg.substring(0, index);
+      channel.send(temp_msg);
+      msg = msg.substring(index + 2);
+    }
+    channel.send(msg);
 }
 
 
