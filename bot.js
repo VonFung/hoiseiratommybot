@@ -1212,7 +1212,7 @@ function POSTtoPHP(data, php_script) {
   var qs = querystring.stringify(data);
   var qslength = qs.length;
   var options = {
-      hostname: "http://hoiseiratommy.gearhostpreview.com",
+      hostname: "hoiseiratommy.gearhostpreview.com",
       port: 80,
       path: "/db_access/" + php_script + ".php",
       method: 'POST',
