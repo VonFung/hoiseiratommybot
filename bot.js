@@ -811,7 +811,7 @@ var func_test = {
             new_dispatcher = null;            
         });*/
         var data = {
-          expire: (token[1] && token[1] === "T")?1:0;
+          expire: (token[1] && token[1] === "T")?1:0
         }
         POSTtoPHP(data, "GetVote").then((result) => {
             if(result.length === 0) {
