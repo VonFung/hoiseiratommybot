@@ -813,8 +813,9 @@ var func_test = {
         var data = {
           expire: (token[1] && token[1] === "T")?1:0
         }
-        POSTtoPHP(data, "GetVote").then((result) => {
-            console.log("result=" + result);
+        POSTtoPHP(data, "GetVote").then((res) => {
+            var result = JSON.parse(res);
+            //console.log("result=" + result);
             if(result.length === 0) {
                 message.reply("No result");
                 return;
@@ -823,7 +824,7 @@ var func_test = {
             for(var i=2; i<=result.length; i++) {
                  msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "(" + result[i-1].id + ")\t" + result[i-1].DESCRIPTION;
             }
-            console.log("msg=" + msg);
+            //console.log("msg=" + msg);
             message.channel.send(msg);
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
