@@ -647,7 +647,7 @@ var func_showvote = {
                 message.reply("No result");
                 return;
             }
-            var msg = "1)\t" + result[0].TITLE + "(" + result[0].id + ")\t" + result[0].DESCRIPTION;
+            var msg = "1)\t" + result[0].TITLE + "(" + result[0].id + ")\t" + result[0].EXPIRE_DATE + "\t" + result[0].DESCRIPTION;
             for(var i=2; i<=result.length; i++) {
                  msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "(" + result[i-1].id + ")\t" + result[i-1].EXPIRE_DATE + "\t"+ result[i-1].DESCRIPTION;
             }
@@ -827,7 +827,7 @@ var func_test = {
                 message.reply("No result");
                 return;
             }
-            var msg = "1)\t" + result[0].TITLE + "(" + result[0].id + ")\t" + result[0].DESCRIPTION;
+            var msg = "1)\t" + result[0].TITLE + "(" + result[0].id + ")\t"+ result[0].DESCRIPTION;
             for(var i=2; i<=result.length; i++) {
                  msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "(" + result[i-1].id + ")\t" + result[i-1].DESCRIPTION;
             }
