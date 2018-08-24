@@ -1270,7 +1270,7 @@ function POSTtoPHP(data, php_script) {
 function sendMessageToChannel(channel, msg) {
     var index, temp_msg;
     while (msg.length > 2000) {
-      index = msg.lastIndexOf("\n");
+      index = msg.lastIndexOf("\n", 2000);
       temp_msg = msg.substring(0, index);
       channel.send(temp_msg);
       msg = msg.substring(index + 2);
