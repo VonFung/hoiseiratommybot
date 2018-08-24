@@ -811,9 +811,22 @@ var func_test = {
             new_dispatcher = null;            
         });*/
         var data = {
-          expire: 0
+          expire: (token[1] && token[1] === "T")?1:0;
         }
-        POSTtoPHP(data, "GetVote");
+        POSTtoPHP(data, "GetVote").then((result) => {
+            if(result.length === 0) {
+                message.reply("No result");
+                return;
+            }
+            var msg = "1)\t" + result[0].TITLE + "(" + result[0].id + ")\t" + result[0].DESCRIPTION;
+            for(var i=2; i<=result.length; i++) {
+                 msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "(" + result[i-1].id + ")\t" + result[i-1].DESCRIPTION;
+            }
+            message.channel.send(msg);
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });;
     }
   
 }
@@ -1221,19 +1234,27 @@ function POSTtoPHP(data, php_script) {
           'Content-Length': qslength
       }
   };
+  
+  return new Promise((resolve, reject) => {
+    var buffer = "";
+    var req = http.request(options, function(res) {
+        res.on('data', function (chunk) {
+           buffer+=chunk;
+        });
+        res.on('end', function() {
+            console.log(buffer);
+            resolve(buffer);
+        });
+        req.on('error', function (e) {
+            console.log(e);
+            reject(e);
+        });
+    });
 
-  var buffer = "";
-  var req = http.request(options, function(res) {
-      res.on('data', function (chunk) {
-         buffer+=chunk;
-      });
-      res.on('end', function() {
-          console.log(buffer);
-      });
+    req.write(qs);
+    req.end();
   });
-
-  req.write(qs);
-  req.end();
+  
 
 }
 
