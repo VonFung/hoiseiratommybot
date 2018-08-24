@@ -822,6 +822,7 @@ var func_test = {
             for(var i=2; i<=result.length; i++) {
                  msg = msg + "\n" + i + ")\t" + result[i-1].TITLE + "(" + result[i-1].id + ")\t" + result[i-1].DESCRIPTION;
             }
+            console.log("msg=" + msg);
             message.channel.send(msg);
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
