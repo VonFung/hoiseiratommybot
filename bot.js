@@ -814,6 +814,7 @@ var func_test = {
           expire: (token[1] && token[1] === "T")?1:0
         }
         POSTtoPHP(data, "GetVote").then((result) => {
+            console.log("result=" + result);
             if(result.length === 0) {
                 message.reply("No result");
                 return;
