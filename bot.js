@@ -1207,6 +1207,7 @@ function ExecuteSQL(sql) {
 }
 
 function POSTtoPHP(data, php_script) {
+  var http = require('http');
   var querystring = require("querystring");
   var qs = querystring.stringify(data);
   var qslength = qs.length;
