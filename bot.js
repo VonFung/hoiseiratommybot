@@ -1273,7 +1273,7 @@ function sendMessageToChannel(channel, msg) {
       index = msg.lastIndexOf("\n", 2000);
       temp_msg = msg.substring(0, index);
       channel.send(temp_msg);
-      msg = msg.substring(index + 2);
+      msg = msg.substring(index + 1);
     }
     channel.send(msg);
 }
