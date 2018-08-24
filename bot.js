@@ -810,6 +810,10 @@ var func_test = {
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
         });*/
+        var data = {
+          expire: 0
+        }
+        POSTtoPHP(data, "GetVote");
     }
   
 }
@@ -1200,6 +1204,36 @@ function ExecuteSQL(sql) {
         });
     });
     
+}
+
+function POSTtoPHP(data, php_script) {
+  var querystring = require("querystring");
+  var qs = querystring.stringify(data);
+  var qslength = qs.length;
+  var options = {
+      hostname: "http://hoiseiratommy.gearhostpreview.com/",
+      port: 80,
+      path: "/db_access/" + php_script + ".php",
+      method: 'POST',
+      headers:{
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Length': qslength
+      }
+  };
+
+  var buffer = "";
+  var req = http.request(options, function(res) {
+      res.on('data', function (chunk) {
+         buffer+=chunk;
+      });
+      res.on('end', function() {
+          console.log(buffer);
+      });
+  });
+
+  req.write(qs);
+  req.end();
+
 }
 
 
