@@ -878,7 +878,7 @@ var func_test = {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
         });;*/
-        httpRequest("http://api.kcwiki.moe/ships/1").then((res) => {
+        httpRequest("http://api.kcwiki.moe/ship/1").then((res) => {
             console.log(JSON.stringify(res));
         }).catch((err) => {
             console.log(err);
