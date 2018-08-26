@@ -1304,6 +1304,7 @@ function DB4FREE(sql) {
             if(err) {
                 reject(err);
             } else {
+              console.log("sql = " + sql);
               con.query(sql, function(err, result) {
                   if(err) {
                       reject(err); 
