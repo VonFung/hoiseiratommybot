@@ -741,7 +741,7 @@ var func_updateship = {
                   shipdata2[i].max_eq = k;
               }
               let sql = "REPLACE INTO Ship (id, `name`, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
-                       +"stype_name_chinese, can_dropm, soku, slot_num, max_eq, fuel_max, bull_max) VALUES ? ";
+                       +"stype_name_chinese, can_drop, soku, slot_num, max_eq, fuel_max, bull_max) VALUES ? ";
               var values = [];
               for(i=0; i<shipdata1.length; i++) {
                   let temp_value = [[shipdata1[i].id, shipdata1[i].name, shipdata1[i].sort_no, shipdata1[i].stype, shipdata1[i].after_ship_id,
