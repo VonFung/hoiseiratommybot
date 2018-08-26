@@ -729,7 +729,7 @@ var func_updateship = {
               }
               var i;
               for(i=0; i<shipdata2.length; i++) {
-                  if(shipdata2.max_eq === null) {
+                  if(shipdata2[i].max_eq === null) {
                     continue; 
                   }
                   var j;
