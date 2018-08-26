@@ -737,7 +737,7 @@ var func_updateship = {
             for(i = 0; i < shipdata.length; i++) {
                 sql += "(" + shipdata[i].id + ", '" + shipdata[i].name + "', " + shipdata[i].sort_no + ", " + shipdata[i].stype + ", "
                       + shipdata[i].after_ship_id + ", '" + shipdata[i].filename + "', " + shipdata[i].wiki_id + ", '"
-                      + shipdata[i].chinese_name + "', '" + shipdata[i].stype_name + "', '" + shipdata[i].stype_name_chinese + ", " + shipdata[i].can_drop + ")";
+                      + shipdata[i].chinese_name + "', '" + shipdata[i].stype_name + "', '" + shipdata[i].stype_name_chinese + "', " + shipdata[i].can_drop + ")";
                 if(i !== (shipdata.length - 1)) {
                     sql += ", "; 
                 }
