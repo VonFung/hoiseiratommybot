@@ -766,7 +766,7 @@ var func_updateship = {
                 message.reply("Something error! Please refer to the log on Heroku");
                 console.log(err);
               });
-            }).catch(err) => {
+            }).catch((err) => {
               message.reply("Something error! Please refer to the log on Heroku");
               console.log(err);
             }
