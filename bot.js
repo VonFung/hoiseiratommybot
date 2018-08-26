@@ -720,39 +720,56 @@ var func_updateship = {
     LOGIC : function(token, message) {
       
         httpRequest("http://api.kcwiki.moe/ships").then((res) => {
-            let shipdata = JSON.parse(res);
-            let i;
-            let sql = "INSERT INTO Ship (id, `name`, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
-                     +"stype_name_chinese, can_drop) VALUES ? , ON DUPLICATE KEY UPDATE id=VALUES(id), `name`=VALUES(name), "
-                     +"sort_no=VALUES(sort_no), stype=VALUES(stype), after_ship_id=VALUES(after_ship_id), filename=VALUES(filename), "
-                     +"wiki_id=VALUES(wiki_id), chinese_name=VALUES(chinese_name), stype_name=VALUES(stype_name), "
-                     +"stype_name_chinese=VALUES(stype_name_chinese), can_drop=VALUES(can_drop)";
-            var values = [];
-            for(i = 0 ; i < 20; i++) {
-                let temp_value = [[shipdata[i].id, shipdata[i].name, shipdata[i].sort_no, shipdata[i].stype, shipdata[i].after_ship_id,
-                                  shipdata[i].filename, shipdata[i].wiki_id,shipdata[i].chinese_name, 
-                                  shipdata[i].stype_name, shipdata[i].stype_name_chinese, shipdata[i].can_drop]];
-                values.push(...temp_value);
-                console.log("Appended: " + i);
-            }
-            /*let sql = "INSERT INTO Ship (id, name, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
-                     +"stype_name_chinese, can_drop) VALUES ";
-            for(i = 0; i < shipdata.length; i++) {
-                sql += "(" + shipdata[i].id + ", '" + shipdata[i].name + "', " + shipdata[i].sort_no + ", " + shipdata[i].stype + ", "
-                      + shipdata[i].after_ship_id + ", '" + shipdata[i].filename + "', " + shipdata[i].wiki_id + ", '"
-                      + shipdata[i].chinese_name + "', '" + shipdata[i].stype_name + "', '" + shipdata[i].stype_name_chinese + "', " + shipdata[i].can_drop + ")";
-                if(i !== (shipdata.length - 1)) {
-                    sql += ", "; 
-                }
-            }
-            sql += " ON DUPLICATE KEY UPDATE";
-            console.log("sql = " + sql);*/
-            DB4FREEWITHVALUES(sql, values).then((res) => {
-                message.reply("Update complete!");
-            }).catch((err) => {
+            httpRequest("http://api.kcwiki.moe/ships/stats").then((res2) => {
+              let shipdata1 = JSON.parse(res);
+              let shipdata2 = JSON.parse(res2);
+              if(shipdata1.length !== shipdata2.length) {
+                  message.reply("The data is inconsist!");
+                  return;
+              }
+              var i;
+              for(i=0; i<shipdata2.length; i++) {
+                  var j;
+                  var k = shipdata2.max_eq[0];
+                  for(j=1; j<5; j++) {
+                    k << 8;
+                    k += shipdata2.max_eq[j];
+                  }
+                  shipdata2.max_eq = k;
+              }
+              let sql = "REPLACE INTO Ship (id, `name`, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
+                       +"stype_name_chinese, can_dropm, soku, slot_num, max_eq, fuel_max, bull_max) VALUES ? ";
+              var values = [];
+              for(i=0; i<shipdata1.length; i++) {
+                  let temp_value = [[shipdata1[i].id, shipdata1[i].name, shipdata1[i].sort_no, shipdata1[i].stype, shipdata1[i].after_ship_id,
+                                    shipdata1[i].filename, shipdata1[i].wiki_id,shipdata1[i].chinese_name, 
+                                    shipdata1[i].stype_name, shipdata1[i].stype_name_chinese, shipdata1[i].can_drop, 
+                                    shipdata2[i].soku, shipdata2[i].slot_num, shipdata2[i].max_eq, shipdata2[i].fuel_max, shipdata2[i].bull_max]];
+                  values.push(...temp_value);
+                  console.log("Appended: " + i);
+              }
+              /*let sql = "INSERT INTO Ship (id, name, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
+                       +"stype_name_chinese, can_drop) VALUES ";
+              for(i = 0; i < shipdata.length; i++) {
+                  sql += "(" + shipdata[i].id + ", '" + shipdata[i].name + "', " + shipdata[i].sort_no + ", " + shipdata[i].stype + ", "
+                        + shipdata[i].after_ship_id + ", '" + shipdata[i].filename + "', " + shipdata[i].wiki_id + ", '"
+                        + shipdata[i].chinese_name + "', '" + shipdata[i].stype_name + "', '" + shipdata[i].stype_name_chinese + "', " + shipdata[i].can_drop + ")";
+                  if(i !== (shipdata.length - 1)) {
+                      sql += ", "; 
+                  }
+              }
+              sql += " ON DUPLICATE KEY UPDATE";
+              console.log("sql = " + sql);*/
+              DB4FREEWITHVALUES(sql, values).then((res) => {
+                  message.reply("Update complete!");
+              }).catch((err) => {
+                message.reply("Something error! Please refer to the log on Heroku");
+                console.log(err);
+              });
+            }).catch(err) => {
               message.reply("Something error! Please refer to the log on Heroku");
               console.log(err);
-            });
+            }
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
