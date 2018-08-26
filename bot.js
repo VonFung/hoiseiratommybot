@@ -1378,7 +1378,7 @@ function POSTtoPHP(data, php_script) {
 }
 
 function httpRequest(url) {
-  const https = require('https');
+  var http = require('http');
 
   return new Promise((resolve, reject) => {
     https.get(url, (resp) => {
