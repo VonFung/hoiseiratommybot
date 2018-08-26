@@ -1381,7 +1381,7 @@ function httpRequest(url) {
   var http = require('http');
 
   return new Promise((resolve, reject) => {
-    https.get(url, (resp) => {
+    http.get(url, (resp) => {
       let data = '';
 
       // A chunk of data has been recieved.
