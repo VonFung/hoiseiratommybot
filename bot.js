@@ -1313,7 +1313,7 @@ function DB4FREEWITHVALUES(sql, values) {
         host: db4free_host,
         user: db4free_user,
         password: db4free_password,
-        database: db4free_name
+        database: db4free_dbname
         //database: db_dbname
     });
  
