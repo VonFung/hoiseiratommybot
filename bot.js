@@ -722,17 +722,17 @@ var func_updateship = {
         httpRequest("http://api.kcwiki.moe/ships").then((res) => {
             let shipdata = JSON.parse(res);
             let i;
-            /*let sql = "INSERT INTO Ship (id, name, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
+            let sql = "INSERT INTO Ship (id, `name`, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
                      +"stype_name_chinese, can_drop) VALUES ? ON DUPLICATE KEY UPDATE";
             var values = [];
             for(i = 0 ; i < shipdata.length; i++) {
-                let temp_value = [[shipdata[i].id, mysql.escape(shipdata[i].name), shipdata[i].sort_no, shipdata[i].stype, shipdata[i].after_ship_id,
-                                  mysql.escape(shipdata[i].filename), shipdata[i].wiki_id, mysql.escape(shipdata[i].chinese_name), 
-                                  mysql.escape(shipdata[i].stype_name), mysql.escape(shipdata[i].stype_name_chinese), shipdata[i].can_drop]];
+                let temp_value = [[shipdata[i].id, shipdata[i].name, shipdata[i].sort_no, shipdata[i].stype, shipdata[i].after_ship_id,
+                                  shipdata[i].filename, shipdata[i].wiki_id,shipdata[i].chinese_name, 
+                                  shipdata[i].stype_name, shipdata[i].stype_name_chinese, shipdata[i].can_drop]];
                 values.push(...temp_value);
                 console.log("Appended: " + i);
-            }*/
-            let sql = "INSERT INTO Ship (id, name, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
+            }
+            /*let sql = "INSERT INTO Ship (id, name, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
                      +"stype_name_chinese, can_drop) VALUES ";
             for(i = 0; i < shipdata.length; i++) {
                 sql += "(" + shipdata[i].id + ", '" + shipdata[i].name + "', " + shipdata[i].sort_no + ", " + shipdata[i].stype + ", "
@@ -743,8 +743,8 @@ var func_updateship = {
                 }
             }
             sql += " ON DUPLICATE KEY UPDATE";
-            console.log("sql = " + sql);
-            DB4FREEWITHVALUES(sql).then((res) => {
+            console.log("sql = " + sql);*/
+            DB4FREEWITHVALUES(sql, values).then((res) => {
                 message.reply("Update complete!");
             }).catch((err) => {
               message.reply("Something error! Please refer to the log on Heroku");
