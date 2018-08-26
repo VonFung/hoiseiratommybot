@@ -743,6 +743,7 @@ var func_updateship = {
                 }
             }
             sql += " ON DUPLICATE KEY UPDATE";
+            console.log("sql = " + sql);
             DB4FREEWITHVALUES(sql).then((res) => {
                 message.reply("Update complete!");
             }).catch((err) => {
