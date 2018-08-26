@@ -12,10 +12,10 @@ const db_user = "hoiseiratommybot";
 const db_password = process.env.DB_PW;
 const db_schema = "hoiseiratommybot";
 
-/*const db_host = process.env.DB_HOST;
-const db_user = process.env.DB_USER;
-const db_password = process.env.DB_PW;
-const db_dbname = process.env.DB_DBNAME;*/
+const db4free_host = "db4free.net";
+const db4free_user = "hoiseiratommy";
+const db4free_password = process.env.DB_PW;
+const db4free_dbname = "hoiseiratommy";
 
 
 var voiceChannel;          //===================
@@ -707,6 +707,46 @@ var func_addvote = {
   
 }
 
+var func_updateship = {
+   
+    CODE : "UPDATESHIP",
+  
+    DESCRIPTION : "Update the ship database from api provide by kcwiki",
+  
+    SYNTAX : "{$UPDATESHIP}",
+  
+    MANUAL : "**DO NOT USE SO FREQUENTLY**",
+  
+    LOGIC : function(token, message) {
+      
+        httpRequest("http://api.kcwiki.moe/ships").then((res) => {
+            let shipdata = JSON.parse(res);
+            let i;
+            let sql = "INSERT INTO Ship (id, name, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
+                     +"stype_name_chinese, can_drop) VALUES ? ON DUPLICATE KEY UPDATE";
+            var values = [];
+            for(i = 0 ; i < shipdata.length; i++) {
+                let temp_value = [[shipdata[i].id, shipdata[i].name, shipdata[i].sort_no, shipdata[i].stype, shipdata[i].after_ship_id,
+                                  shipdata[i].filename, shipdata[i].wiki_id, shipdata[i].chinese_name, shipdata[i].stype_name,
+                                  shipdata[i].stype_name_chinese, shipdata[i].can_drop]];
+                values.push(...temp_value);
+                console.log("Appended: " + i);
+            }
+            DB4FREEWITHVALUES(sql, values).then((res) => {
+                message.reply("Update complete!");
+            }).catch((err) => {
+              message.reply("Something error! Please refer to the log on Heroku");
+              console.log(err);
+            });
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
+      
+    }
+  
+}
+
 var func_clear = {
  
     CODE : "CLEAR",
@@ -754,7 +794,8 @@ var func_sql = {
     SYNTAX : "{$SQL | sql_command}",
   
     MANUAL : "**sql_command : **The SQL command you want to execute"
-            +"\n**The display of SELECT will be in JSON format",
+            +"\n**The display of SELECT will be in JSON format"
+            +"\n**This command can only apply on 'hoiseiratommybot' database, but no the fleet one",
   
     LOGIC : function(token, message) {
         if(token.length < 2) {
@@ -817,7 +858,7 @@ var func_test = {
         new_dispatcher.on("end", end => {
             new_dispatcher = null;            
         });*/
-        var data = {
+        /*var data = {
           expire: (token[1] && token[1] === "T")?1:0
         }
         POSTtoPHP(data, "GetVote").then((res) => {
@@ -836,7 +877,12 @@ var func_test = {
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
-        });;
+        });;*/
+        httpRequest("http://api.kcwiki.moe/ships/1").then((res) => {
+            console.log(JSON.stringify(res));
+        }).catch((err) => {
+            console.log(err);
+        });
     }
   
 }
@@ -845,7 +891,9 @@ var func_test = {
 var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_addplaylist, func_addmusictopl, 
             func_playlist, func_playqueue, func_musicdetail, func_stop, 
             func_next, func_pause, func_resume, func_volume, func_loop,
-            func_setname, func_vote, func_showvote, func_addvote, func_clear, func_sql, func_test];
+            func_setname, func_vote, func_showvote, func_addvote, 
+            func_updateship, 
+            func_clear, func_sql, func_test];
 
 
 
@@ -1229,6 +1277,68 @@ function ExecuteSQL(sql) {
     
 }
 
+function DB4FREE(sql) {
+     var con = mysql.createConnection({
+        host: db4free_host,
+        user: db4free_user,
+        password: db4free_password,
+        database: db4free_name
+        //database: db_dbname
+    });
+ 
+    return new Promise((resolve, reject) => {
+        con.connect(function(err) {
+            if(err) {
+                reject(err);
+            } else {
+              con.query(sql, function(err, result) {
+                  if(err) {
+                      reject(err); 
+                      console.log("ExecuteSQL error: " + err);
+                  } else {
+                      resolve(result);
+                      console.log("SQL: '" + sql + "' success");
+                      console.log("result: '" + JSON.stringify(result) + "'");
+                  }
+                  con.end();
+              });
+            }
+        });
+    });
+    
+}
+
+function DB4FREEWITHVALUES(sql, values) {
+     var con = mysql.createConnection({
+        host: db4free_host,
+        user: db4free_user,
+        password: db4free_password,
+        database: db4free_name
+        //database: db_dbname
+    });
+ 
+    return new Promise((resolve, reject) => {
+        con.connect(function(err) {
+            if(err) {
+                reject(err);
+            } else {
+              con.query(sql, [values], function(err, result) {
+                  if(err) {
+                      reject(err); 
+                      console.log("ExecuteSQL error: " + err);
+                  } else {
+                      resolve(result);
+                      console.log("SQL: '" + sql + "' success");
+                      console.log("result: '" + JSON.stringify(result) + "'");
+                  }
+                  con.end();
+              });
+            }
+        });
+    });
+    
+}
+
 function POSTtoPHP(data, php_script) {
   var http = require('http');
   var querystring = require("querystring");
@@ -1265,6 +1375,30 @@ function POSTtoPHP(data, php_script) {
     req.end();
   });
 
+}
+
+function httpRequest(url) {
+  const https = require('https');
+
+  return new Promise((resolve, reject) => {
+    https.get(url, (resp) => {
+      let data = '';
+
+      // A chunk of data has been recieved.
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      // The whole response has been received. Print out the result.
+      resp.on('end', () => {
+        resolve(data);
+      });
+
+    }).on("error", (err) => {
+      console.log(err);
+      reject(err);
+    });
+  });
 }
 
 function sendMessageToChannel(channel, msg) {
