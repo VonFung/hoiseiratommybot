@@ -730,7 +730,7 @@ var func_updateship = {
               var i;
               for(i=0; i<shipdata2.length; i++) {
                   var j;
-                  console.log("shipdata2.max_eq = " + shipdata2.max_eq);
+                  console.log("shipdata2.max_eq = " + shipdata2.max_eq.length);
                   var k = shipdata2.max_eq[0];
                   for(j=1; j<5; j++) {
                     k << 8;
