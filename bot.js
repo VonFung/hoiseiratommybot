@@ -879,7 +879,9 @@ var func_test = {
             console.log(err);
         });;*/
         httpRequest("http://api.kcwiki.moe/ship/1").then((res) => {
-            console.log(JSON.stringify(res));
+            console.log(res);
+            let temp_array = JSON.parse(res);
+            console.log("temp_array.name=" + temp_array.name);
         }).catch((err) => {
             console.log(err);
         });
