@@ -726,9 +726,9 @@ var func_updateship = {
                      +"stype_name_chinese, can_drop) VALUES ? ON DUPLICATE KEY UPDATE";
             var values = [];
             for(i = 0 ; i < shipdata.length; i++) {
-                let temp_value = [[shipdata[i].id, shipdata[i].name, shipdata[i].sort_no, shipdata[i].stype, shipdata[i].after_ship_id,
-                                  shipdata[i].filename, shipdata[i].wiki_id, shipdata[i].chinese_name, shipdata[i].stype_name,
-                                  shipdata[i].stype_name_chinese, shipdata[i].can_drop]];
+                let temp_value = [[shipdata[i].id, mysql.escape(shipdata[i].name), shipdata[i].sort_no, shipdata[i].stype, shipdata[i].after_ship_id,
+                                  mysql.escape(shipdata[i].filename), shipdata[i].wiki_id, mysql.escape(shipdata[i].chinese_name), 
+                                  mysql.escape(shipdata[i].stype_name), mysql.escape(shipdata[i].stype_name_chinese), shipdata[i].can_drop]];
                 values.push(...temp_value);
                 console.log("Appended: " + i);
             }
