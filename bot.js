@@ -730,13 +730,12 @@ var func_updateship = {
               var i;
               for(i=0; i<shipdata2.length; i++) {
                   var j;
-                  console.log("shipdata2.max_eq = " + shipdata2.max_eq.length);
-                  var k = shipdata2.max_eq[0];
+                  var k = shipdata2[i].max_eq[0];
                   for(j=1; j<5; j++) {
                     k << 8;
-                    k += shipdata2.max_eq[j];
+                    k += shipdata2[i].max_eq[j];
                   }
-                  shipdata2.max_eq = k;
+                  shipdata2[i].max_eq = k;
               }
               let sql = "REPLACE INTO Ship (id, `name`, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
                        +"stype_name_chinese, can_dropm, soku, slot_num, max_eq, fuel_max, bull_max) VALUES ? ";
