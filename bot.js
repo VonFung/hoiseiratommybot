@@ -723,9 +723,12 @@ var func_updateship = {
             let shipdata = JSON.parse(res);
             let i;
             let sql = "INSERT INTO Ship (id, `name`, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
-                     +"stype_name_chinese, can_drop) VALUES ? ON DUPLICATE KEY UPDATE";
+                     +"stype_name_chinese, can_drop) VALUES ? , ON DUPLICATE KEY UPDATE id=VALUES(id), `name`=VALUES(name), "
+                     +"sort_no=VALUES(sort_no), stype=VALUES(stype), after_ship_id=VALUES(after_ship_id), filename=VALUES(filename), "
+                     +"wiki_id=VALUES(wiki_id), chinese_name=VALUES(chinese_name), stype_name=VALUES(stype_name), "
+                     +"stype_name_chinese=VALUES(stype_name_chinese), can_drop=VALUES(can_drop)";
             var values = [];
-            for(i = 0 ; i < shipdata.length; i++) {
+            for(i = 0 ; i < 20; i++) {
                 let temp_value = [[shipdata[i].id, shipdata[i].name, shipdata[i].sort_no, shipdata[i].stype, shipdata[i].after_ship_id,
                                   shipdata[i].filename, shipdata[i].wiki_id,shipdata[i].chinese_name, 
                                   shipdata[i].stype_name, shipdata[i].stype_name_chinese, shipdata[i].can_drop]];
