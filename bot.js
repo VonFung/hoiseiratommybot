@@ -906,6 +906,36 @@ var func_createfleet = {
   
 }
 
+var func_searchfleet = {
+ 
+    CODE : "SEARCHFLEET",
+    
+    DESCRIPTION : "Search the fleet database by name or tag",
+  
+    SYNTAX : "{%SEARCHFLEET | [optional]keyword}",
+  
+    MANUAL : "***keyword : ***[Optional] keyword for searching.",
+  
+    LOGIC : function(token, message) {
+        var sql = "SELECT * FROM Fleet";
+        if(token.length > 1) {
+          sql += " WHERE name LIKE '%" + token[1] + "%' OR id in (SELECT fleet_id FROM Fleet_Tag WHERE tag LIKE '%" + token[1] + "%')";
+        }
+        DB4FREE(sql).then((res) => {
+            var display_str = "**Please choose one fleet**";
+            var i;
+            for(i=0; i<res.length; i++) {
+                display_str += "\n" + (i+1) + ")\t" + res[i].name + " (id: " + res[i].id + ")"; 
+            }
+            sendMessageToChannel(display_str);
+        }).catch((res2) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
+    }
+  
+}
+
 var func_updateship = {
    
     CODE : "UPDATESHIP",
