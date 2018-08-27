@@ -928,7 +928,7 @@ var func_editfleettag = {
         var sql = "";
         for(i=2; i<token.length && i<7; i++) {
             if(i !== 2) {
-                sql += ";\n";
+                sql += "; ";
             }
             if(token[i].charAt(0) === "+") {
                 sql += "INSERT INTO Fleet_Tag (name, fleet_id) VALUES ('" + token[i].substring(1) + "', " + token[1] + ")";
