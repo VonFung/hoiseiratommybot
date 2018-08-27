@@ -1106,9 +1106,9 @@ var func_editfleetmember = {
         var sql = "";
         var fleet_id = token[1];
         var i;
-        /*for(i=2; i<token.length; i++) {
-            token[i].replace(/&&/g, ' ')
-        }*/
+        for(i=2; i<token.length; i++) {
+            token[i].replace(/&&/g, ' ');
+        }
         for(i=2; i<token.length; i++) {
             var j;        
             if(token[i].charAt(0) === "-") {
