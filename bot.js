@@ -973,7 +973,7 @@ client.on('message', message => {
   
     for(i=0; i<func.length; i++) {
         if(message.content.charAt(0) === func[i].STARTWITH) {
-            func_group_no; 
+            func_group_no = i; 
         }
     }
     if(func_group_no + 1) {
