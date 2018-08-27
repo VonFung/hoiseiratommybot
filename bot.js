@@ -856,10 +856,15 @@ var func_test = {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
         });;*/
-        httpRequest("http://api.kcwiki.moe/ship/1").then((res) => {
+        /*httpRequest("http://api.kcwiki.moe/ship/1").then((res) => {
             console.log(res);
             let temp_array = JSON.parse(res);
             console.log("temp_array.name=" + temp_array.name);
+        }).catch((err) => {
+            console.log(err);
+        });*/
+        httpRequest("http://203.104.248.135/kcsapi/api_get_master/slotitem").then((res) => {
+            console.log("res=" + JSON.stringify(res));
         }).catch((err) => {
             console.log(err);
         });
