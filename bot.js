@@ -880,9 +880,9 @@ var func_createfleet = {
             return;
         }
         
-        var sql = "INSERT INTO Fleet (`name`) VALUES ('" + token[1] + "'); SELECT id FROM Fleet ORDER BY id DESC LIMIT 1";
+        var sql = "INSERT INTO Fleet (`name`) VALUES ('" + token[1] + "')"/*; SELECT id FROM Fleet ORDER BY id DESC LIMIT 1"*/;
         DB4FREE(sql).then((res) => {
-            var fleet_id = res[0].id;
+            var fleet_id = res.insert_Id;
             if(token.length > 2) {
                 var sql2 = "INSERT INTO Fleet_Tag (tag, fleet_id) VALUES ('" + token[2] + "', " + fleet_id + ")";
                 var i;
