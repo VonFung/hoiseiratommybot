@@ -735,7 +735,14 @@ var func_clear = {
         message.channel.fetchMessages({limit : amount, before : message.id})
           .then(messages => {
             messages.forEach(function(msg) {
-              if(msg.content.charAt(0) === '$' || msg.author.id === client.user.id) {
+              var isCommand = false;
+              var i;
+              for(i=0; i<func.length; i++) {
+                  if(msg.content.charAt(0) === func[i].STARTWITH) {
+                      isCommand = true; 
+                  }
+              }
+              if(isCommand || msg.author.id === client.user.id) {
                 msg.delete();
                 console.log("Message: \"" + msg.content + "\" deleted");
               }
@@ -1021,7 +1028,7 @@ var normal_func = { STARTWITH : "$",
 
 var kancolle_func = { STARTWITH : "%", 
                       NAME : "Kancolle functions",
-                      FUNCTIONS : [func_updateship, func_updateslotitem]
+                      FUNCTIONS : [func_createfleet, func_updateship, func_updateslotitem]
                     }
 
 var func = [normal_func, kancolle_func];
