@@ -917,15 +917,45 @@ var func_searchfleet = {
     MANUAL : "***keyword : ***[Optional] keyword for searching.",
   
     LOGIC : function(token, message) {
-        var sql = "SELECT * FROM Fleet";
+        var sql = "SELECT Fleet.id, Fleet.name, Fleet_Tag.tag FROM Fleet LEFT JOIN Fleet_Tag ON Fleet.id = Fleet_Tag.fleet_id";
         if(token.length > 1) {
           sql += " WHERE name LIKE '%" + token[1] + "%' OR id in (SELECT fleet_id FROM Fleet_Tag WHERE tag LIKE '%" + token[1] + "%')";
         }
         DB4FREE(sql).then((res) => {
-            var display_str = "**Please choose one fleet**";
-            var i;
+            var fleets = [];
+            var i, j, k
             for(i=0; i<res.length; i++) {
-                display_str += "\n" + (i+1) + ")\t" + res[i].name + " (id: " + res[i].id + ")"; 
+                j = -1;
+                for(k=0; k<fleets.length; k++) {
+                    if(res[i].id === fleets[k].id) {
+                        j = k; 
+                    }
+                }
+                if(j + 1) {
+                  fleets[j].tags.push(...res[i].tag);
+                } else {
+                  let new_fleet = [ id: res[i].id, name: res[i].name];
+                  let tags;
+                  if(res[i].tag === null) {
+                      tags = null;
+                  } else {
+                      tags = [res[i].tag]; 
+                  }
+                  new_fleet.tags = tags;
+                  fleets.push(...new_fleet);
+                }
+            }
+          
+            var display_str = "**Please choose one fleet**";
+            for(i=0; i<fleets.length; i++) {
+                display_str += "\n" + (i+1) + ")\t" + fleets[i].name;
+                if(!fleets[i].tags) {
+                    display_str += "(" + fleets[i].tags[0];
+                    for(j=1; j<fleets[i].tags.length; j++) {
+                        display_str += "/" + fleets[i].tags[j]; 
+                    }
+                    display_str += ")";
+                }
             }
             sendMessageToChannel(display_str);
         }).catch((res2) => {
@@ -1058,7 +1088,7 @@ var normal_func = { STARTWITH : "$",
 
 var kancolle_func = { STARTWITH : "%", 
                       NAME : "Kancolle functions",
-                      FUNCTIONS : [func_createfleet, func_updateship, func_updateslotitem]
+                      FUNCTIONS : [func_createfleet, func_searchfleet, func_updateship, func_updateslotitem]
                     }
 
 var func = [normal_func, kancolle_func];
