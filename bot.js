@@ -906,6 +906,23 @@ var func_createfleet = {
   
 }
 
+var func_editfleettag = {
+ 
+    CODE : "EDITFLEETTAG",
+  
+    DESCRIPTION : "Edit the tags of fleet",
+  
+    SYNTAX : "{%EDITFLEETTAG | (+/-)tag(s)}",
+  
+    MANUAL : "**(+/-)tag(s) : **Add new or Delete existing Tag with prefix(+ OR -)."
+            +"\nYou can edit at most 5, at least 1 tag(s) at same time.",
+  
+    LOGIC : function(token, message) {
+      
+    }
+  
+}
+
 var func_searchfleet = {
  
     CODE : "SEARCHFLEET",
@@ -919,7 +936,7 @@ var func_searchfleet = {
     LOGIC : function(token, message) {
         var sql = "SELECT Fleet.id, Fleet.name, Fleet_Tag.tag FROM Fleet LEFT JOIN Fleet_Tag ON Fleet.id = Fleet_Tag.fleet_id";
         if(token.length > 1) {
-          sql += " WHERE name LIKE '%" + token[1] + "%' OR id in (SELECT fleet_id FROM Fleet_Tag WHERE tag LIKE '%" + token[1] + "%')";
+          sql += " WHERE Fleet.name LIKE '%" + token[1] + "%' OR Fleet.id in (SELECT fleet_id FROM Fleet_Tag WHERE tag LIKE '%" + token[1] + "%')";
         }
         sql += " ORDER BY Fleet.id ASC";
         DB4FREE(sql).then((res) => {
@@ -1089,7 +1106,8 @@ var normal_func = { STARTWITH : "$",
 
 var kancolle_func = { STARTWITH : "%", 
                       NAME : "Kancolle functions",
-                      FUNCTIONS : [func_createfleet, func_searchfleet, func_updateship, func_updateslotitem]
+                      FUNCTIONS : [func_createfleet, func_editfleettag, func_searchfleet, 
+                                   func_updateship, func_updateslotitem]
                     }
 
 var func = [normal_func, kancolle_func];
