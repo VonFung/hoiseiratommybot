@@ -976,7 +976,7 @@ client.on('message', message => {
             func_group_no = i; 
         }
     }
-    if(func_group_no + 1) {
+    if(!(func_group_no + 1)) {
         return; 
     }
     
