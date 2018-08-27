@@ -1049,7 +1049,7 @@ var func_editfleetmember = {
                 } else {
                   sql += "DELETE FROM Fleet_Member WHERE ship_id = " + parseInt(token[i].substring(1)) + " AND fleet_id = " + fleet_id;
                 }
-            } else (token[i].charAt(0) === "+") {
+            } else if (token[i].charAt(0) === "+") {
                 if(i !== 2) {
                    sql += "; ";
                 }
