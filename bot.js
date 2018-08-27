@@ -1108,7 +1108,7 @@ var func_editfleetmember = {
         var fleet_id = token[1];
         var i;
         for(i=2; i<token.length; i++) {
-            token[i].replace(/&&/g, ' ');
+            token [i] = token[i].replace(/&&/g, ' ');
         }
         for(i=2; i<token.length; i++) {
             var j;        
@@ -1143,32 +1143,25 @@ var func_editfleetmember = {
                        let alv = 0;
                        if(token[j].includes(">>")) {
                           alv = 7; 
-                          token[j].replace(">>", "");
-                          console.log("alv = 7");
+                          token [j] = token[j].replace(">>", "");
                        } else if (token[j].includes("\\\\\\")) {
                           alv = 6;
-                          token[j].replace("\\\\\\", "");
-                          console.log("alv = 6");
+                          token [j] = token[j].replace("\\\\\\", "");
                        } else if (token[j].includes("\\\\")) {
                           alv = 5;
-                          token[j].replace("\\\\", "");
-                          console.log("alv = 5");
+                          token [j] = token[j].replace("\\\\", "");
                        } else if (token[j].includes("\\")) {
                           alv = 4;
-                          token[j].replace("\\", "");
-                          console.log("alv = 4");
+                          token [j] = token[j].replace("\\", "");
                        } else if (token[j].includes("|||")) {
                           alv = 3;
-                          token[j].replace("|||", "");
-                          console.log("alv = 3");
+                          token [j] = token[j].replace("|||", "");
                        } else if (token[j].includes("||")) {
                           alv = 2;
-                          token[j].replace("||", "");
-                          console.log("alv = 2");
+                          token [j] = token[j].replace("||", "");
                        } else if (token[j].includes("|")) {
                           alv = 1;
-                          token[j].replace("|", "");
-                          console.log("alv = 1");
+                          token [j] = token[j].replace("|", "");
                        }
                        var temp = token[j].split("@");
                        token[j] = temp[0];
@@ -1198,25 +1191,25 @@ var func_editfleetmember = {
                        let alv = 0;
                        if(token[j].includes(">>")) {
                           alv = 7; 
-                          token[j].replace(">>", "");
+                          token [j] = token[j].replace(">>", "");
                        } else if (token[j].includes("\\\\\\")) {
                           alv = 6;
-                          token[j].replace("\\\\\\", "");
+                          token [j] = token[j].replace("\\\\\\", "");
                        } else if (token[j].includes("\\\\")) {
                           alv = 5;
-                          token[j].replace("\\\\", "");
+                          token [j] = token[j].replace("\\\\", "");
                        } else if (token[j].includes("\\")) {
                           alv = 4;
-                          token[j].replace("\\", "");
+                          token [j] = token[j].replace("\\", "");
                        } else if (token[j].includes("|||")) {
                           alv = 3;
-                          token[j].replace("|||", "");
+                          token [j] = token[j].replace("|||", "");
                        } else if (token[j].includes("||")) {
                           alv = 2;
-                          token[j].replace("||", "");
+                          token [j] = token[j].replace("||", "");
                        } else if (token[j].includes("|")) {
                           alv = 1;
-                          token[j].replace("|", "");
+                          token [j] = token[j].replace("|", "");
                        }
                        var temp = token[j].split("@");
                        token[j] = temp[0];
