@@ -1060,14 +1060,14 @@ var func_editfleetmember = {
                       nextShipIdx = j;
                    }
                 }
-                if(parseInt(token[i].substring(1)) === NaN) {
+                if(isNaN(parseInt(token[i].substring(1))) {
                    sql += "";
                 } else {
                    sql += "INSERT INTO Fleet_Member (fleet_id, ship_id";
                    for(j=1; j<nextShipIdx-i; j++) {
-                       sql += ",item" + j + ", item" + j + "lv, item" + j + "alv";
+                       sql += ", item" + j + ", item" + j + "lv, item" + j + "alv";
                    }
-                   sql += ") SELECT " + fleet_id + ", " + parseInt(token[i].substring(1));
+                   sql += ") SELECT " + fleet_id + ", s.id";
                    var table_name = ['a', 'b', 'c', 'd', 'e', 'f'];
                    for(j=i+1; j<nextShipIdx; j++) {
                        let alv = 0;
@@ -1097,11 +1097,11 @@ var func_editfleetmember = {
                        token[j] = temp[0];
                        sql += ", " + table_name[j-i-1] + ".id, " + ((temp.length > 1)?parseInt(temp[1]):0) + ", " + alv;
                    }
-                   sql += " FROM Slotitem a";
-                   for(j=i+2; j<nextShipIdx; j++) {
+                   sql += " FROM Ship s";
+                   for(j=i+1; j<nextShipIdx; j++) {
                        sql += ", Slotitem " + table_name[j-i-1];
                    }
-                   sql += " WHERE 1=1";
+                   sql += " WHERE s.name LIKE '%" + token[i].substring(1) + %'";
                    for(j=i+1; j<nextShipIdx; j++) {
                         if(isNaN(parseInt(token[j]))) {
                           sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + token[j] + "%'";
