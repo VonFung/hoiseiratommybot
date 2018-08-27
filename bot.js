@@ -1112,6 +1112,7 @@ var func_editfleetmember = {
                    i = nextShipIdx - 1;
                 }
             }
+            console.log("i=" + i);
         }
       
         DB4FREE(sql).then((res) => {
