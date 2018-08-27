@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 const ytdl = require('ytdl-core');  //For music streaming
 const Webhook = require('webhook-discord');
 var mysql = require('mysql');
-const kc_database = require('whocallsthefleet-database');
 
 const hook = new Webhook(process.env.WEBHOOK_URL);
 
@@ -864,7 +863,26 @@ var func_test = {
         }).catch((err) => {
             console.log(err);
         });*/
-        console.log("kc_database = " + JSON.stringify(kc_database));
+      var data = "";
+      var request = require("http").get("https://github.com/TeamFleet/WhoCallsTheFleet-DB/raw/master/db/ships.nedb", function(res) {
+
+        res.on('data', function(chunk) {
+          data += chunk;
+        });
+
+        res.on('end', function() {
+          cb(data);
+        })
+      }).then((res) => {
+          console.log("data = " + data);
+      }).catch((err) => {
+          console.log(err);
+      });
+
+      request.on('error', function(e) {
+        console.log("Got error: " + e.message);
+      });
+
     }
   
 }
