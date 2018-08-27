@@ -958,7 +958,7 @@ var func_searchfleet = {
                 }
             }
             sendMessageToChannel(display_str);
-        }).catch((res2) => {
+        }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
         });
