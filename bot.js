@@ -1055,7 +1055,7 @@ var func_editfleetmember = {
                 }
                 var nextShipIdx = token.length;
                 var j;
-                for(j=token.length-1; j>0; j--) {
+                for(j=token.length-1; j>i+1; j--) {
                    if(token[j].charAt(0) === "+" || token[j].charAt(0) === "-") {
                       nextShipIdx = j;
                    }
