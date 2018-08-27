@@ -1097,7 +1097,8 @@ var func_editfleetmember = {
             +"\nUse @ to identify the \u2606 and (|OR\\\\OR>>) to identify the skill level of flight(Please use '\\' instead of '/')"
             +"\n***For example: +大淀改 (3号)@9 (3号)@9 零式水上観@10>> WG42 +500改 8門 8門***",
   
-    LOGIC : function(token, message) {
+    LOGIC : function(input_token, message) {
+        var token = input_token;
         if(token.length < 3) {
             message.reply("Incorrect Syntax!\n" + this.SYNTAX);
             return;
