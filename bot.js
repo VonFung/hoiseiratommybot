@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const ytdl = require('ytdl-core');  //For music streaming
 const Webhook = require('webhook-discord');
 var mysql = require('mysql');
+const kc_database = require('whocallsthefleet-database');
 
 const hook = new Webhook(process.env.WEBHOOK_URL);
 
@@ -863,11 +864,7 @@ var func_test = {
         }).catch((err) => {
             console.log(err);
         });*/
-        httpRequest("http://203.104.248.135/kcsapi/api_get_master/slotitem").then((res) => {
-            console.log("res=" + JSON.stringify(res));
-        }).catch((err) => {
-            console.log(err);
-        });
+        console.log("kc_database = " + JSON.stringify(kc_database));
     }
   
 }
