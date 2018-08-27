@@ -912,13 +912,38 @@ var func_editfleettag = {
   
     DESCRIPTION : "Edit the tags of fleet",
   
-    SYNTAX : "{%EDITFLEETTAG | (+/-)tag(s)}",
+    SYNTAX : "{%EDITFLEETTAG | fleet_id | (+/-)tag(s)}",
   
-    MANUAL : "**(+/-)tag(s) : **Add new or Delete existing Tag with prefix(+ OR -)."
+    MANUAL : "**fleet_id : **The internal id of fleet in database.(You can find by %searchfleet)"
+            +"**(+/-)tag(s) : **Add new or Delete existing Tag with prefix(+ OR -)."
             +"\nYou can edit at most 5, at least 1 tag(s) at same time.",
   
     LOGIC : function(token, message) {
-      
+        if(token.length < 3) {
+            message.reply("Incorrect Syntax!\n" + this.SYNTAX);
+            return;
+        }
+        
+        var i;
+        var sql = "";
+        for(i=2; i<token.length && i<7) {
+            if(!(i - 2)) {
+                sql += ";\n";
+            }
+            if(token[i].charAt(0) === "+") {
+                sql += "INSERT INTO Fleet_Tag (name, fleet_id) VALUES ('" + token[i].substring(1) + "', " + token[1] + ")";
+            } else if (token[i].charAt(0) === "-") {
+                sql += "DELETE FROM Fleet_Tag WHERE name = '" + token[i].substring(1) + "' AND fleet_id = " + token[1];
+            } else {
+                throw "Please use prefix (+/-)!"; 
+            }
+        }
+        DB4FREE(sql).then((res) => {
+            message.reply("Tags edited successfully!");
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
     }
   
 }
@@ -1169,7 +1194,8 @@ client.on('message', message => {
             try {
               func[func_group_no].FUNCTIONS[i].LOGIC(token, message);
             } catch (err) {
-              message.reply("Oops! Something goes wrong. Please refer to the console log on heroku");
+              //message.reply("Oops! Something goes wrong. Please refer to the console log on heroku");
+              message.reply(err);
               console.log(err);
             }
             if(clear_command) {
