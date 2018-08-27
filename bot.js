@@ -925,12 +925,15 @@ var func_test = {
 }
 
 //Register new function to this func array
-var func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_addplaylist, func_addmusictopl, 
+var normal_func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_addplaylist, func_addmusictopl, 
             func_playlist, func_playqueue, func_musicdetail, func_stop, 
             func_next, func_pause, func_resume, func_volume, func_loop,
-            func_setname, func_vote, func_showvote, func_addvote, 
-            func_updateship, 
+            func_setname, func_vote, func_showvote, func_addvote,
             func_clear, func_sql, func_test];
+
+var kancolle_func = [func_updateship];
+
+var func = [normal_func, kancolle_func];
 
 
 
@@ -962,9 +965,13 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
+  
+    var func_group_no = 0;
     
-    if(message.content.charAt(0) !== '$') {
-        return;    
+    if(message.content.charAt(0) === '%') {
+        func_group_no = 1;  
+    } else if (message.content.charAt(0) !== '$') {
+        return;
     }
     
     var token = new Array();
@@ -976,10 +983,10 @@ client.on('message', message => {
     
     var i;
     
-    for(i=0; i<func.length; i++) {
-        if(token[0].toUpperCase() === func[i].CODE) {
+    for(i=0; i<func[func_group_no].length; i++) {
+        if(token[0].toUpperCase() === func[func_group_no][i].CODE) {
             try {
-              func[i].LOGIC(token, message/*, func*/);
+              func[func_group_no][i].LOGIC(token, message);
             } catch (err) {
               message.reply("Oops! Something goes wrong. Please refer to the console log on heroku");
               console.log(err);
