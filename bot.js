@@ -1011,6 +1011,7 @@ var func_searchfleet = {
                                   LOGIC: function(token, msg) {
                                     if(isNaN(token)) {
                                       msg.delete();
+                                      console.log("res=" + JSON.stringify(res));
                                       this.res.delete();
                                       displaying_menu = null;
                                       return;
@@ -1018,6 +1019,7 @@ var func_searchfleet = {
                                       var option = parseInt(token);
                                       if(option < 1 || option > this.FLEET.length) {
                                         msg.delete();
+                                        console.log("res=" + JSON.stringify(res));                                        
                                         this.res.delete();
                                         displaying_menu = null;
                                         return;
@@ -1056,6 +1058,7 @@ var func_searchfleet = {
                                                 }
                                               }
                                           }
+                                          displaying_menu = null;
                                           this.MESSAGE.edit(displaying_str);
                                           msg.delete();
                                         }).catch((err) => {
