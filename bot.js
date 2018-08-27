@@ -871,13 +871,9 @@ var func_test = {
         });
 
         res.on('end', function() {
-          cb(data);
-        })
-      }).then((res) => {
           console.log("data = " + data);
-      }).catch((err) => {
-          console.log(err);
-      });
+        })
+      })
 
       request.on('error', function(e) {
         console.log("Got error: " + e.message);
