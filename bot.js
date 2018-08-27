@@ -931,9 +931,9 @@ var func_editfleettag = {
                 sql += "; ";
             }
             if(token[i].charAt(0) === "+") {
-                sql += "INSERT INTO Fleet_Tag (name, fleet_id) VALUES ('" + token[i].substring(1) + "', " + token[1] + ")";
+                sql += "INSERT INTO Fleet_Tag (tag, fleet_id) VALUES ('" + token[i].substring(1) + "', " + token[1] + ")";
             } else if (token[i].charAt(0) === "-") {
-                sql += "DELETE FROM Fleet_Tag WHERE name = '" + token[i].substring(1) + "' AND fleet_id = " + token[1];
+                sql += "DELETE FROM Fleet_Tag WHERE tag = '" + token[i].substring(1) + "' AND fleet_id = " + token[1];
             } else {
                 throw "Please use prefix (+/-)!"; 
             }
