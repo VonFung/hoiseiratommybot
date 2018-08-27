@@ -91,22 +91,29 @@ var func_help = {
     LOGIC : function(token, message) {
         if(token.length < 2) {
             var i;
-            var msg = func[0].CODE + "\t\t\t" + func[0].DESCRIPTION;
-            for(i=1; i<func.length; i++) {
-                msg = msg + "\n" + func[i].CODE + "\t\t\t" + func[i].DESCRIPTION;
+            var msg = "**Functions List**";
+            for(i=0; i<func.length; i++) {
+                msg += "\n**" + func[i].NAME + "**";
+                var j;
+                for(j=0; j<func[i].FUNCTIONS.length; j++) {
+                  msg += "\n" + func[i].FUNCTIONS[j].CODE + "\t\t\t" + func[i].FUNCTIONS[j].DESCRIPTION;
+                }
             }
             msg = msg + "\n\n**All commands are CASE INSENSITIVE**";
             sendMessageToChannel(message.channel, msg);
         } else {
-            var j;
-            for(j=0; j<func.length; j++) {
-                if(token[1].toUpperCase() === func[j].CODE) {
-                    if(token.length > 2 && token[2].toUpperCase() === "-D") {
-                      message.reply(func[j].SYNTAX + "\n\n" + func[j].MANUAL);
-                    } else {
-                      message.reply(func[j].SYNTAX);
-                    }
-                    return;
+            var i;
+            for(i=0; i<func.length; i++) {
+                var j;
+                for(j=0; j<func[j].FUNCTIONS.length; j++) {
+                  if(token[1].toUpperCase() === func[i].FUNCTIONS[j].CODE) {
+                      if(token.length > 2 && token[2].toUpperCase() === "-D") {
+                        message.reply(func[i].FUNCTIONS[j].SYNTAX + "\n\n" + func[i].FUNCTIONS[j].MANUAL);
+                      } else {
+                        message.reply(func[i].FUNCTIONS[j].SYNTAX);
+                      }
+                      return;
+                  }
                 }
             }
             message.reply("Command not found");
@@ -707,81 +714,6 @@ var func_addvote = {
   
 }
 
-var func_updateship = {
-   
-    CODE : "UPDATESHIP",
-  
-    DESCRIPTION : "Update the ship database from api provide by kcwiki",
-  
-    SYNTAX : "{$UPDATESHIP}",
-  
-    MANUAL : "**DO NOT USE SO FREQUENTLY**",
-  
-    LOGIC : function(token, message) {
-      
-        httpRequest("http://api.kcwiki.moe/ships").then((res) => {
-            httpRequest("http://api.kcwiki.moe/ships/stats").then((res2) => {
-              let shipdata1 = JSON.parse(res);
-              let shipdata2 = JSON.parse(res2);
-              if(shipdata1.length !== shipdata2.length) {
-                  message.reply("The data is inconsist!");
-                  return;
-              }
-              var i;
-              for(i=0; i<shipdata2.length; i++) {
-                  if(shipdata2[i].max_eq === null) {
-                    continue; 
-                  }
-                  var j;
-                  var k = shipdata2[i].max_eq[0];
-                  for(j=1; j<5; j++) {
-                    k << 8;
-                    k += shipdata2[i].max_eq[j];
-                  }
-                  shipdata2[i].max_eq = k;
-              }
-              let sql = "REPLACE INTO Ship (id, `name`, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
-                       +"stype_name_chinese, can_drop, soku, slot_num, max_eq, fuel_max, bull_max) VALUES ? ";
-              var values = [];
-              for(i=0; i<shipdata1.length; i++) {
-                  let temp_value = [[shipdata1[i].id, shipdata1[i].name, shipdata1[i].sort_no, shipdata1[i].stype, shipdata1[i].after_ship_id,
-                                    shipdata1[i].filename, shipdata1[i].wiki_id,shipdata1[i].chinese_name, 
-                                    shipdata1[i].stype_name, shipdata1[i].stype_name_chinese, shipdata1[i].can_drop, 
-                                    shipdata2[i].soku, shipdata2[i].slot_num, shipdata2[i].max_eq, shipdata2[i].fuel_max, shipdata2[i].bull_max]];
-                  values.push(...temp_value);
-                  console.log("Appended: " + i);
-              }
-              /*let sql = "INSERT INTO Ship (id, name, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
-                       +"stype_name_chinese, can_drop) VALUES ";
-              for(i = 0; i < shipdata.length; i++) {
-                  sql += "(" + shipdata[i].id + ", '" + shipdata[i].name + "', " + shipdata[i].sort_no + ", " + shipdata[i].stype + ", "
-                        + shipdata[i].after_ship_id + ", '" + shipdata[i].filename + "', " + shipdata[i].wiki_id + ", '"
-                        + shipdata[i].chinese_name + "', '" + shipdata[i].stype_name + "', '" + shipdata[i].stype_name_chinese + "', " + shipdata[i].can_drop + ")";
-                  if(i !== (shipdata.length - 1)) {
-                      sql += ", "; 
-                  }
-              }
-              sql += " ON DUPLICATE KEY UPDATE";
-              console.log("sql = " + sql);*/
-              DB4FREEWITHVALUES(sql, values).then((res) => {
-                  message.reply("Update complete!");
-              }).catch((err) => {
-                message.reply("Something error! Please refer to the log on Heroku");
-                console.log(err);
-              });
-            }).catch((err) => {
-              message.reply("Something error! Please refer to the log on Heroku");
-              console.log(err);
-            });
-        }).catch((err) => {
-            message.reply("Something error! Please refer to the log on Heroku");
-            console.log(err);
-        });
-      
-    }
-  
-}
-
 var func_clear = {
  
     CODE : "CLEAR",
@@ -924,14 +856,83 @@ var func_test = {
   
 }
 
-//Register new function to this func array
-var normal_func = [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_addplaylist, func_addmusictopl, 
-            func_playlist, func_playqueue, func_musicdetail, func_stop, 
-            func_next, func_pause, func_resume, func_volume, func_loop,
-            func_setname, func_vote, func_showvote, func_addvote,
-            func_clear, func_sql, func_test];
+var func_updateship = {
+   
+    CODE : "UPDATESHIP",
+  
+    DESCRIPTION : "Update the ship database from api provide by kcwiki",
+  
+    SYNTAX : "{$UPDATESHIP}",
+  
+    MANUAL : "**DO NOT USE SO FREQUENTLY**",
+  
+    LOGIC : function(token, message) {
+      
+        httpRequest("http://api.kcwiki.moe/ships").then((res) => {
+            httpRequest("http://api.kcwiki.moe/ships/stats").then((res2) => {
+              let shipdata1 = JSON.parse(res);
+              let shipdata2 = JSON.parse(res2);
+              if(shipdata1.length !== shipdata2.length) {
+                  message.reply("The data is inconsist!");
+                  return;
+              }
+              var i;
+              for(i=0; i<shipdata2.length; i++) {
+                  if(shipdata2[i].max_eq === null) {
+                    continue; 
+                  }
+                  var j;
+                  var k = shipdata2[i].max_eq[0];
+                  for(j=1; j<5; j++) {
+                    k << 8;
+                    k += shipdata2[i].max_eq[j];
+                  }
+                  shipdata2[i].max_eq = k;
+              }
+              let sql = "REPLACE INTO Ship (id, `name`, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
+                       +"stype_name_chinese, can_drop, soku, slot_num, max_eq, fuel_max, bull_max) VALUES ? ";
+              var values = [];
+              for(i=0; i<shipdata1.length; i++) {
+                  let temp_value = [[shipdata1[i].id, shipdata1[i].name, shipdata1[i].sort_no, shipdata1[i].stype, shipdata1[i].after_ship_id,
+                                    shipdata1[i].filename, shipdata1[i].wiki_id,shipdata1[i].chinese_name, 
+                                    shipdata1[i].stype_name, shipdata1[i].stype_name_chinese, shipdata1[i].can_drop, 
+                                    shipdata2[i].soku, shipdata2[i].slot_num, shipdata2[i].max_eq, shipdata2[i].fuel_max, shipdata2[i].bull_max]];
+                  values.push(...temp_value);
+                  console.log("Appended: " + i);
+              }
+              DB4FREEWITHVALUES(sql, values).then((res) => {
+                  message.reply("Update complete!");
+              }).catch((err) => {
+                message.reply("Something error! Please refer to the log on Heroku");
+                console.log(err);
+              });
+            }).catch((err) => {
+              message.reply("Something error! Please refer to the log on Heroku");
+              console.log(err);
+            });
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
+      
+    }
+  
+}
 
-var kancolle_func = [func_updateship];
+//Register new function to this func array
+var normal_func = { STARTWITH : "$", 
+                    NAME : "Normal functions",
+                    FUNCTIONS : [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_addplaylist, func_addmusictopl, 
+                                func_playlist, func_playqueue, func_musicdetail, func_stop, 
+                                func_next, func_pause, func_resume, func_volume, func_loop,
+                                func_setname, func_vote, func_showvote, func_addvote,
+                                func_clear, func_sql, func_test]
+                  }
+
+var kancolle_func = { STARTWITH : "%", 
+                      NAME : "Kancolle functions",
+                      FUNCTIONS : [func_updateship]
+                    }
 
 var func = [normal_func, kancolle_func];
 
@@ -966,12 +967,17 @@ client.on('ready', () => {
 
 client.on('message', message => {
   
-    var func_group_no = 0;
-    
-    if(message.content.charAt(0) === '%') {
-        func_group_no = 1;  
-    } else if (message.content.charAt(0) !== '$') {
-        return;
+    var func_group_no = -1;
+  
+    var i;
+  
+    for(i=0; i<func.length; i++) {
+        if(message.content.charAt(0) === func[i].STARTWITH) {
+            func_group_no; 
+        }
+    }
+    if(func_group_no + 1) {
+        return; 
     }
     
     var token = new Array();
@@ -981,12 +987,11 @@ client.on('message', message => {
     //  ALL COMMAND SHOULD BE CONVERTED TO UPPER CASE!
     //===================================================
     
-    var i;
     
-    for(i=0; i<func[func_group_no].length; i++) {
-        if(token[0].toUpperCase() === func[func_group_no][i].CODE) {
+    for(i=0; i<func[func_group_no].FUNCTIONS.length; i++) {
+        if(token[0].toUpperCase() === func[func_group_no].FUNCTIONS[i].CODE) {
             try {
-              func[func_group_no][i].LOGIC(token, message);
+              func[func_group_no].FUNCTIONS[i].LOGIC(token, message);
             } catch (err) {
               message.reply("Oops! Something goes wrong. Please refer to the console log on heroku");
               console.log(err);
