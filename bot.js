@@ -921,6 +921,7 @@ var func_searchfleet = {
         if(token.length > 1) {
           sql += " WHERE name LIKE '%" + token[1] + "%' OR id in (SELECT fleet_id FROM Fleet_Tag WHERE tag LIKE '%" + token[1] + "%')";
         }
+        sql += " ORDER BY Fleet.id ASC";
         DB4FREE(sql).then((res) => {
             var fleets = [];
             var i, j, k
@@ -957,7 +958,7 @@ var func_searchfleet = {
                     display_str += ")";
                 }
             }
-            sendMessageToChannel(display_str);
+            sendMessageToChannel(message.channel, display_str);
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
