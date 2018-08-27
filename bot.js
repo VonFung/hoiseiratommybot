@@ -943,8 +943,8 @@ var func_updateslotitem = {
               let sql = "REPLACE INTO Slotitem (id, sort_no, `name`, chinese_name, type, type_name, tyku) VALUES ? ";
               var values = [];
               for(i=0; i<itemdata1.length; i++) {
-                  let temp_value = [[itemdata1[i].id, itemdata1[i].sort_no, itemdata1[i].name, itemdata1[1].chinese_name,
-                                    itemdata1[i].type, itemdata1[i].type_name, itemdata2[i].tyku]];
+                  let temp_value = [[itemdata1[i].id, itemdata1[i].sort_no, itemdata1[i].name, itemdata1[i].chinese_name,
+                                    itemdata1[i].type, itemdata1[i].type_name, itemdata2[i].stats.tyku]];
                   values.push(...temp_value);
                   console.log("Appended: " + i);
               }
