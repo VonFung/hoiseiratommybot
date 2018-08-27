@@ -37,6 +37,10 @@ var interupt_music = null;
 var detail_message = "";
 var playqueue_message = "";
 
+
+var displaying_menu = null;
+
+
 const update_time = new Date().toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' });
 
 var users;
@@ -872,7 +876,7 @@ var func_createfleet = {
     SYNTAX : "{%CREATEFLEET | fleet_name | [optional]tag(s)}",
   
     MANUAL : "**fleet_name : **The name of the fleet."
-            +"***tag(s) : ***[Optional] You can add tags to the fleet for searching (Max: 5tags).",
+            +"\n***tag(s) : ***[Optional] You can add tags to the fleet for searching (Max: 5tags).",
   
     LOGIC : function(token, message) {
         if(token.length < 2) {
@@ -915,7 +919,7 @@ var func_editfleettag = {
     SYNTAX : "{%EDITFLEETTAG | fleet_id | (+/-)tag(s)}",
   
     MANUAL : "**fleet_id : **The internal id of fleet in database.(You can find by %searchfleet)"
-            +"**(+/-)tag(s) : **Add new or Delete existing Tag with prefix(+ OR -)."
+            +"\n**(+/-)tag(s) : **Add new or Delete existing Tag with prefix(+ OR -)."
             +"\nYou can edit at most 5, at least 1 tag(s) at same time.",
   
     LOGIC : function(token, message) {
@@ -991,7 +995,7 @@ var func_searchfleet = {
           
             var display_str = "**Please choose one fleet**";
             for(i=0; i<fleets.length; i++) {
-                display_str += "\n" + (i+1) + ")\t" + fleets[i].name;
+                display_str += "\n" + (i+1) + ")\t[" + fleets[i].id + "]" + fleets[i].name;
                 if(fleets[i].tags !== null) {
                     display_str += "(" + fleets[i].tags[0];
                     for(j=1; j<fleets[i].tags.length; j++) {
@@ -1001,6 +1005,117 @@ var func_searchfleet = {
                 }
             }
             sendMessageToChannel(message.channel, display_str);
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
+    }
+  
+}
+
+var func_editfleetmember = {
+  
+    CODE : "EDITFLEETMEMBER",
+  
+    DESCRIPTION : "Add or delete member of a fleet",
+  
+    SYNTAX : "{%EDITFLEETMEMBER | fleet_id | (+/-)member(s)}",
+  
+    MANUAL : "**fleet_id : **The internal id of fleet in database.(You can find by %searchfleet)"
+            +"\n**(+/-)member(s) : **Add new or delete existing member from fleet. Manual below : "
+            +"\nFor delete members(-): Only need to add internal ship_id(in kancolle db) or part/full name of ship which can identify the ship name"
+            +"\n***For example: -呂500改 OR -436***"
+            +"\nFor add members(+): You can append the slotitem id or part/fullname ot slotitem which can identify th item name"
+            +"\nUse @ to identify the \u2606 and (|OR\\\\OR>>) to identify the skill level of flight(Please use '\\' instead of '/')"
+            +"\n***For example: +大淀改 (3号)@9 (3号)@9 零式水上観@10>> WG42 +500改 8門 8門***",
+  
+    LOGIC : function(token, message) {
+        if(token.length < 3) {
+            message.reply("Incorrect Syntax!\n" + this.SYNTAX);
+            return;
+        }
+        
+        var sql = "";
+        var fleet_id = token[1];
+        var i;
+        for(i=2; i<token.length; i++) {
+            if(token[i].charAt(0) === "-") {
+                if(i !== 2) {
+                    sql += "; " 
+                }
+                if(parseInt(token[i].substring(1)) === NaN) {
+                  sql += "DELETE FROM Fleet_Member WHERE fleet_id = " + fleet_id 
+                        +" AND ship_id IN (SELECT id FROM SHIP WHERE `name` LIKE '%" + token[i].substring(1) + "%')
+                } else {
+                  sql += "DELETE FROM Fleet_Member WHERE ship_id = " + parseInt(token[i].substring(1)) + " AND fleet_id = " + fleet_id;
+                }
+            } else (token[i].charAt(0) === "+") {
+                if(i !== 2) {
+                   sql += "; " 
+                }
+                var nextShipIdx = token.length;
+                var j;
+                for(j=token.length-1; j>0; j--) {
+                   if(token[j].charAt(0) === "+" || token[j].charAt(0) === "-") {
+                      nextShipIdx = j;
+                   }
+                }
+                if(parseInt(token[i].substring(1)) === NaN) {
+                   sql += "";
+                } else {
+                   sql += "INSERT INTO Fleet_Member (fleet_id, ship_id";
+                   for(j=1; j<nextShipIdx-i; j++) {
+                       sql += ",item" + j + ", item" + j + "lv, item" + j + "alv";
+                   }
+                   sql += ") SELECT " + fleet_id + ", " + parseInt(token[i].substring(1));
+                   var table_name = ['a', 'b', 'c', 'd', 'e', 'f'];
+                   var temp = "";
+                   for(j=i+1; j<nextShipIdx; j++) {
+                       let alv = 0;
+                       if(token[j].includes(">>")) {
+                          alv = 7; 
+                          token[j].replace(">>", "");
+                       } else if (token[j].includes("\\\\\\")) {
+                          alv = 6;
+                          token[j].replace("\\\\\\", "");
+                       } else if (token[j].includes("\\\\")) {
+                          alv = 5;
+                          token[j].replace("\\\\", "");
+                       } else if (token[j].includes("\\")) {
+                          alv = 4;
+                          token[j].replace("\\", "");
+                       } else if (token[j].includes("|||")) {
+                          alv = 3;
+                          token[j].replace("|||", "");
+                       } else if (token[j].includes("||")) {
+                          alv = 2;
+                          token[j].replace("||", "");
+                       } else if (token[j].includes("|")) {
+                          alv = 1;
+                          token[j].replace("|", "");
+                       }
+                       temp = token[j].split("@");
+                       sql += ", " + table_name[j-i-1] + ".id, " + ((temp.length > 1)?parseInt(temp[1]):0) + ", " + alv;
+                   }
+                   sql += " FROM Slotitem a";
+                   for(j=i+2; j<nextShipIdx; j++) {
+                       sql += ", Slotitem " + table_name[j-i-1];
+                   }
+                   sql += " WHERE 1=1";
+                   for(j=i+1); j<nextShipIdx; j++) {
+                        if(isNaN(parseInt(temp[0]))) {
+                          sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + temp[0] + "%'";
+                        } else {
+                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(temp[0]);
+                        }
+                   }
+                   i = nextShipIdx - 1;
+                }
+            }
+        }
+      
+        DB4FREE(sql).then((res) => {
+            message.reply("Fleet Member added successfully!");
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
