@@ -1162,7 +1162,11 @@ var func_editfleetmember = {
         }
       
         DB4FREE(sql).then((res) => {
-            message.reply("Fleet Member added successfully!");
+            if(res.insertId !== 0) {
+              message.reply("Fleet Member added successfully!");
+            } else {
+              message.reply("No record added, maybe something is wrong"); 
+            }
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
