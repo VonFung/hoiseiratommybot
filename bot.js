@@ -1144,24 +1144,31 @@ var func_editfleetmember = {
                        if(token[j].includes(">>")) {
                           alv = 7; 
                           token[j].replace(">>", "");
+                          console.log("alv = 7");
                        } else if (token[j].includes("\\\\\\")) {
                           alv = 6;
                           token[j].replace("\\\\\\", "");
+                          console.log("alv = 6");
                        } else if (token[j].includes("\\\\")) {
                           alv = 5;
                           token[j].replace("\\\\", "");
+                          console.log("alv = 5");
                        } else if (token[j].includes("\\")) {
                           alv = 4;
                           token[j].replace("\\", "");
+                          console.log("alv = 4");
                        } else if (token[j].includes("|||")) {
                           alv = 3;
                           token[j].replace("|||", "");
+                          console.log("alv = 3");
                        } else if (token[j].includes("||")) {
                           alv = 2;
                           token[j].replace("||", "");
+                          console.log("alv = 2");
                        } else if (token[j].includes("|")) {
                           alv = 1;
                           token[j].replace("|", "");
+                          console.log("alv = 1");
                        }
                        var temp = token[j].split("@");
                        token[j] = temp[0];
