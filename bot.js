@@ -934,7 +934,7 @@ var func_searchfleet = {
                 if(j + 1) {
                   fleets[j].tags.push(...res[i].tag);
                 } else {
-                  let new_fleet = [ id: res[i].id, name: res[i].name];
+                  let new_fleet = { id: res[i].id, name: res[i].name};
                   let tags;
                   if(res[i].tag === null) {
                       tags = null;
