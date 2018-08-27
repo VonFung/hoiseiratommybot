@@ -919,6 +919,53 @@ var func_updateship = {
   
 }
 
+var func_updateslotitem = {
+   
+    CODE : "UPDATESLOTITEM",
+  
+    DESCRIPTION : "Update the slotitem database from api provide by kcwiki",
+  
+    SYNTAX : "{$UPDATESLOTITEM}",
+  
+    MANUAL : "**DO NOT USE SO FREQUENTLY**",
+  
+    LOGIC : function(token, message) {
+      
+        httpRequest("http://api.kcwiki.moe/slotitems").then((res) => {
+            httpRequest("http://api.kcwiki.moe/slotitems/detail").then((res2) => {
+              let itemdata1 = JSON.parse(res);
+              let itemdata2 = JSON.parse(res2);
+              if(itemdata1.length !== itemdata2.length) {
+                  message.reply("The data is inconsist!");
+                  return;
+              }
+              var i;
+              let sql = "REPLACE INTO Slotitem (id, sort_no, `name`, chinese_name, type, type_name, tyku) VALUES ? ";
+              var values = [];
+              for(i=0; i<itemdata1.length; i++) {
+                  let temp_value = [[itemdata1[i].id, itemdata1[i].sort_no, itemdata1[i].name, itemdata1[1].chinese_name,
+                                    itemdata1[i].type, itemdata1[i].type_name, itemdata2[i].tyku]];
+                  values.push(...temp_value);
+                  console.log("Appended: " + i);
+              }
+              DB4FREEWITHVALUES(sql, values).then((res) => {
+                  message.reply("Update complete!");
+              }).catch((err) => {
+                message.reply("Something error! Please refer to the log on Heroku");
+                console.log(err);
+              });
+            }).catch((err) => {
+              message.reply("Something error! Please refer to the log on Heroku");
+              console.log(err);
+            });
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
+      
+    }
+}
+
 //Register new function to this func array
 var normal_func = { STARTWITH : "$", 
                     NAME : "Normal functions",
@@ -931,7 +978,7 @@ var normal_func = { STARTWITH : "$",
 
 var kancolle_func = { STARTWITH : "%", 
                       NAME : "Kancolle functions",
-                      FUNCTIONS : [func_updateship]
+                      FUNCTIONS : [func_updateship, func_updateslotitem]
                     }
 
 var func = [normal_func, kancolle_func];
