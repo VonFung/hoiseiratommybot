@@ -1404,7 +1404,7 @@ client.on('message', message => {
     var func_group_no = -1;
   
     if(displaying_menu !== null) {
-        displaying_menu.LOGIC(message.content); 
+        displaying_menu.LOGIC(message.content, message); 
     }
   
     var i;
