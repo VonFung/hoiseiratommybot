@@ -1428,7 +1428,7 @@ function DB4FREE(sql) {
         host: db4free_host,
         user: db4free_user,
         password: db4free_password,
-        database: db4free_name,
+        database: db4free_dbname,
         multipleStatements: true
     });
  
