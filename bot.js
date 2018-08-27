@@ -963,7 +963,7 @@ var func_searchfleet = {
     MANUAL : "***keyword : ***[Optional] keyword for searching.",
   
     LOGIC : function(token, message) {
-        var sql = "SELECT Fleet.id, Fleet.name, Fleet_Tag.tag FROM Fleet LEFT JOIN Fleet_Tag ON Fleet.id = Fleet_Tag.fleet_id";
+        var sql = "SELECT Fleet.id, Fleet.name Fleet.provider, Fleet_Tag.tag FROM Fleet LEFT JOIN Fleet_Tag ON Fleet.id = Fleet_Tag.fleet_id";
         if(token.length > 1) {
           sql += " WHERE Fleet.name LIKE '%" + token[1] + "%' OR Fleet.id in (SELECT fleet_id FROM Fleet_Tag WHERE tag LIKE '%" + token[1] + "%')";
         }
@@ -981,7 +981,7 @@ var func_searchfleet = {
                 if(j + 1) {
                   fleets[j].tags.push(...[res[i].tag]);
                 } else {
-                  let new_fleet = [{ id: res[i].id, name: res[i].name}];
+                  let new_fleet = [{ id: res[i].id, name: res[i].name, provider: GetUserName(res[i].provider)}];
                   let tags;
                   if(res[i].tag === null) {
                       tags = null;
@@ -1003,6 +1003,7 @@ var func_searchfleet = {
                     }
                     display_str += ")";
                 }
+                display_str += " BY " + fleets[i].provider;
             }
             sendMessageToChannel(message.channel, display_str);
         }).catch((err) => {
@@ -1492,6 +1493,15 @@ function GetUserID(discordID) {
         }
     }
     return -1;
+}
+
+function GetUserName(discordID) {
+    for(var i=0; i<users.length; i++) {
+        if(users[i].DISCORD === discordID) {
+            return users[i].NAME; 
+        }
+    }
+    return discordID;
 }
 
 
