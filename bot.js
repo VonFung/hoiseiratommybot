@@ -1060,8 +1060,56 @@ var func_editfleetmember = {
                       nextShipIdx = j;
                    }
                 }
-                if(isNaN(parseInt(token[i].substring(1), 10))) {
-                   sql += "";
+                console.log("token[i].substring(1) = " + token[i].substring(1));
+                console.log("parseInt(token[i].substring(1), 10) = " + parseInt(token[i].substring(1), 10));
+                if(!isNaN(parseInt(token[i].substring(1), 10))) {
+                   sql += "INSERT INTO Fleet_Member (fleet_id, ship_id";
+                   for(j=1; j<nextShipIdx-i; j++) {
+                       sql += ", item" + j + ", item" + j + "lv, item" + j + "alv";
+                   }
+                   sql += ") SELECT " + fleet_id + ", " + parseInt(token[i].substring(1), 10);
+                   var table_name = ['a', 'b', 'c', 'd', 'e', 'f'];
+                   for(j=i+1; j<nextShipIdx; j++) {
+                       let alv = 0;
+                       if(token[j].includes(">>")) {
+                          alv = 7; 
+                          token[j].replace(">>", "");
+                       } else if (token[j].includes("\\\\\\")) {
+                          alv = 6;
+                          token[j].replace("\\\\\\", "");
+                       } else if (token[j].includes("\\\\")) {
+                          alv = 5;
+                          token[j].replace("\\\\", "");
+                       } else if (token[j].includes("\\")) {
+                          alv = 4;
+                          token[j].replace("\\", "");
+                       } else if (token[j].includes("|||")) {
+                          alv = 3;
+                          token[j].replace("|||", "");
+                       } else if (token[j].includes("||")) {
+                          alv = 2;
+                          token[j].replace("||", "");
+                       } else if (token[j].includes("|")) {
+                          alv = 1;
+                          token[j].replace("|", "");
+                       }
+                       var temp = token[j].split("@");
+                       token[j] = temp[0];
+                       sql += ", " + table_name[j-i-1] + ".id, " + ((temp.length > 1)?parseInt(temp[1], 10):0) + ", " + alv;
+                   }
+                   sql += " FROM Ship s";
+                   for(j=i+1; j<nextShipIdx; j++) {
+                       sql += ", Slotitem " + table_name[j-i-1];
+                   }
+                   sql += " WHERE s.id = " + parseInt(token[i].substring(1), 10) + " AND s.after_ship_id IS NOT NULL";
+                   for(j=i+1; j<nextShipIdx; j++) {
+                        if(isNaN(parseInt(token[j], 10))) {
+                          sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + token[j] + "%' AND " + table_name[j-i-1] + ".id < 500";
+                        } else {
+                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10) + " AND " + table_name[j-i-1] + ".id < 500";
+                        }
+                   }
+                   i = nextShipIdx - 1;
                 } else {
                    sql += "INSERT INTO Fleet_Member (fleet_id, ship_id";
                    for(j=1; j<nextShipIdx-i; j++) {
@@ -1101,12 +1149,12 @@ var func_editfleetmember = {
                    for(j=i+1; j<nextShipIdx; j++) {
                        sql += ", Slotitem " + table_name[j-i-1];
                    }
-                   sql += " WHERE s.name LIKE '%" + token[i].substring(1) + "%'";
+                   sql += " WHERE s.name LIKE '%" + token[i].substring(1) + "%' AND s.after_ship_id IS NOT NULL";
                    for(j=i+1; j<nextShipIdx; j++) {
                         if(isNaN(parseInt(token[j], 10))) {
-                          sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + token[j] + "%'";
+                          sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + token[j] + "%' AND " + table_name[j-i-1] + ".id < 500";
                         } else {
-                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10);
+                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10) + " AND " + table_name[j-i-1] + ".id < 500";
                         }
                    }
                    i = nextShipIdx - 1;
