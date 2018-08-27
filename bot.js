@@ -1069,7 +1069,6 @@ var func_editfleetmember = {
                    }
                    sql += ") SELECT " + fleet_id + ", " + parseInt(token[i].substring(1));
                    var table_name = ['a', 'b', 'c', 'd', 'e', 'f'];
-                   var temp = "";
                    for(j=i+1; j<nextShipIdx; j++) {
                        let alv = 0;
                        if(token[j].includes(">>")) {
@@ -1094,7 +1093,8 @@ var func_editfleetmember = {
                           alv = 1;
                           token[j].replace("|", "");
                        }
-                       temp = token[j].split("@");
+                       var temp = token[j].split("@");
+                       token[j] = temp[0];
                        sql += ", " + table_name[j-i-1] + ".id, " + ((temp.length > 1)?parseInt(temp[1]):0) + ", " + alv;
                    }
                    sql += " FROM Slotitem a";
@@ -1102,11 +1102,11 @@ var func_editfleetmember = {
                        sql += ", Slotitem " + table_name[j-i-1];
                    }
                    sql += " WHERE 1=1";
-                   for(j=i+1); j<nextShipIdx; j++) {
-                        if(isNaN(parseInt(temp[0]))) {
-                          sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + temp[0] + "%'";
+                   for(j=i+1; j<nextShipIdx; j++) {
+                        if(isNaN(parseInt(token[j]))) {
+                          sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + token[j] + "%'";
                         } else {
-                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(temp[0]);
+                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j]);
                         }
                    }
                    i = nextShipIdx - 1;
