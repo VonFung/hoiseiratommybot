@@ -1024,10 +1024,10 @@ var func_searchfleet = {
                                       } else {
                                         var selected_fleet = this.FLEET[option-1];
                                         var sql2 = "SELECT s.name, s.eq1, s.eq2, s.eq3, s.eq4, s.eq5, s1.name item1, m.item1lv, m.item1alv, "
-                                                  +"s2.name item1, m.item2lv, m.item2alv, "
-                                                  +"s3.name item1, m.item3lv, m.item3alv, "
-                                                  +"s4.name item1, m.item4lv, m.item4alv, "
-                                                  +"s5.name item1, m.item5lv, m.item5alv "
+                                                  +"s2.name item2, m.item2lv, m.item2alv, "
+                                                  +"s3.name item3, m.item3lv, m.item3alv, "
+                                                  +"s4.name item4, m.item4lv, m.item4alv, "
+                                                  +"s5.name item5, m.item5lv, m.item5alv "
                                                   +" FROM Fleet_Member m INNER JOIN Ship s ON m.ship_id = s.id "
                                                   +" LEFT JOIN Slotitem s1 ON m.item1 = s1.id"
                                                   +" LEFT JOIN Slotitem s2 ON m.item2 = s2.id"
@@ -1057,6 +1057,7 @@ var func_searchfleet = {
                                               }
                                           }
                                           this.MESSAGE.edit(displaying_str);
+                                          msg.delete();
                                         }).catch((err) => {
                                           message.reply("Something error! Please refer to the log on Heroku");
                                           console.log(err)  ;
