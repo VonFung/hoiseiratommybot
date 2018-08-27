@@ -949,7 +949,7 @@ var func_searchfleet = {
             var display_str = "**Please choose one fleet**";
             for(i=0; i<fleets.length; i++) {
                 display_str += "\n" + (i+1) + ")\t" + fleets[i].name;
-                if(!fleets[i].tags) {
+                if(fleets[i].tags !== null) {
                     display_str += "(" + fleets[i].tags[0];
                     for(j=1; j<fleets[i].tags.length; j++) {
                         display_str += "/" + fleets[i].tags[j]; 
