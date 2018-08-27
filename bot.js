@@ -963,7 +963,7 @@ var func_searchfleet = {
     MANUAL : "***keyword : ***[Optional] keyword for searching.",
   
     LOGIC : function(token, message) {
-        var sql = "SELECT Fleet.id, Fleet.name Fleet.provider, Fleet_Tag.tag FROM Fleet LEFT JOIN Fleet_Tag ON Fleet.id = Fleet_Tag.fleet_id";
+        var sql = "SELECT Fleet.id, Fleet.name, Fleet.provider, Fleet_Tag.tag FROM Fleet LEFT JOIN Fleet_Tag ON Fleet.id = Fleet_Tag.fleet_id";
         if(token.length > 1) {
           sql += " WHERE Fleet.name LIKE '%" + token[1] + "%' OR Fleet.id in (SELECT fleet_id FROM Fleet_Tag WHERE tag LIKE '%" + token[1] + "%')";
         }
