@@ -28,7 +28,9 @@
     
     "webhook-discord": "2.3.0",
     
-    "query-string": "6.1.0"
+    "query-string": "6.1.0",
+     
+    "whocallsthefleet-database": "2018.8.27"
   
   }
   
