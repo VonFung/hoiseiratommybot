@@ -1043,7 +1043,7 @@ var func_editfleetmember = {
                 if(i !== 2) {
                     sql += "; ";
                 }
-                if(isNaN(parseInt(token[i].substring(1)))) {
+                if(isNaN(token[i].substring(1))) {
                   sql += "DELETE FROM Fleet_Member WHERE fleet_id = " + fleet_id 
                         +" AND ship_id IN (SELECT id FROM SHIP WHERE `name` LIKE '%" + token[i].substring(1) + "%')";
                 } else {
@@ -1060,14 +1060,12 @@ var func_editfleetmember = {
                       nextShipIdx = j;
                    }
                 }
-                console.log("token[i].substring(1) = " + token[i].substring(1));
-                console.log("parseInt(token[i].substring(1), 10) = " + parseInt(token[i].substring(1), 10));
-                if(!isNaN(parseInt(token[i].substring(1), 10))) {
+                if(!isNaN(token[i].substring(1))) {
                    sql += "INSERT INTO Fleet_Member (fleet_id, ship_id";
                    for(j=1; j<nextShipIdx-i; j++) {
                        sql += ", item" + j + ", item" + j + "lv, item" + j + "alv";
                    }
-                   sql += ") SELECT " + fleet_id + ", " + parseInt(token[i].substring(1), 10);
+                   sql += ") SELECT " + fleet_id + ", s.id";
                    var table_name = ['a', 'b', 'c', 'd', 'e', 'f'];
                    for(j=i+1; j<nextShipIdx; j++) {
                        let alv = 0;
@@ -1103,7 +1101,7 @@ var func_editfleetmember = {
                    }
                    sql += " WHERE s.id = " + parseInt(token[i].substring(1), 10) + " AND s.after_ship_id IS NOT NULL";
                    for(j=i+1; j<nextShipIdx; j++) {
-                        if(isNaN(parseInt(token[j], 10))) {
+                        if(isNaN(token[j])) {
                           sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + token[j] + "%' AND " + table_name[j-i-1] + ".id < 500";
                         } else {
                           sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10) + " AND " + table_name[j-i-1] + ".id < 500";
@@ -1151,7 +1149,7 @@ var func_editfleetmember = {
                    }
                    sql += " WHERE s.name LIKE '%" + token[i].substring(1) + "%' AND s.after_ship_id IS NOT NULL";
                    for(j=i+1; j<nextShipIdx; j++) {
-                        if(isNaN(parseInt(token[j], 10))) {
+                        if(isNaN(token[j])) {
                           sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + token[j] + "%' AND " + table_name[j-i-1] + ".id < 500";
                         } else {
                           sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10) + " AND " + table_name[j-i-1] + ".id < 500";
