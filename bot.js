@@ -1005,7 +1005,70 @@ var func_searchfleet = {
                 }
                 display_str += " BY " + fleets[i].provider;
             }
-            sendMessageToChannel(message.channel, display_str);
+            sendMessageToChannel(message.channel, display_str).then((res) => {
+              displaying_menu = { MESSAGE: res,
+                                  FLEET: fleets,
+                                  LOGIC: function(token, msg) {
+                                    if(isNaN(token)) {
+                                      msg.delete();
+                                      this.res.delete();
+                                      displaying_menu = null;
+                                      return;
+                                    } else {
+                                      var option = parseInt(token);
+                                      if(option < 1 || option > this.FLEET.length) {
+                                        msg.delete();
+                                        this.res.delete();
+                                        displaying_menu = null;
+                                        return;
+                                      } else {
+                                        var selected_fleet = this.FLEET[option-1];
+                                        var sql2 = "SELECT s.name, s.eq1, s.eq2, s.eq3, s.eq4, s.eq5, s1.name item1, m.item1lv, m.item1alv, "
+                                                  +"s2.name item1, m.item2lv, m.item2alv, "
+                                                  +"s3.name item1, m.item3lv, m.item3alv, "
+                                                  +"s4.name item1, m.item4lv, m.item4alv, "
+                                                  +"s5.name item1, m.item5lv, m.item5alv "
+                                                  +" FROM Fleet_Member m INNER JOIN Ship s ON m.ship_id = s.id "
+                                                  +" LEFT JOIN Slotitem s1 ON m.item1 = s1.id"
+                                                  +" LEFT JOIN Slotitem s2 ON m.item2 = s2.id"
+                                                  +" LEFT JOIN Slotitem s3 ON m.item3 = s2.id"
+                                                  +" LEFT JOIN Slotitem s4 ON m.item4 = s2.id"
+                                                  +" LEFT JOIN Slotitem s5 ON m.item5 = s2.id"
+                                                  +" WHERE fleet_id = " + selected_fleet.id;
+                                        DB4FREE(sql2).then((res) => {
+                                          var displaying_str = "**" + selected_fleet.name + "**";
+                                          let a;
+                                          for(a=0; a<res.length; a++) {
+                                              displaying_str += "\n*" + res[a].name + "*";
+                                              if(res[a].item1 !== null) {
+                                                displaying_str += "\n[" + res[a].eq1 + "]" + res[a].item1 + ((res[a].item1lv > 0)?" \u2606" + res[a].item1lv:"") + convertALVtoSymbol(res[a].item1alv);
+                                                if(res[a].item2 !== null) {
+                                                  displaying_str += "\n[" + res[a].eq2 + "]" + res[a].item2 + ((res[a].item2lv > 0)?" \u2606" + res[a].item2lv:"") + convertALVtoSymbol(res[a].item2alv);
+                                                  if(res[a].item3 !== null) {
+                                                    displaying_str += "\n[" + res[a].eq3 + "]" + res[a].item3 + ((res[a].item3lv > 0)?" \u2606" + res[a].item3lv:"") + convertALVtoSymbol(res[a].item3alv);
+                                                    if(res[a].item4 !== null) {
+                                                      displaying_str += "\n[" + res[a].eq4 + "]" + res[a].item4 + ((res[a].item4lv > 0)?" \u2606" + res[a].item4lv:"") + convertALVtoSymbol(res[a].item4alv);
+                                                      if(res[a].item5 !== null) {
+                                                        displaying_str += "\n[" + res[a].eq5 + "]" + res[a].item5 + ((res[a].item5lv > 0)?" \u2606" + res[a].item5lv:"") + convertALVtoSymbol(res[a].item5alv);
+                                                      }
+                                                    }
+                                                  }   
+                                                }
+                                              }
+                                          }
+                                          this.MESSAGE.edit(displaying_str);
+                                        }).catch((err) => {
+                                          message.reply("Something error! Please refer to the log on Heroku");
+                                          console.log(err)  ;
+                                        })
+                                      }
+                                    }
+                                  }
+                                }
+            }).catch((err) => {
+              message.reply("Something error! Please refer to the log on Heroku");
+              console.log(err);
+            });
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
@@ -1210,13 +1273,15 @@ var func_updateship = {
                   shipdata2[i].max_eq = k;
               }
               let sql = "REPLACE INTO Ship (id, `name`, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
-                       +"stype_name_chinese, can_drop, soku, slot_num, max_eq, fuel_max, bull_max) VALUES ? ";
+                       +"stype_name_chinese, can_drop, soku, eq1, eq2, eq3, eq4, eq5, slot_num, max_eq, fuel_max, bull_max) VALUES ? ";
               var values = [];
               for(i=0; i<shipdata1.length; i++) {
                   let temp_value = [[shipdata1[i].id, shipdata1[i].name, shipdata1[i].sort_no, shipdata1[i].stype, shipdata1[i].after_ship_id,
                                     shipdata1[i].filename, shipdata1[i].wiki_id,shipdata1[i].chinese_name, 
                                     shipdata1[i].stype_name, shipdata1[i].stype_name_chinese, shipdata1[i].can_drop, 
-                                    shipdata2[i].soku, shipdata2[i].slot_num, shipdata2[i].max_eq, shipdata2[i].fuel_max, shipdata2[i].bull_max]];
+                                    shipdata2[i].soku, shipdata2[i].slot_num, /*shipdata2[i].max_eq, */
+                                    shipdata2[i].max_eq[0], shipdata2[i].max_eq[1], shipdata2[i].max_eq[2], shipdata2[i].max_eq[3], shipdata2[i].max_eq[4], 
+                                    shipdata2[i].fuel_max, shipdata2[i].bull_max]];
                   values.push(...temp_value);
                   console.log("Appended: " + i);
               }
@@ -1336,6 +1401,10 @@ client.on('ready', () => {
 client.on('message', message => {
   
     var func_group_no = -1;
+  
+    if(displaying_menu !== null) {
+        displaying_menu.LOGIC(message.content); 
+    }
   
     var i;
   
@@ -1837,7 +1906,32 @@ function sendMessageToChannel(channel, msg) {
       channel.send(temp_msg);
       msg = msg.substring(index + 1);
     }
-    channel.send(msg);
+    return new Promise((resolve, reject) => {
+      channel.send(msg).then((msg) => {
+        resolve(msg);
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+}
+
+function convertALVtoSymbol(alv) {
+    if(alv === 7) {
+      return ">>"; 
+    } else if (alv === 6) {
+      return "\\\\\\";
+    } else if (alv === 5) {
+      return "\\\\"; 
+    } else if (alv === 4) {
+      return "\\"; 
+    } else if (alv === 3) {
+      return "|||"; 
+    } else if (alv === 2) {
+      return "||"; 
+    } else if (alv === 1) {
+      return "|"; 
+    }
+    return "";
 }
 
 
