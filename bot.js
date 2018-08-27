@@ -856,13 +856,56 @@ var func_test = {
   
 }
 
+var func_createfleet = {
+ 
+    CODE : "CREATEFLEET",
+  
+    DESCRIPTION : "Create a new fleet to store the fleet info",
+  
+    SYNTAX : "{%CREATEFLEET | fleet_name | [optional]tag(s)}",
+  
+    MANUAL : "**fleet_name : **The name of the fleet."
+            +"***tag(s) : ***[Optional] You can add tags to the fleet for searching (Max: 5tags).",
+  
+    LOGIC : function(token, message) {
+        if(token.length < 2) {
+            message.reply("Incorrect Syntax!\n" + this.SYNTAX);
+            return;
+        }
+        
+        var sql = "INSERT INTO fleet (name) VALUES " + token[1] + "; SELECT id FROM fleet ORDER BY id DESC LIMIT 1";
+        DB4FREE(sql).then((res) => {
+            var fleet_id = res[0].id;
+            if(token.length > 2) {
+                var sql2 = "INSERT INTO Fleet_Tag (tag, fleet_id) VALUES ('" + token[2] + "', " + fleet_id + ")";
+                var i;
+                for(i=3; i<token.length && i<7; i++) {
+                    sql2 += "; INSERT INTO Fleet_Tag (tag, fleet_id) VALUES ('" + token[i] + "', " + fleet_id + ")";
+                }
+                DB4FREE(sql2).then((res2) => {
+                    message.reply("Create successully! The fleet id is " + fleet_id + ".");
+                }).catch((err) => {
+                    message.reply("Something error! Please refer to the log on Heroku");
+                    console.log(err);
+                });
+            } else {
+                message.reply("Create successully! The fleet id is " + fleet_id + ".");
+            }
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
+    }
+  
+}
+
 var func_updateship = {
    
     CODE : "UPDATESHIP",
   
     DESCRIPTION : "Update the ship database from api provide by kcwiki",
   
-    SYNTAX : "{$UPDATESHIP}",
+    SYNTAX : "{%UPDATESHIP}",
   
     MANUAL : "**DO NOT USE SO FREQUENTLY**",
   
@@ -925,7 +968,7 @@ var func_updateslotitem = {
   
     DESCRIPTION : "Update the slotitem database from api provide by kcwiki",
   
-    SYNTAX : "{$UPDATESLOTITEM}",
+    SYNTAX : "{%UPDATESLOTITEM}",
   
     MANUAL : "**DO NOT USE SO FREQUENTLY**",
   
@@ -1378,8 +1421,8 @@ function DB4FREE(sql) {
         host: db4free_host,
         user: db4free_user,
         password: db4free_password,
-        database: db4free_name
-        //database: db_dbname
+        database: db4free_name,
+        multipleStatements: true
     });
  
     return new Promise((resolve, reject) => {
@@ -1410,8 +1453,8 @@ function DB4FREEWITHVALUES(sql, values) {
         host: db4free_host,
         user: db4free_user,
         password: db4free_password,
-        database: db4free_dbname
-        //database: db_dbname
+        database: db4free_dbname,
+        multipleStatements: true
     });
  
     return new Promise((resolve, reject) => {
