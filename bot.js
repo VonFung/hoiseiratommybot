@@ -926,8 +926,8 @@ var func_editfleettag = {
         
         var i;
         var sql = "";
-        for(i=2; i<token.length && i<7) {
-            if(!(i - 2)) {
+        for(i=2; i<token.length && i<7; i++) {
+            if(i !== 2) {
                 sql += ";\n";
             }
             if(token[i].charAt(0) === "+") {
