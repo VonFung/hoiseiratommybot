@@ -1101,7 +1101,7 @@ var func_editfleetmember = {
                    for(j=i+1; j<nextShipIdx; j++) {
                        sql += ", Slotitem " + table_name[j-i-1];
                    }
-                   sql += " WHERE s.name LIKE '%" + token[i].substring(1) + %'";
+                   sql += " WHERE s.name LIKE '%" + token[i].substring(1) + "%'";
                    for(j=i+1; j<nextShipIdx; j++) {
                         if(isNaN(parseInt(token[j], 10))) {
                           sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + token[j] + "%'";
