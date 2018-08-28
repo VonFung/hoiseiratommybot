@@ -1339,7 +1339,7 @@ var func_editfleetmember = {
                           sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10);   //Search item by id
                         }
                    }
-                   sql += " ORDER BY s.ja_jp LIMIT 1";
+                   sql += " ORDER BY a.ja_jp LIMIT 1";
                    i = nextShipIdx - 1;
                 }
             }
