@@ -1337,7 +1337,7 @@ var func_updateitem = {
               let sql = "REPLACE INTO Item (id, ja_jp, zh_tw, type, aa, asw, los) VALUES ? ";
               var values = [];
               for(i=0; i<itemdata.length; i++) {
-                  let temp_value = [[itemdata[i].id, itemdata[i].name.ja_jp, itemdata[i].name.zh_tw, itemdata[i].type, 
+                  let temp_value = [[itemdata[i].id, itemdata[i].name.ja_jp, to_zh_tw.tify(itemdata[i].name.zh_cn), itemdata[i].type, 
                                      itemdata[i].stat.aa, itemdata[i].stat.asw, itemdata[i].stat.los]];
                   values.push(...temp_value);
                   console.log("Appended: " + i);
