@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const ytdl = require('ytdl-core');  //For music streaming
 const Webhook = require('webhook-discord');
 var mysql = require('mysql');
-const Datastore = require('nedb');
+var to_zh_tw = require('chinese-conv');
 
 const hook = new Webhook(process.env.WEBHOOK_URL);
 
@@ -1277,36 +1277,28 @@ var func_updateship = {
     LOGIC : function(token, message) {
       
         httpRequest("http://api.kcwiki.moe/ships").then((res) => {
-            httpRequest("http://api.kcwiki.moe/ships/stats").then((res2) => {
-              let shipdata1 = JSON.parse(res);
-              let shipdata2 = JSON.parse(res2);
-              if(shipdata1.length !== shipdata2.length) {
-                  message.reply("The data is inconsist!");
-                  return;
-              }
+              var shipdata = JSON.parse("[" + res.replace(/\n/g, ",") + "]");
               var i;
-              for(i=0; i<shipdata2.length; i++) {
-                  if(shipdata2[i].max_eq === null) {
-                    continue; 
-                  }
-                  var j;
-                  var k = shipdata2[i].max_eq[0];
-                  for(j=1; j<5; j++) {
-                    k << 8;
-                    k += shipdata2[i].max_eq[j];
-                  }
-                  shipdata2[i].max_eq = k;
-              }
-              let sql = "REPLACE INTO Ship (id, `name`, sort_no, stype, after_ship_id, filename, wiki_id, chinese_name, stype_name, "
-                       +"stype_name_chinese, can_drop, soku, eq1, eq2, eq3, eq4, eq5, slot_num, max_eq, fuel_max, bull_max) VALUES ? ";
+              let sql = "REPLACE INTO Ship (id, ja_jp, ja_kana, ja_romaji, zh_tw, asw, asw_max, los, los_max, speed"
+                        +", fuel_consum, ammo_consum, slot, type, _id) VALUES ? ";
               var values = [];
-              for(i=0; i<shipdata1.length; i++) {
-                  let temp_value = [[shipdata1[i].id, shipdata1[i].name, shipdata1[i].sort_no, shipdata1[i].stype, shipdata1[i].after_ship_id,
-                                    shipdata1[i].filename, shipdata1[i].wiki_id,shipdata1[i].chinese_name, 
-                                    shipdata1[i].stype_name, shipdata1[i].stype_name_chinese, shipdata1[i].can_drop, 
-                                    shipdata2[i].soku, shipdata2[i].slot_num, /*shipdata2[i].max_eq, */
-                                    shipdata2[i].max_eq[0], shipdata2[i].max_eq[1], shipdata2[i].max_eq[2], shipdata2[i].max_eq[3], shipdata2[i].max_eq[4], 
-                                    shipdata2[i].fuel_max, shipdata2[i].bull_max]];
+              for(i=0; i<shipdata.length; i++) {
+                  let slot_str = "";
+                  if(shipdata[i].slot.length > 0) {
+                    let j;
+                    slot_str += shipdata[i].slot[0];
+                    for(j=1; j<shipdata[i].slot.length ;j++) {
+                      slot_str += "/" + shipdata[i].slot[i];
+                    }
+                  }
+                  let temp_value = [[shipdata[i].id, addShipSuffix(shipdata[i].name.ja_jp, 0, shipdata[i].name.suffix), 
+                                     addShipSuffix(shipdata[i].name.ja_kana, 1, shipdata[i].name.suffix), 
+                                     addShipSuffix(shipdata[i].name.ja_romaji, 2, shipdata[i].name.suffix), 
+                                     addShipSuffix(to_zh_tw.tify(shipdata[i].name.zh_cn), 3, shipdata[i].name.suffix), 
+                                     shipdata[i].stat.asw, shipdata[i].stat.asw_max, 
+                                     shipdata[i].stat.los, shipdata[i].stat.los_max, shipdata[i].stat.speed, 
+                                     shipdata[i].consum.fuel, shipdata[i].consum.ammo, slot_str, 
+                                     shipdata[i].type, shipdata[i]._id]];
                   values.push(...temp_value);
                   console.log("Appended: " + i);
               }
@@ -1316,16 +1308,11 @@ var func_updateship = {
                 message.reply("Something error! Please refer to the log on Heroku");
                 console.log(err);
               });
-            }).catch((err) => {
-              message.reply("Something error! Please refer to the log on Heroku");
-              console.log(err);
-            });
-        }).catch((err) => {
-            message.reply("Something error! Please refer to the log on Heroku");
-            console.log(err);
-        });
       
-    }
+    }).catch((err) => {
+      message.reply("Something error! Please refer to the log on Heroku");
+      console.log(err);
+    });
   
 }
 
@@ -1957,6 +1944,32 @@ function convertALVtoSymbol(alv) {
       return "|"; 
     }
     return "";
+}
+
+const ship_suffix = [["改", "かい", "kai", "改"], 
+                     ["改二", "かいに", "kaini", "改二"],
+                     ["甲", "こう", "kou", "甲"],
+                     ["航", "こう", "kou", "航"],
+                     ["航改", "こうかい", "koukai", "航改"],
+                     ["航改二", "こうかいに", "koukaini", "航改二"],
+                     [" zwei", " zwei", "", " zwei"],
+                     [" drei", " drei", "", " drei"],
+                     ["改二甲", "かいにこう", "kainikou", "改二甲"],
+                     ["改二乙", "かいにおつ", "kainiotsu", "改二乙"],
+                     ["改二丁", "かいにちょう", "kainichou", "改二丁"],
+                     [" due", " due", "", " due"],
+                     ["改母", "かいぶ", "kaibu", "改母"],
+                     [" два", " два", "", " два"],
+                     [" Mk.II", " Mk.II", "", " Mk.II"],
+                     [" Mk.II Mod.2", " Mk.II Mod.2", "", " Mk.II Mod.2"],
+                     ["乙改", "おつかい", "otsukai", "乙改"],
+                     ["丁改", "ちょうかい", "choukai", "丁改"]]
+
+function addShipSuffix(shipname, name_ln, suffix_type) {
+    if(suffix_type === null ) {
+        return shipname; 
+    }
+    return "" + shipname + ship_suffix[suffix_type-1][name_ln];
 }
 
 
