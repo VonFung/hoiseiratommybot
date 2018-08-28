@@ -1290,7 +1290,7 @@ var func_updateship = {
                     let j;
                     slot_str += shipdata[i].slot[0];
                     for(j=1; j<shipdata[i].slot.length ;j++) {
-                      slot_str += "/" + shipdata[i].slot[i];
+                      slot_str += "/" + shipdata[i].slot[j];
                     }
                   }
                   let temp_value = [[shipdata[i].id, addShipSuffix(shipdata[i].name.ja_jp, 0, shipdata[i].name.suffix), 
