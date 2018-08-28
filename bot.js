@@ -1278,7 +1278,6 @@ var func_updateship = {
       
         httpsRequest("https://raw.githubusercontent.com/TeamFleet/WhoCallsTheFleet-DB/master/db/ships.nedb").then((res) => {
               var res_json = "[" + res.replace(/(?:\r\n|\r|\n)/g, ",").replace(/.$/, "]");
-              console.log("res_json = " + res_json);
               var shipdata = JSON.parse(res_json);
               var i;
               let sql = "REPLACE INTO Ship (id, ja_jp, ja_kana, ja_romaji, zh_tw, asw, asw_max, los, los_max, speed"
@@ -1331,20 +1330,15 @@ var func_updateslotitem = {
   
     LOGIC : function(token, message) {
       
-        httpRequest("http://api.kcwiki.moe/slotitems").then((res) => {
-            httpRequest("http://api.kcwiki.moe/slotitems/detail").then((res2) => {
-              let itemdata1 = JSON.parse(res);
-              let itemdata2 = JSON.parse(res2);
-              if(itemdata1.length !== itemdata2.length) {
-                  message.reply("The data is inconsist!");
-                  return;
-              }
+        httpsRequest("https://raw.githubusercontent.com/TeamFleet/WhoCallsTheFleet-DB/master/db/items.nedb").then((res) => {
+              var res_json = "[" + res.replace(/(?:\r\n|\r|\n)/g, ",").replace(/.$/, "]");
+              var itemdata = JSON.parse(res_json);
               var i;
-              let sql = "REPLACE INTO Slotitem (id, sort_no, `name`, chinese_name, type, type_name, tyku) VALUES ? ";
+              let sql = "REPLACE INTO Item (id, ja_jp, zh_tw, type, aa, asw, los) VALUES ? ";
               var values = [];
-              for(i=0; i<itemdata1.length; i++) {
-                  let temp_value = [[itemdata1[i].id, itemdata1[i].sort_no, itemdata1[i].name, itemdata1[i].chinese_name,
-                                    itemdata1[i].type, itemdata1[i].type_name, itemdata2[i].stats.tyku]];
+              for(i=0; i<itemdata.length; i++) {
+                  let temp_value = [[itemdata[i].id, itemdata[i].name.ja_jp, itemdata[i].name.zh_tw, itemdata[i].type, 
+                                     itemdata[i].stat.aa, itemdata[i].stat.asw, itemdata[i].stat.los]];
                   values.push(...temp_value);
                   console.log("Appended: " + i);
               }
@@ -1354,10 +1348,6 @@ var func_updateslotitem = {
                 message.reply("Something error! Please refer to the log on Heroku");
                 console.log(err);
               });
-            }).catch((err) => {
-              message.reply("Something error! Please refer to the log on Heroku");
-              console.log(err);
-            });
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
