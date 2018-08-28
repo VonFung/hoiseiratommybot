@@ -959,6 +959,96 @@ var func_editfleettag = {
   
 }
 
+var func_searchship = {
+  
+    CODE : "SEARCHSHIP",
+  
+    DESCRIPTION : "Search the ship database by id or name",
+  
+    SYNTAX : "{%SEARCHSHIP | id/name(in kanji, romaji, hiragana or in traditional chinese)}",
+  
+    MANUAL : "**id/name : **The keyword to search from database."
+            +"\n**The whole keyword can be convert to number will counted as id, if you want to search with some name in number,"
+            +" please start the keyword with '%'. For example, search ro-500 with '%500' instead of '500'**",
+  
+    LOGIC : function(token, message) {
+        if(token.length < 2) {
+            message.reply("Incorrect Syntax!\n" + this.SYNTAX);
+            return;
+        }
+        var sql = "";
+        if(isNan(token[1])) {
+            sql = "SELECT id, ja_jp, ja_kana, ja_romaji, zh_tw FROM Ship WHERE "
+                  +"ja_jp LIKE '%" + token[1] + "%' OR "
+                  +"ja_kana LIKE '%" + token[1] + "%' OR "
+                  +"ja_romaji LIKE '%" + token[1] + "%' OR "
+                  +"zh_tw LIKE '%" + token[1] + "%'";
+        } else {
+            sql = "SELECT id, ja_jp, ja_kana, ja_romaji, zh_tw FROM Ship WHERE id = " + parseInt(token[1]);
+        }
+        DB4FREE(sql).then((res) => {
+            var display_str = "";
+            if(res.length === 0) {
+                message.reply("No result!"); 
+            } else {
+                display_str += "[" + res[0].id + "]" + res[0].ja_jp + "(" + res[0].ja_kana + "/" + res[0].ja_romaji + "/" + res[0].zh_tw + ")"; 
+            }
+            var i;
+            for(i=0; i<res.length; i++) {
+                display_str += "\n[" + res[i].id + "]" + res[i].ja_jp + "(" + res[i].ja_kana + "/" + res[i].ja_romaji + "/" + res[i].zh_tw + ")";
+            }
+            sendMessageToChannel(message.channel, display_str);
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        })
+    }
+  
+}
+
+var func_searchitem = {
+  
+    CODE : "SEARCHITEM",
+  
+    DESCRIPTION : "Search the item database by id or name",
+  
+    SYNTAX : "{%SEARCHITEM | id/name(in kanji, romaji, hiragana or in traditional chinese)}",
+  
+    MANUAL : "**id/name : **The keyword to search from database."
+            +"\n**The whole keyword can be convert to number will counted as id, if you want to search with some name in number,"
+            +" please start the keyword with '%'. For example, search Re.2005 改 with '%2005' instead of '2005'**",
+  
+    LOGIC : function(token, message) {
+        if(token.length < 2) {
+            message.reply("Incorrect Syntax!\n" + this.SYNTAX);
+            return;
+        }
+        var sql = "";
+        if(isNan(token[1])) {
+            sql = "SELECT id, ja_jp FROM Item WHERE ja_jp LIKE '%" + token[1] + "%'";
+        } else {
+            sql = "SELECT id, ja_jp FROM Item WHERE id = " + parseInt(token[1]);
+        }
+        DB4FREE(sql).then((res) => {
+            var display_str = "";
+            if(res.length === 0) {
+                message.reply("No result!"); 
+            } else {
+                display_str += "[" + res[0].id + "]" + res[0].ja_jp; 
+            }
+            var i;
+            for(i=0; i<res.length; i++) {
+                display_str += "\n[" + res[i].id + "]" + res[i].ja_jp;
+            }
+            sendMessageToChannel(message.channel, display_str);
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        })
+    }
+  
+}
+
 var func_searchfleet = {
  
     CODE : "SEARCHFLEET",
