@@ -977,7 +977,7 @@ var func_searchship = {
             return;
         }
         var sql = "";
-        if(isNan(token[1])) {
+        if(isNaN(token[1])) {
             sql = "SELECT id, ja_jp, ja_kana, ja_romaji, zh_tw FROM Ship WHERE "
                   +"ja_jp LIKE '%" + token[1] + "%' OR "
                   +"ja_kana LIKE '%" + token[1] + "%' OR "
@@ -1024,7 +1024,7 @@ var func_searchitem = {
             return;
         }
         var sql = "";
-        if(isNan(token[1])) {
+        if(isNaN(token[1])) {
             sql = "SELECT id, ja_jp FROM Item WHERE ja_jp LIKE '%" + token[1] + "%'";
         } else {
             sql = "SELECT id, ja_jp FROM Item WHERE id = " + parseInt(token[1]);
