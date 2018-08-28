@@ -994,7 +994,7 @@ var func_searchship = {
                 display_str += "[" + res[0].id + "]" + res[0].ja_jp + "(" + res[0].ja_kana + "/" + res[0].ja_romaji + "/" + res[0].zh_tw + ")"; 
             }
             var i;
-            for(i=0; i<res.length; i++) {
+            for(i=1; i<res.length; i++) {
                 display_str += "\n[" + res[i].id + "]" + res[i].ja_jp + "(" + res[i].ja_kana + "/" + res[i].ja_romaji + "/" + res[i].zh_tw + ")";
             }
             sendMessageToChannel(message.channel, display_str);
@@ -1037,7 +1037,7 @@ var func_searchitem = {
                 display_str += "[" + res[0].id + "]" + res[0].ja_jp; 
             }
             var i;
-            for(i=0; i<res.length; i++) {
+            for(i=1; i<res.length; i++) {
                 display_str += "\n[" + res[i].id + "]" + res[i].ja_jp;
             }
             sendMessageToChannel(message.channel, display_str);
