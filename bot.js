@@ -865,7 +865,7 @@ var func_test = {
             console.log(err);
         });*/
       var data = "";
-      var request = require("https").get("https://github.com/TeamFleet/WhoCallsTheFleet-DB/raw/master/db/ships.nedb", function(res) {
+      var request = require("https").get("https://raw.githubusercontent.com/TeamFleet/WhoCallsTheFleet-DB/master/db/ships.nedb", function(res) {
 
         res.on('data', function(chunk) {
           data += chunk;
