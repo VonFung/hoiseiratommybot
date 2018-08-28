@@ -1032,33 +1032,34 @@ var func_searchfleet = {
                                         return;
                                       } else {
                                         var selected_fleet = this.FLEET[option-1];
-                                        var sql2 = "SELECT s.name, s.eq1, s.eq2, s.eq3, s.eq4, s.eq5, s1.name item1, m.item1lv, m.item1alv, "
-                                                  +"s2.name item2, m.item2lv, m.item2alv, "
-                                                  +"s3.name item3, m.item3lv, m.item3alv, "
-                                                  +"s4.name item4, m.item4lv, m.item4alv, "
-                                                  +"s5.name item5, m.item5lv, m.item5alv "
+                                        var sql2 = "SELECT s.name, s.slot, s1.ja_jp item1, m.item1lv, m.item1alv, "
+                                                  +"s2.ja_jp item2, m.item2lv, m.item2alv, "
+                                                  +"s3.ja_jp item3, m.item3lv, m.item3alv, "
+                                                  +"s4.ja_jp item4, m.item4lv, m.item4alv, "
+                                                  +"s5.ja_jp item5, m.item5lv, m.item5alv "
                                                   +" FROM Fleet_Member m INNER JOIN Ship s ON m.ship_id = s.id "
-                                                  +" LEFT JOIN Slotitem s1 ON m.item1 = s1.id"
-                                                  +" LEFT JOIN Slotitem s2 ON m.item2 = s2.id"
-                                                  +" LEFT JOIN Slotitem s3 ON m.item3 = s2.id"
-                                                  +" LEFT JOIN Slotitem s4 ON m.item4 = s2.id"
-                                                  +" LEFT JOIN Slotitem s5 ON m.item5 = s2.id"
+                                                  +" LEFT JOIN Item s1 ON m.item1 = s1.id"
+                                                  +" LEFT JOIN Item s2 ON m.item2 = s2.id"
+                                                  +" LEFT JOIN Item s3 ON m.item3 = s3.id"
+                                                  +" LEFT JOIN Item s4 ON m.item4 = s4.id"
+                                                  +" LEFT JOIN Item s5 ON m.item5 = s5.id"
                                                   +" WHERE fleet_id = " + selected_fleet.id;
                                         DB4FREE(sql2).then((res) => {
                                           var displaying_str = "**" + selected_fleet.name + "**";
                                           let a;
                                           for(a=0; a<res.length; a++) {
+                                              let slot_token = res[a].slot.split("/");
                                               displaying_str += "\n*" + res[a].name + "*";
                                               if(res[a].item1 !== null) {
-                                                displaying_str += "\n[" + res[a].eq1 + "]" + res[a].item1 + ((res[a].item1lv > 0)?" \u2606" + res[a].item1lv:"") + convertALVtoSymbol(res[a].item1alv);
+                                                displaying_str += "\n[" + slot_token[0] + "]" + res[a].item1 + ((res[a].item1lv > 0)?" \u2606" + res[a].item1lv:"") + convertALVtoSymbol(res[a].item1alv);
                                                 if(res[a].item2 !== null) {
-                                                  displaying_str += "\n[" + res[a].eq2 + "]" + res[a].item2 + ((res[a].item2lv > 0)?" \u2606" + res[a].item2lv:"") + convertALVtoSymbol(res[a].item2alv);
+                                                  displaying_str += "\n[" + slot_token[1] + "]" + res[a].item2 + ((res[a].item2lv > 0)?" \u2606" + res[a].item2lv:"") + convertALVtoSymbol(res[a].item2alv);
                                                   if(res[a].item3 !== null) {
-                                                    displaying_str += "\n[" + res[a].eq3 + "]" + res[a].item3 + ((res[a].item3lv > 0)?" \u2606" + res[a].item3lv:"") + convertALVtoSymbol(res[a].item3alv);
+                                                    displaying_str += "\n[" + slot_token[2] + "]" + res[a].item3 + ((res[a].item3lv > 0)?" \u2606" + res[a].item3lv:"") + convertALVtoSymbol(res[a].item3alv);
                                                     if(res[a].item4 !== null) {
-                                                      displaying_str += "\n[" + res[a].eq4 + "]" + res[a].item4 + ((res[a].item4lv > 0)?" \u2606" + res[a].item4lv:"") + convertALVtoSymbol(res[a].item4alv);
+                                                      displaying_str += "\n[" + slot_token[3] + "]" + res[a].item4 + ((res[a].item4lv > 0)?" \u2606" + res[a].item4lv:"") + convertALVtoSymbol(res[a].item4alv);
                                                       if(res[a].item5 !== null) {
-                                                        displaying_str += "\n[" + res[a].eq5 + "]" + res[a].item5 + ((res[a].item5lv > 0)?" \u2606" + res[a].item5lv:"") + convertALVtoSymbol(res[a].item5alv);
+                                                        displaying_str += "\n[" + slot_token[4] + "]" + res[a].item5 + ((res[a].item5lv > 0)?" \u2606" + res[a].item5lv:"") + convertALVtoSymbol(res[a].item5alv);
                                                       }
                                                     }
                                                   }   
@@ -1124,8 +1125,11 @@ var func_editfleetmember = {
                     sql += "; ";
                 }
                 if(isNaN(token[i].substring(1))) {
+                  let fleet_name = token[i].substring(1);
                   sql += "DELETE FROM Fleet_Member WHERE fleet_id = " + fleet_id 
-                        +" AND ship_id IN (SELECT id FROM SHIP WHERE `name` LIKE '%" + token[i].substring(1) + "%')";
+                        +" AND ship_id IN (SELECT id FROM SHIP WHERE ja_jp LIKE '%" + fleet_name + "%' OR"
+                        +" ja_kana LIKE '%" + fleet_name + "%' OR ja_romaji LIKE '%" + fleet_name + "%' OR"
+                        +" zh_tw LIKE '%" + fleet_name + "%')";
                 } else {
                   sql += "DELETE FROM Fleet_Member WHERE ship_id = " + parseInt(token[i].substring(1)) + " AND fleet_id = " + fleet_id;
                 }
@@ -1226,7 +1230,10 @@ var func_editfleetmember = {
                    for(j=i+1; j<nextShipIdx; j++) {
                        sql += ", Slotitem " + table_name[j-i-1];
                    }
-                   sql += " WHERE s.name LIKE '%" + token[i].substring(1) + "%' AND s.after_ship_id IS NOT NULL";
+                   sql += " WHERE (s.ja_jp LIKE '%" + token[i].substring(1) + "%' OR"
+                         +" s.ja_kana LIKE '%" + token[i].substring(1) + "%' OR"
+                         +" s.ja_romaji LIKE '%" + token[i].substring(1) + "%' OR"
+                         +" s.zh_tw LIKE '%" + token[i].substring(1) + "%')";
                    for(j=i+1; j<nextShipIdx; j++) {
                         if(isNaN(token[j])) {
                           sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + token[j] + "%' AND " + table_name[j-i-1] + ".id < 500";
