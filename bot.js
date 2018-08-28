@@ -2,7 +2,6 @@ const Discord = require('discord.js');
 const ytdl = require('ytdl-core');  //For music streaming
 const Webhook = require('webhook-discord');
 var mysql = require('mysql');
-var fs = require('fs');
 
 const hook = new Webhook(process.env.WEBHOOK_URL);
 
@@ -1421,7 +1420,6 @@ client.on('ready', () => {
     /*client.guilds.forEach((id, guild) => {
         console.log("Guild id: " + id + "/" + guild.id);
     });*/
-    console.log("path exists = " + fs.existsSync("./db/ships.nedb"));
 });
 
 client.on('message', message => {
