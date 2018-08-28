@@ -30,7 +30,9 @@
     
     "query-string": "6.1.0",
      
-    "whocallsthefleet-database": "2018.8.27"
+    "whocallsthefleet-database": "2018.8.27",
+    
+    "nedb": "1.8.0"
   
   }
   
