@@ -1185,9 +1185,9 @@ var func_editfleetmember = {
                    sql += " WHERE s.id = " + parseInt(token[i].substring(1), 10);
                    for(j=i+1; j<nextShipIdx; j++) {
                         if(isNaN(token[j])) {
-                          sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + token[j] + "%' AND " + table_name[j-i-1] + ".id < 500";
+                          sql += " AND " + table_name[j-i-1] + ".ja_jp LIKE '%" + token[j] + "%' ";
                         } else {
-                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10) + " AND " + table_name[j-i-1] + ".id < 500";
+                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10);
                         }
                    }
                    sql += " ORDER BY s.ja_jp LIMIT 1";
@@ -1237,9 +1237,9 @@ var func_editfleetmember = {
                          +" s.zh_tw LIKE '%" + token[i].substring(1) + "%')";
                    for(j=i+1; j<nextShipIdx; j++) {
                         if(isNaN(token[j])) {
-                          sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + token[j] + "%' AND " + table_name[j-i-1] + ".id < 500";
+                          sql += " AND " + table_name[j-i-1] + ".ja_jp LIKE '%" + token[j] + "%'";
                         } else {
-                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10) + " AND " + table_name[j-i-1] + ".id < 500";
+                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10);
                         }
                    }
                    sql += " ORDER BY s.ja_jp LIMIT 1";
