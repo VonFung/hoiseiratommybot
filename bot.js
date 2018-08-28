@@ -1017,22 +1017,22 @@ var func_searchfleet = {
                                   FLEET: fleets,
                                   LOGIC: function(token, msg) {
                                     if(isNaN(token)) {
+                                      displaying_menu = null;
                                       msg.delete();
                                       console.log("res=" + JSON.stringify(res));
                                       this.res.delete();
-                                      displaying_menu = null;
                                       return;
                                     } else {
                                       var option = parseInt(token);
                                       if(option < 1 || option > this.FLEET.length) {
+                                        displaying_menu = null;
                                         msg.delete();
                                         console.log("res=" + JSON.stringify(res));                                        
                                         this.res.delete();
-                                        displaying_menu = null;
                                         return;
                                       } else {
                                         var selected_fleet = this.FLEET[option-1];
-                                        var sql2 = "SELECT s.name, s.slot, s1.ja_jp item1, m.item1lv, m.item1alv, "
+                                        var sql2 = "SELECT s.ja_jp, s.slot, s1.ja_jp item1, m.item1lv, m.item1alv, "
                                                   +"s2.ja_jp item2, m.item2lv, m.item2alv, "
                                                   +"s3.ja_jp item3, m.item3lv, m.item3alv, "
                                                   +"s4.ja_jp item4, m.item4lv, m.item4alv, "
@@ -1049,7 +1049,7 @@ var func_searchfleet = {
                                           let a;
                                           for(a=0; a<res.length; a++) {
                                               let slot_token = res[a].slot.split("/");
-                                              displaying_str += "\n*" + res[a].name + "*";
+                                              displaying_str += "\n*" + res[a].ja_jp + "*";
                                               if(res[a].item1 !== null) {
                                                 displaying_str += "\n[" + slot_token[0] + "]" + res[a].item1 + ((res[a].item1lv > 0)?" \u2606" + res[a].item1lv:"") + convertALVtoSymbol(res[a].item1alv);
                                                 if(res[a].item2 !== null) {
@@ -1182,7 +1182,7 @@ var func_editfleetmember = {
                    for(j=i+1; j<nextShipIdx; j++) {
                        sql += ", Item " + table_name[j-i-1];
                    }
-                   sql += " WHERE s.id = " + parseInt(token[i].substring(1), 10) + " AND s.after_ship_id IS NOT NULL";
+                   sql += " WHERE s.id = " + parseInt(token[i].substring(1), 10);
                    for(j=i+1; j<nextShipIdx; j++) {
                         if(isNaN(token[j])) {
                           sql += " AND " + table_name[j-i-1] + ".name LIKE '%" + token[j] + "%' AND " + table_name[j-i-1] + ".id < 500";
@@ -1190,6 +1190,7 @@ var func_editfleetmember = {
                           sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10) + " AND " + table_name[j-i-1] + ".id < 500";
                         }
                    }
+                   sql += " ORDER BY s.ja_jp LIMIT 1";
                    i = nextShipIdx - 1;
                 } else {
                    sql += "INSERT INTO Fleet_Member (fleet_id, ship_id";
