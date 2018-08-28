@@ -1051,15 +1051,18 @@ var func_searchfleet = {
                                               let slot_token = res[a].slot.split("/");
                                               displaying_str += "\n*" + res[a].ja_jp + "*";
                                               if(res[a].item1 !== null) {
-                                                displaying_str += "\n[" + slot_token[0] + "]" + res[a].item1 + ((res[a].item1lv > 0)?" \u2606" + res[a].item1lv:"") + convertALVtoSymbol(res[a].item1alv);
+                                                displaying_str += "\n[" + checkStringUndefined(slot_token[0]) + "]" + res[a].item1 + ((res[a].item1lv > 0)?" \u2606" + res[a].item1lv:"") + convertALVtoSymbol(res[a].item1alv);
                                                 if(res[a].item2 !== null) {
-                                                  displaying_str += "\n[" + slot_token[1] + "]" + res[a].item2 + ((res[a].item2lv > 0)?" \u2606" + res[a].item2lv:"") + convertALVtoSymbol(res[a].item2alv);
+                                                  displaying_str += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res[a].item2 + ((res[a].item2lv > 0)?" \u2606" + res[a].item2lv:"") + convertALVtoSymbol(res[a].item2alv);
                                                   if(res[a].item3 !== null) {
-                                                    displaying_str += "\n[" + slot_token[2] + "]" + res[a].item3 + ((res[a].item3lv > 0)?" \u2606" + res[a].item3lv:"") + convertALVtoSymbol(res[a].item3alv);
+                                                    displaying_str += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res[a].item3 + ((res[a].item3lv > 0)?" \u2606" + res[a].item3lv:"") + convertALVtoSymbol(res[a].item3alv);
                                                     if(res[a].item4 !== null) {
-                                                      displaying_str += "\n[" + slot_token[3] + "]" + res[a].item4 + ((res[a].item4lv > 0)?" \u2606" + res[a].item4lv:"") + convertALVtoSymbol(res[a].item4alv);
+                                                      displaying_str += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res[a].item4 + ((res[a].item4lv > 0)?" \u2606" + res[a].item4lv:"") + convertALVtoSymbol(res[a].item4alv);
                                                       if(res[a].item5 !== null) {
-                                                        displaying_str += "\n[" + slot_token[4] + "]" + res[a].item5 + ((res[a].item5lv > 0)?" \u2606" + res[a].item5lv:"") + convertALVtoSymbol(res[a].item5alv);
+                                                        displaying_str += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res[a].item5 + ((res[a].item5lv > 0)?" \u2606" + res[a].item5lv:"") + convertALVtoSymbol(res[a].item5alv);
+                                                        if(res[a].item6 !== null) {
+                                                          displaying_str += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res[a].item6 + ((res[a].item6lv > 0)?" \u2606" + res[a].item6lv:"") + convertALVtoSymbol(res[a].item6alv);
+                                                        }
                                                       }
                                                     }
                                                   }   
@@ -1102,7 +1105,7 @@ var func_editfleetmember = {
             +"\nFor delete members(-): Only need to add internal ship_id(in kancolle db) or part/full name of ship which can identify the ship name"
             +"\n***For example: -呂500改 OR -436***"
             +"\nFor add members(+): You can append the slotitem id or part/fullname ot slotitem which can identify th item name"
-            +"\nUse @ to identify the \u2606 and (|OR\\\\OR>>) to identify the skill level of flight(Please use '\\' instead of '/')"
+            +"\nUse @ to identify the \u2606 and (|OR\\\\OR>>) to identify the skill level of flight(Please use '\' instead of '/')"
             +"\n***For example: +大淀改 (3号)@9 (3号)@9 零式水上観@10>> WG42 +500改 8門 8門***",
   
     LOGIC : function(input_token, message) {
@@ -1986,6 +1989,13 @@ function addShipSuffix(shipname, name_ln, suffix_type) {
         return shipname; 
     }
     return "" + shipname + ship_suffix[suffix_type-1][name_ln];
+}
+
+function checkStringUndefined(input) {
+    if(input === undefined) {
+        return "-"; 
+    }
+    return input;
 }
 
 
