@@ -1241,6 +1241,7 @@ var func_editfleetmember = {
                           sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10) + " AND " + table_name[j-i-1] + ".id < 500";
                         }
                    }
+                   sql += " ORDER BY s.ja_jp LIMIT 1";
                    i = nextShipIdx - 1;
                 }
             }
