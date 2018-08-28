@@ -1277,7 +1277,7 @@ var func_updateship = {
     LOGIC : function(token, message) {
       
         httpsRequest("https://raw.githubusercontent.com/TeamFleet/WhoCallsTheFleet-DB/master/db/ships.nedb").then((res) => {
-              var shipdata = JSON.parse("[" + res.replace(/\n/g, ",") + "]");
+              var shipdata = JSON.parse(res.replace(/\n/g, ","));
               var i;
               let sql = "REPLACE INTO Ship (id, ja_jp, ja_kana, ja_romaji, zh_tw, asw, asw_max, los, los_max, speed"
                         +", fuel_consum, ammo_consum, slot, type, _id) VALUES ? ";
