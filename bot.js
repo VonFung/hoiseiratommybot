@@ -1132,7 +1132,7 @@ var func_editfleetmember = {
                 if(isNaN(token[i].substring(1))) {
                   let fleet_name = token[i].substring(1);
                   sql += "DELETE FROM Fleet_Member WHERE fleet_id = " + fleet_id 
-                        +" AND ship_id IN (SELECT id FROM SHIP WHERE ja_jp LIKE '%" + fleet_name + "%' OR"
+                        +" AND ship_id IN (SELECT id FROM Ship WHERE ja_jp LIKE '%" + fleet_name + "%' OR"
                         +" ja_kana LIKE '%" + fleet_name + "%' OR ja_romaji LIKE '%" + fleet_name + "%' OR"
                         +" zh_tw LIKE '%" + fleet_name + "%')";
                 } else {
