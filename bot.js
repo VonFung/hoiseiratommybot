@@ -1268,7 +1268,7 @@ var func_updateship = {
    
     CODE : "UPDATESHIP",
   
-    DESCRIPTION : "Update the ship database from api provide by kcwiki",
+    DESCRIPTION : "Update the ship database from api provide by whocallsthefleet",
   
     SYNTAX : "{%UPDATESHIP}",
   
@@ -1318,13 +1318,13 @@ var func_updateship = {
   
 }
 
-var func_updateslotitem = {
+var func_updateitem = {
    
-    CODE : "UPDATESLOTITEM",
+    CODE : "UPDATEITEM",
   
-    DESCRIPTION : "Update the slotitem database from api provide by kcwiki",
+    DESCRIPTION : "Update the item database from api provide by whocallsthefleet",
   
-    SYNTAX : "{%UPDATESLOTITEM}",
+    SYNTAX : "{%UPDATEITEM}",
   
     MANUAL : "**DO NOT USE SO FREQUENTLY**",
   
@@ -1369,7 +1369,7 @@ var normal_func = { STARTWITH : "$",
 var kancolle_func = { STARTWITH : "%", 
                       NAME : "Kancolle functions",
                       FUNCTIONS : [func_createfleet, func_editfleettag, func_searchfleet, func_editfleetmember, 
-                                   func_updateship, func_updateslotitem]
+                                   func_updateship, func_updateitem]
                     }
 
 var func = [normal_func, kancolle_func];
