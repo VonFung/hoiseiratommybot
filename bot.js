@@ -864,21 +864,11 @@ var func_test = {
         }).catch((err) => {
             console.log(err);
         });*/
-      var data = "";
-      var request = require("https").get("https://raw.githubusercontent.com/TeamFleet/WhoCallsTheFleet-DB/master/db/ships.nedb", function(res) {
-
-        res.on('data', function(chunk) {
-          data += chunk;
-        });
-
-        res.on('end', function() {
-          console.log("data = " + data);
+        DB4FREE("SELECT ja_jp FROM Item WHERE id = 298").then((res) => {
+          message.reply("ja_jp = " + res[0].ja_jp);
+        }).catch((err) => {
+          console.log(err);
         })
-      })
-
-      request.on('error', function(e) {
-        console.log("Got error: " + e.message);
-      });
 
     }
   
