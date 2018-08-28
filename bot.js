@@ -1036,13 +1036,15 @@ var func_searchfleet = {
                                                   +"s2.ja_jp item2, m.item2lv, m.item2alv, "
                                                   +"s3.ja_jp item3, m.item3lv, m.item3alv, "
                                                   +"s4.ja_jp item4, m.item4lv, m.item4alv, "
-                                                  +"s5.ja_jp item5, m.item5lv, m.item5alv "
+                                                  +"s5.ja_jp item5, m.item5lv, m.item5alv, "
+                                                  +"s6.ja_jp item6, m.item6lv, m.item6alv"
                                                   +" FROM Fleet_Member m INNER JOIN Ship s ON m.ship_id = s.id "
                                                   +" LEFT JOIN Item s1 ON m.item1 = s1.id"
                                                   +" LEFT JOIN Item s2 ON m.item2 = s2.id"
                                                   +" LEFT JOIN Item s3 ON m.item3 = s3.id"
                                                   +" LEFT JOIN Item s4 ON m.item4 = s4.id"
                                                   +" LEFT JOIN Item s5 ON m.item5 = s5.id"
+                                                  +" LEFT JOIN Item s6 ON m.item6 = s6.id"
                                                   +" WHERE fleet_id = " + selected_fleet.id;
                                         DB4FREE(sql2).then((res) => {
                                           var displaying_str = "**" + selected_fleet.name + "**";
