@@ -1180,7 +1180,7 @@ var func_editfleetmember = {
                    }
                    sql += " FROM Ship s";
                    for(j=i+1; j<nextShipIdx; j++) {
-                       sql += ", Slotitem " + table_name[j-i-1];
+                       sql += ", Item " + table_name[j-i-1];
                    }
                    sql += " WHERE s.id = " + parseInt(token[i].substring(1), 10) + " AND s.after_ship_id IS NOT NULL";
                    for(j=i+1; j<nextShipIdx; j++) {
@@ -1228,7 +1228,7 @@ var func_editfleetmember = {
                    }
                    sql += " FROM Ship s";
                    for(j=i+1; j<nextShipIdx; j++) {
-                       sql += ", Slotitem " + table_name[j-i-1];
+                       sql += ", Item " + table_name[j-i-1];
                    }
                    sql += " WHERE (s.ja_jp LIKE '%" + token[i].substring(1) + "%' OR"
                          +" s.ja_kana LIKE '%" + token[i].substring(1) + "%' OR"
