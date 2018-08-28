@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const ytdl = require('ytdl-core');  //For music streaming
 const Webhook = require('webhook-discord');
 var mysql = require('mysql');
+const Datastore = require('nedb');
 
 const hook = new Webhook(process.env.WEBHOOK_URL);
 
