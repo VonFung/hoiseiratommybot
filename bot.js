@@ -1284,7 +1284,7 @@ var func_updateship = {
               var values = [];
               for(i=0; i<shipdata.length; i++) {
                   let slot_str = "";
-                  if(shipdata[i].slot.length > 0) {
+                  if(shipdata[i].slot !== null) {
                     let j;
                     slot_str += shipdata[i].slot[0];
                     for(j=1; j<shipdata[i].slot.length ;j++) {
