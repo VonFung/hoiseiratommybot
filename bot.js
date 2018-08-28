@@ -1421,7 +1421,7 @@ client.on('ready', () => {
     /*client.guilds.forEach((id, guild) => {
         console.log("Guild id: " + id + "/" + guild.id);
     });*/
-    console.log("path exists = " + fs.existsSync("./db/ships.nedb)
+    console.log("path exists = " + fs.existsSync("./db/ships.nedb"));
 });
 
 client.on('message', message => {
