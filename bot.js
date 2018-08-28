@@ -1282,7 +1282,7 @@ var func_updateship = {
               var shipdata = JSON.parse(res_json);
               var i;
               let sql = "REPLACE INTO Ship (id, ja_jp, ja_kana, ja_romaji, zh_tw, asw, asw_max, los, los_max, speed"
-                        +", fuel_consum, ammo_consum, slot, type, _id) VALUES ? ";
+                        +", fuel_consum, ammo_consum, slot, type) VALUES ? ";
               var values = [];
               for(i=0; i<shipdata.length; i++) {
                   let slot_str = "";
@@ -1300,7 +1300,7 @@ var func_updateship = {
                                      shipdata[i].stat.asw, shipdata[i].stat.asw_max, 
                                      shipdata[i].stat.los, shipdata[i].stat.los_max, shipdata[i].stat.speed, 
                                      shipdata[i].consum.fuel, shipdata[i].consum.ammo, slot_str, 
-                                     shipdata[i].type, shipdata[i]._id]];
+                                     shipdata[i].type]];
                   values.push(...temp_value);
                   console.log("Appended: " + i);
               }
