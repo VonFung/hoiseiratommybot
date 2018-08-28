@@ -1277,7 +1277,7 @@ var func_updateship = {
     LOGIC : function(token, message) {
       
         httpsRequest("https://raw.githubusercontent.com/TeamFleet/WhoCallsTheFleet-DB/master/db/ships.nedb").then((res) => {
-              var res_json = res.replace(/(?:\r\n|\r|\n)/g, ',');
+              var res_json = "[" + res.replace(/(?:\r\n|\r|\n)/g, ',') + "]";
               console.log("res_json = " + res_json);
               var shipdata = JSON.parse(res_json);
               var i;
