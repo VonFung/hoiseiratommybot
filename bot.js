@@ -1566,7 +1566,7 @@ client.on('message', message => {
     var i;
   
     for(i=0; i<func.length; i++) {
-        if(message.content.charAt(0) === func[i].STARTWITH && (func[i].AVAILABLE.length === 0 || func[i].AVAILABLE.indexOf(message.guild.id))) {
+        if(message.content.charAt(0) === func[i].STARTWITH && (func[i].AVAILABLE.length === 0 || func[i].AVAILABLE.indexOf(message.guild.id) !== -1)) {
             func_group_no = i; 
         }
     }
