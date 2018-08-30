@@ -1231,7 +1231,7 @@ var func_editfleetmember = {
                         +" ja_kana LIKE '%" + fleet_name + "%' OR ja_romaji LIKE '%" + fleet_name + "%' OR"
                         +" zh_tw LIKE '%" + fleet_name + "%')";
                 } else if(token[i].includes("{") && token[i].includes("}")) {
-                  let no = paresInt(token[i].substring(token[i].indexOf("{")+1, token[i].indexOf("}")));
+                  let no = parseInt(token[i].substring(token[i].indexOf("{")+1, token[i].indexOf("}")));
                   sql += "DELETE FROM Fleet_Member WHERE fleet_id = " + fleet_id
                         +" AND id IN (SELECT id FROM Fleet_Member WHERE fleet_id = " + fleet_id
                         +" ORDER BY id ASC LIMIT " + (no-1) + ", 1)";
@@ -1352,7 +1352,6 @@ var func_editfleetmember = {
                    sql += " ORDER BY s.ja_jp LIMIT 1";
                    i = nextShipIdx - 1;
                 }*/
-                let no = paresInt(token[i].substring(token[i].indexOf("{")+1, token[i].indexOf("}")));
                 var ship_name_token = token[i].substring(1).split("LV");
                 sql += "INSERT INTO Fleet_Member (fleet_id, ship_id, ship_lv";
                 for(j=1; j<nextShipIdx-i; j++) {
@@ -1414,6 +1413,7 @@ var func_editfleetmember = {
                 if(i !== 2) {
                    sql += "; ";
                 }
+                let no = parseInt(token[i].substring(token[i].indexOf("{")+1, token[i].indexOf("}")));
                 var nextShipIdx = token.length;
                 for(j=token.length-1; j>i+1; j--) {
                    if(token[j].charAt(0) === "+" || token[j].charAt(0) === "-" || token[j].charAt(0) === "~") {
