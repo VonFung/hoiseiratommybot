@@ -1227,17 +1227,17 @@ var func_editfleetmember = {
                 if(i !== 2) {
                     sql += "; ";
                 }
-                if(isNaN(token[i].substring(1))) {
+                if(token[i].includes("{") && token[i].includes("}")) {
+                  let no = parseInt(token[i].substring(token[i].indexOf("{")+1, token[i].indexOf("}")));
+                  sql += "DELETE FROM Fleet_Member WHERE fleet_id = " + fleet_id
+                        +" AND id IN (SELECT id FROM Fleet_Member WHERE fleet_id = " + fleet_id
+                        +" ORDER BY id ASC LIMIT " + (no-1) + ", 1)";
+                } else if(isNaN(token[i].substring(1))) {
                   let fleet_name = token[i].substring(1);
                   sql += "DELETE FROM Fleet_Member WHERE fleet_id = " + fleet_id 
                         +" AND ship_id IN (SELECT id FROM Ship WHERE ja_jp LIKE '%" + fleet_name + "%' OR"
                         +" ja_kana LIKE '%" + fleet_name + "%' OR ja_romaji LIKE '%" + fleet_name + "%' OR"
                         +" zh_tw LIKE '%" + fleet_name + "%')";
-                } else if(token[i].includes("{") && token[i].includes("}")) {
-                  let no = parseInt(token[i].substring(token[i].indexOf("{")+1, token[i].indexOf("}")));
-                  sql += "DELETE FROM Fleet_Member WHERE fleet_id = " + fleet_id
-                        +" AND id IN (SELECT id FROM Fleet_Member WHERE fleet_id = " + fleet_id
-                        +" ORDER BY id ASC LIMIT " + (no-1) + ", 1)";
                 } else {
                   sql += "DELETE FROM Fleet_Member WHERE ship_id = " + parseInt(token[i].substring(1)) + " AND fleet_id = " + fleet_id;
                 }
@@ -1503,10 +1503,10 @@ var func_editfleetmember = {
         }
       
         DB4FREE(sql).then((res) => {
-            if(res.insertId !== 0) {
-              message.reply("Fleet Member added successfully!");
+            if(res.insertId !== 0 || res.affectedRows !== 0) {
+              message.reply("Fleet Member added or modified successfully!");
             } else {
-              message.reply("No record added, maybe something is wrong"); 
+              message.reply("No record added or modified, maybe something is wrong"); 
             }
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
