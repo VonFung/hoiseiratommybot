@@ -1234,14 +1234,16 @@ var func_editfleetmember = {
                 if(token[i].includes("{") && token[i].includes("}")) {
                   let no = parseInt(token[i].substring(token[i].indexOf("{")+1, token[i].indexOf("}")));
                   sql += "DELETE FROM Fleet_Member WHERE fleet_id = " + fleet_id
+                        +" AND fleet_id IN (SELECT id FROM (SELECT id FROM Fleet WHERE provider = '" + message.author.id + "') tmp)"
                         +" AND id IN (SELECT id FROM (SELECT id FROM Fleet_Member WHERE fleet_id = " + fleet_id
-                        +" ORDER BY id ASC LIMIT " + (no-1) + ", 1) tmp)";
+                        +" ORDER BY id ASC LIMIT " + (no-1) + ", 1) tm2)";
                 } else if(isNaN(token[i].substring(1))) {
                   let fleet_name = token[i].substring(1);
                   sql += "DELETE FROM Fleet_Member WHERE fleet_id = " + fleet_id 
-                        +" AND ship_id IN (SELECT id FROM Ship WHERE ja_jp LIKE '%" + fleet_name + "%' OR"
+                        +" AND fleet_id IN (SELECT id FROM (SELECT id FROM Fleet WHERE provider = '" + message.author.id + "') tmp)"
+                        +" AND ship_id IN (SELECT id FROM (SELECT id FROM Ship WHERE ja_jp LIKE '%" + fleet_name + "%' OR"
                         +" ja_kana LIKE '%" + fleet_name + "%' OR ja_romaji LIKE '%" + fleet_name + "%' OR"
-                        +" zh_tw LIKE '%" + fleet_name + "%')";
+                        +" zh_tw LIKE '%" + fleet_name + "%') tmp2)";
                 } else {
                   sql += "DELETE FROM Fleet_Member WHERE ship_id = " + parseInt(token[i].substring(1)) + " AND fleet_id = " + fleet_id;
                 }
@@ -1290,7 +1292,7 @@ var func_editfleetmember = {
                     token[j] = temp[0];
                     sql += ", " + table_name[j-i-1] + ".id, " + (temp[1] === undefined?0:parseInt(temp[1])) + ", " + alv;
                 }
-                sql += " FROM Ship s";
+                sql += " FROM Ship s, Fleet f";
                 for(j=i+1; j<nextShipIdx; j++) {
                     sql += ", Item " + table_name[j-i-1];
                 }
@@ -1310,7 +1312,7 @@ var func_editfleetmember = {
                        sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10);   //Search item by id
                      }
                 }
-                sql += " ORDER BY LENGTH(s.ja_jp)";
+                sql += " AND f.provider = '" + message.author.id + "' ORDER BY LENGTH(s.ja_jp)";
                 for(j=i+1; j<nextShipIdx; j++) {
                     sql += ", LENGTH(" + table_name[j-i-1] + ".ja_jp) "; 
                 }
@@ -1327,7 +1329,7 @@ var func_editfleetmember = {
                       nextShipIdx = j;
                    }
                 }
-                sql += "UPDATE Fleet_Member fm";
+                sql += "UPDATE Fleet_Member fm, Fleet f";
                 j = i + 1;
                 if(token[j] !== "=") {
                     sql += ", Ship s";
@@ -1401,6 +1403,7 @@ var func_editfleetmember = {
                         }
                     }
                 }
+                sql += " AND f.provider = '" + message.author.id + "'";
                 i = nextShipIdx - 1;
             }
             console.log("i=" + i);
@@ -1410,7 +1413,7 @@ var func_editfleetmember = {
             if(res.insertId !== 0 || res.affectedRows !== 0) {
               message.reply("Fleet Member added or modified successfully!");
             } else {
-              message.reply("No record added or modified, maybe something is wrong"); 
+              message.reply("No record added or modified, maybe something is wrong or you are not the provider of this fleet"); 
             }
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
