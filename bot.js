@@ -1122,12 +1122,13 @@ var func_searchfleet = {
                                           return;
                                         } else {
                                           var selected_fleet = this.FLEET[option-1];
-                                          var sql2 = "SELECT s.ja_jp, m.ship_lv, s.slot, s1.ja_jp item1, m.item1lv, m.item1alv, "
-                                                    +"s2.ja_jp item2, m.item2lv, m.item2alv, "
-                                                    +"s3.ja_jp item3, m.item3lv, m.item3alv, "
-                                                    +"s4.ja_jp item4, m.item4lv, m.item4alv, "
-                                                    +"s5.ja_jp item5, m.item5lv, m.item5alv, "
-                                                    +"s6.ja_jp item6, m.item6lv, m.item6alv"
+                                          var sql2 = "SELECT s.ja_jp, m.ship_lv, s.slot, s.los ship_los, s.los_max ship_los_max"
+                                                    +"s1.ja_jp item1, s1.type item1type, s1.los item1los, m.item1lv, m.item1alv, "
+                                                    +"s2.ja_jp item2, s2.type item2type, s2.los item2los, m.item2lv, m.item2alv, "
+                                                    +"s3.ja_jp item3, s3.type item3type, s3.los item3los, m.item3lv, m.item3alv, "
+                                                    +"s4.ja_jp item4, s4.type item4type, s4.los item4los, m.item4lv, m.item4alv, "
+                                                    +"s5.ja_jp item5, s5.type item5type, s5.los item5los, m.item5lv, m.item5alv, "
+                                                    +"s6.ja_jp item6, s6.type item6type, s6.los item6los, m.item6lv, m.item6alv"
                                                     +" FROM Fleet_Member m INNER JOIN Ship s ON m.ship_id = s.id "
                                                     +" LEFT JOIN Item s1 ON m.item1 = s1.id"
                                                     +" LEFT JOIN Item s2 ON m.item2 = s2.id"
@@ -1139,21 +1140,32 @@ var func_searchfleet = {
                                           DB4FREE(sql2).then((res3) => {
                                             var displaying_str = "**" + selected_fleet.name + "**";
                                             let a;
+                                            let los_ship = 0;
+                                            let los_item = 0;
+                                            let no_of_ship = 0;
                                             for(a=0; a<res3.length; a++) {
+                                                no_of_ship++;
                                                 let slot_token = res3[a].slot.split("/");
                                                 displaying_str += "\n*" + res3[a].ja_jp + (res3[a].ship_lv === null?"":" LV" + res3[a].ship_lv) + "*";
+                                                los_ship += Math.sqrt((res3[a].ship_los_max - res3[a].ship_los) * (res3[a].ship_lv === null?1:res3[a].ship_lv) / 99 + res3[a].ship_los);
                                                 if(res3[a].item1 !== null) {
                                                   displaying_str += "\n[" + checkStringUndefined(slot_token[0]) + "]" + res3[a].item1 + ((res3[a].item1lv > 0)?" \u2606" + res3[a].item1lv:"") + convertALVtoSymbol(res3[a].item1alv);
+                                                  los_item += getLosByItem(res3[a].item1type, res3[a].item1los, res3[a].item1lv);
                                                   if(res3[a].item2 !== null) {
                                                     displaying_str += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res3[a].item2 + ((res3[a].item2lv > 0)?" \u2606" + res3[a].item2lv:"") + convertALVtoSymbol(res3[a].item2alv);
+                                                    los_item += getLosByItem(res3[a].item2type, res3[a].item2los, res3[a].item2lv);
                                                     if(res3[a].item3 !== null) {
                                                       displaying_str += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res3[a].item3 + ((res3[a].item3lv > 0)?" \u2606" + res3[a].item3lv:"") + convertALVtoSymbol(res3[a].item3alv);
+                                                      los_item += getLosByItem(res3[a].item3type, res3[a].item3los, res3[a].item3lv);
                                                       if(res3[a].item4 !== null) {
                                                         displaying_str += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res3[a].item4 + ((res3[a].item4lv > 0)?" \u2606" + res3[a].item4lv:"") + convertALVtoSymbol(res3[a].item4alv);
+                                                        los_item += getLosByItem(res3[a].item4type, res3[a].item4los, res3[a].item4lv);
                                                         if(res3[a].item5 !== null) {
                                                           displaying_str += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res3[a].item5 + ((res3[a].item5lv > 0)?" \u2606" + res3[a].item5lv:"") + convertALVtoSymbol(res3[a].item5alv);
+                                                          los_item += getLosByItem(res3[a].item5type, res3[a].item5los, res3[a].item5lv);
                                                           if(res3[a].item6 !== null) {
                                                             displaying_str += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res3[a].item6 + ((res3[a].item6lv > 0)?" \u2606" + res3[a].item6lv:"") + convertALVtoSymbol(res3[a].item6alv);
+                                                            los_item += getLosByItem(res3[a].item6type, res3[a].item6los, res3[a].item6lv);
                                                           }
                                                         }
                                                       }
@@ -1161,6 +1173,9 @@ var func_searchfleet = {
                                                   }
                                                 }
                                             }
+                                            displaying_str += "\n索敵(33式):" + (los_ship + los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=1)/"
+                                                             +(los_ship + 3 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=3)/"
+                                                             +(los_ship + 4 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=4)";
                                             this.MESSAGE.edit(displaying_str);
                                             msg.delete();
                                           }).catch((err) => {
@@ -2123,6 +2138,13 @@ function addShipSuffix(shipname, name_language, suffix_type) {
         return shipname; 
     }
     return "" + shipname + ship_suffix[suffix_type-1][name_language];
+}
+
+function getLosByItem(type, los, improvement) {
+    /*switch(type) {
+      case    
+    }*/
+    return los;
 }
 
 function checkStringUndefined(input) {
