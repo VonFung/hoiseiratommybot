@@ -1111,7 +1111,7 @@ var func_searchfleet = {
                                       if(isNaN(token)) {
                                         displaying_menu = null;
                                         msg.delete();
-                                        console.log("res=" + JSON.stringify(res));
+                                        console.log("res=" + util.inspect(a,{depth:null}));
                                         this.res.delete();
                                         return;
                                       } else {
@@ -1119,7 +1119,7 @@ var func_searchfleet = {
                                         if(option < 1 || option > this.FLEET.length) {
                                           displaying_menu = null;
                                           msg.delete();
-                                          console.log("res=" + JSON.stringify(res));                                        
+                                          console.log("res=" + util.inspect(a,{depth:null}));                                        
                                           this.res.delete();
                                           return;
                                         } else {
