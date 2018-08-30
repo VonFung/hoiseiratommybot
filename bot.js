@@ -1110,19 +1110,17 @@ var func_searchfleet = {
                                     FLEET: fleets,
                                     LOGIC: function(token, msg) {
                                       if(isNaN(token)) {
-                                        displaying_menu = null;
                                         msg.delete();
                                         console.log("res=" + util.inspect(this.MESSAGE,{depth:null}));
                                         this.MESSAGE.delete();
-                                        return;
+                                        return true;
                                       } else {
                                         var option = parseInt(token);
                                         if(option < 1 || option > this.FLEET.length) {
-                                          displaying_menu = null;
                                           msg.delete();
                                           console.log("res=" + util.inspect(this.MESSAGE,{depth:null}));                                        
                                           this.MESSAGE.delete();
-                                          return;
+                                          return true;
                                         } else {
                                           var selected_fleet = this.FLEET[option-1];
                                           var sql2 = "SELECT s.ja_jp, m.ship_lv, s.slot, s1.ja_jp item1, m.item1lv, m.item1alv, "
@@ -1164,7 +1162,6 @@ var func_searchfleet = {
                                                   }
                                                 }
                                             }
-                                            displaying_menu = null;
                                             this.MESSAGE.edit(displaying_str);
                                             msg.delete();
                                           }).catch((err) => {
@@ -1563,7 +1560,8 @@ client.on('message', message => {
     var func_group_no = -1;
   
     if(displaying_menu !== null) {
-        displaying_menu.LOGIC(message.content, message); 
+        displaying_menu.LOGIC(message.content, message);
+        displaying_menu = null;
     }
   
     var i;
