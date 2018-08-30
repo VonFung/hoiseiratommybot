@@ -1395,12 +1395,12 @@ var func_editfleetmember = {
                     sql += ", Item " + table_name[j-i-1];
                 }
                 if(isNaN(token[i].substring(1))) {
-                  sql += " WHERE (s.ja_jp LIKE '%" + token[i].substring(1) + "%' OR"
-                        +" s.ja_kana LIKE '%" + token[i].substring(1) + "%' OR"
-                        +" s.ja_romaji LIKE '%" + token[i].substring(1) + "%' OR"
-                        +" s.zh_tw LIKE '%" + token[i].substring(1) + "%')";   //Search ship by name in different format
+                  sql += " WHERE (s.ja_jp LIKE '%" + ship_name_token[0] + "%' OR"
+                        +" s.ja_kana LIKE '%" + ship_name_token[0] + "%' OR"
+                        +" s.ja_romaji LIKE '%" + ship_name_token[0] + "%' OR"
+                        +" s.zh_tw LIKE '%" + ship_name_token[0] + "%')";   //Search ship by name in different format
                 } else {
-                  sql += " WHERE s.id = " + parseInt(token[i].substring(1), 10);
+                  sql += " WHERE s.id = " + parseInt(ship_name_token[0], 10);
                 }
                 for(j=i+1; j<nextShipIdx; j++) {
                      if(isNaN(token[j])) {
@@ -1436,8 +1436,9 @@ var func_editfleetmember = {
                 }
                 sql += " SET";
                 j = i + 1;
+                var ship_name_token;
                 if(token[j] !== "=") {
-                    var ship_name_token = token[j].split("LV");
+                    ship_name_token = token[j].split("LV");
                     sql += " fm.ship_id = s.id, fm.ship_lv = " + (ship_name_token[1] === undefined?null:ship_name_token[1]);
                 }
                 for(j=i+2; j<i+8; j++) {
@@ -1478,12 +1479,12 @@ var func_editfleetmember = {
                 j = i + 1;
                 if(token[j] !== "=") {
                     if(isNaN(token[j])) {
-                      sql += " AND (s.ja_jp LIKE '%" + token[j] + "%' OR"
-                            +" s.ja_kana LIKE '%" + token[j] + "%' OR"
-                            +" s.ja_romaji LIKE '%" + token[j] + "%' OR"
-                            +" s.zh_tw LIKE '%" + token[j] + "%')";   //Search ship by name in different format
+                      sql += " AND (s.ja_jp LIKE '%" + ship_name_token[0] + "%' OR"
+                            +" s.ja_kana LIKE '%" + ship_name_token[0] + "%' OR"
+                            +" s.ja_romaji LIKE '%" + ship_name_token[0] + "%' OR"
+                            +" s.zh_tw LIKE '%" + ship_name_token[0] + "%')";   //Search ship by name in different format
                     } else {
-                      sql += " AND s.id = " + parseInt(token[j], 10);
+                      sql += " AND s.id = " + parseInt(ship_name_token[0], 10);
                     }
                 }
                 for(j=i+2; j<nextShipIdx; j++) {
