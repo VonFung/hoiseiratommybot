@@ -1434,16 +1434,16 @@ var func_editfleetmember = {
                       sql += ", Item " + table_name[j-i-2];
                     }
                 }
-                sql += " SET";
+                sql += " SET fm.ship_id = fm.ship_id";
                 j = i + 1;
                 var ship_name_token;
                 if(token[j] !== "=") {
                     ship_name_token = token[j].split("LV");
-                    sql += " fm.ship_id = s.id, fm.ship_lv = " + (ship_name_token[1] === undefined?null:ship_name_token[1]);
+                    sql += ", fm.ship_id = s.id, fm.ship_lv = " + (ship_name_token[1] === undefined?null:ship_name_token[1]);
                 }
                 for(j=i+2; j<i+8; j++) {
                     if(j >= nextShipIdx) {
-                        sql += " fm.item" + (j-i-1) + " = null, fm.item" + (j-i-1) + "lv = null, fm.item" + (j-i-1) + "alv = null"; 
+                        sql += ", fm.item" + (j-i-1) + " = null, fm.item" + (j-i-1) + "lv = null, fm.item" + (j-i-1) + "alv = null"; 
                     } else if(token[j] !== "=") {
                         let alv = 0;
                         if(token[j].includes(">>")) {
@@ -1490,10 +1490,10 @@ var func_editfleetmember = {
                 for(j=i+2; j<nextShipIdx; j++) {
                     if(token[j] !== "=") {
                         if(isNaN(token[j])) {
-                          sql += " AND (" + table_name[j-i-1] + ".ja_jp LIKE '%" + token[j] + "%' OR "
+                          sql += " AND (" + table_name[j-i-2] + ".ja_jp LIKE '%" + token[j] + "%' OR "
                             + table_name[j-i-1] + ".zh_tw LIKE '%" + token[j] + "%')";    //Search item by ja_jp name or zh_tw name
                         } else {
-                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10);   //Search item by id
+                          sql += " AND " + table_name[j-i-2] + ".id = " + parseInt(token[j], 10);   //Search item by id
                         }
                     }
                 }
