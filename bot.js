@@ -1197,20 +1197,20 @@ var func_editfleetmember = {
     MANUAL : "**fleet_id : **The internal id of fleet in database.(You can find by %searchfleet)"
             +"\n**(+/-/~)member(s) : **Add new, delete or modify existing member from fleet. Manual below : "
             +"\nFor delete members(-): Only need to add internal ship_id(in kancolle db) or part/full name of ship which can identify the ship name."
-            +" Also, you can use a (#) to indicate the fleet number (1 ~ 7) of a fleet. No need to input items."
-            +"\n***For example: -呂500改 OR -436 OR -{2}(which indicates the second member of this fleet)***"
+            +" Also, you can use a bracket ({}) to indicate the fleet number (1 ~ 7) of a fleet. No need to input items."
+            +"\n***For example: -呂500 OR -436 OR -{2}(which indicates the second member of this fleet)***"
             +"\nFor add members(+): You can append the item id or part/fullname of item which can identify th item name in the following format:"
             +"\n**+[ship] [item1] [item2]...**"
-            +"\nUse @ to identify the \u2606 and (|OR\\\\OR>>) to identify the skill level of flight(Please use '\' instead of '/')"
+            +"\nUse @ to identify the \u2606 and (|OR\\\\OR>>) to identify the skill level of flight(Please use '\\' instead of '/')"
             +"\n***For example: +大淀改 (3号)@9 (3号)@9 零式水上観@10>> WG42 +%500 8門 8門***"
             +"\nFor modify members: Please use a bracket ({}) to indicate which member you need to modify. Then, input the information as "
             +"adding member except the (+) prefix. Last, if the information is no need to change in specify column, you can put a (=) instead."
-            +"\n***For example: ~{2} = = = 53型@10>> = = This will only change the third item of second member in the fleet"
+            +"\n***For example: ~{2} = = = 53型@10>> = = This will only change the third item of second member in the fleet***"
             +"\n**Please remember to put (=) after the column you want to modify. Otherwise, the column doesn't put a (=) will change to null(item not set)**"
             +"\n\n**You can put wildcard '%' into name you want to search such as 零%観, system will default search like '%keyword%' "
             +"and will save the item with the shortest name in japanese if mulitple results provide by the confusing searching keyword"
             +"\n**For example: search by '16inch%Mk.7' will give '16inch三連装砲 Mk.7' and '16inch三連装砲 Mk.7+GFCS'. By default sorting"
-            +", the system will take it as '16inch三連装砲 Mk.7' since it has a shorter length in name.",
+            +", the system will take it as '16inch三連装砲 Mk.7' since it has a shorter length in name.**",
   
     LOGIC : function(input_token, message) {
         var token = input_token;
@@ -1434,9 +1434,19 @@ var func_updateship = {
     MANUAL : "**DO NOT USE SO FREQUENTLY**",
   
     LOGIC : function(token, message) {
+        if(message.author.id !== process.env.ADMIN_ID) {
+            message.reply("You have no permission to update"); 
+            return;
+        }
       
         httpsRequest("https://raw.githubusercontent.com/TeamFleet/WhoCallsTheFleet-DB/master/db/ships.nedb").then((res) => {
               var res_json = "[" + res.replace(/(?:\r\n|\r|\n)/g, ",").replace(/.$/, "]");
+              let anchor = 0;
+              anchor = res_json.indexOf("\ufffd",anchor);
+              while (anchor !== -1) {
+                  console.log("indexOf('\ufffd')[" + anchor + "]:" + res_json.substring(Math.max(0, anchor-10), anchor+10));
+                  anchor = res_json.indexOf("\ufffd",anchor+1);
+              }
               var shipdata = JSON.parse(res_json);
               var i;
               let sql = "REPLACE INTO Ship (id, ja_jp, ja_kana, ja_romaji, zh_tw, asw, asw_max, los, los_max, speed"
@@ -1488,9 +1498,19 @@ var func_updateitem = {
     MANUAL : "**DO NOT USE SO FREQUENTLY**",
   
     LOGIC : function(token, message) {
+        if(message.author.id !== process.env.ADMIN_ID) {
+            message.reply("You have no permission to update"); 
+            return;
+        }
       
         httpsRequest("https://raw.githubusercontent.com/TeamFleet/WhoCallsTheFleet-DB/master/db/items.nedb").then((res) => {
               var res_json = "[" + res.replace(/(?:\r\n|\r|\n)/g, ",").replace(/.$/, "]");
+              let anchor = 0;
+              anchor = res_json.indexOf("\ufffd",anchor);
+              while (anchor !== -1) {
+                  console.log("indexOf('\ufffd')[" + anchor + "]:" + res_json.substring(Math.max(0, anchor-10), anchor+10));
+                  anchor = res_json.indexOf("\ufffd",anchor+1);
+              }
               var itemdata = JSON.parse(res_json);
               var i;
               let sql = "REPLACE INTO Item (id, ja_jp, zh_tw, type, aa, asw, los) VALUES ? ";
