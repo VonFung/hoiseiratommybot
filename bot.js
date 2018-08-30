@@ -110,7 +110,7 @@ var func_help = {
             var i;
             for(i=0; i<func.length; i++) {
                 var j;
-                for(j=0; j<func[j].FUNCTIONS.length; j++) {
+                for(j=0; j<func[i].FUNCTIONS.length; j++) {
                   if(token[1].toUpperCase() === func[i].FUNCTIONS[j].CODE) {
                       if(token.length > 2 && token[2].toUpperCase() === "-D") {
                         message.reply(func[i].FUNCTIONS[j].SYNTAX + "\n\n" + func[i].FUNCTIONS[j].MANUAL);
