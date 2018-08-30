@@ -1112,16 +1112,16 @@ var func_searchfleet = {
                                       if(isNaN(token)) {
                                         displaying_menu = null;
                                         msg.delete();
-                                        console.log("res=" + util.inspect(a,{depth:null}));
-                                        this.res.delete();
+                                        console.log("res=" + util.inspect(this.MESSAGE,{depth:null}));
+                                        this.MESSAGE.delete();
                                         return;
                                       } else {
                                         var option = parseInt(token);
                                         if(option < 1 || option > this.FLEET.length) {
                                           displaying_menu = null;
                                           msg.delete();
-                                          console.log("res=" + util.inspect(a,{depth:null}));                                        
-                                          this.res.delete();
+                                          console.log("res=" + util.inspect(this.MESSAGE,{depth:null}));                                        
+                                          this.MESSAGE.delete();
                                           return;
                                         } else {
                                           var selected_fleet = this.FLEET[option-1];
