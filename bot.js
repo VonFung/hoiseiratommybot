@@ -1108,17 +1108,17 @@ var func_searchfleet = {
               sendMessageToChannel(message.channel, display_str).then((res2) => {
                 displaying_menu = { MESSAGE: res2,
                                     FLEET: fleets,
-                                    LOGIC: function(token, msg) {
-                                      if(isNaN(token)) {
+                                    LOGIC: function(token2, msg) {
+                                      if(isNaN(token2)) {
                                         msg.delete();
-                                        console.log("res2=" + util.inspect(this.MESSAGE,{depth:null}));
+                                        //console.log("res3=" + util.inspect(this.MESSAGE,{depth:null}));
                                         this.MESSAGE.delete();
                                         return;
                                       } else {
-                                        var option = parseInt(token);
+                                        var option = parseInt(token2);
                                         if(option < 1 || option > this.FLEET.length) {
                                           msg.delete();
-                                          console.log("res2=" + util.inspect(this.MESSAGE,{depth:null}));                                        
+                                          //console.log("res3=" + util.inspect(this.MESSAGE,{depth:null}));                                        
                                           this.MESSAGE.delete();
                                           return;
                                         } else {
