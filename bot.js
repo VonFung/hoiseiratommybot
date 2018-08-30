@@ -1089,93 +1089,96 @@ var func_searchfleet = {
                   fleets.push(...new_fleet);
                 }
             }
-          
-            var display_str = "**Please choose one fleet**";
-            for(i=0; i<fleets.length; i++) {
-                display_str += "\n" + (i+1) + ")\t[" + fleets[i].id + "]" + fleets[i].name;
-                if(fleets[i].tags !== null) {
-                    display_str += "(" + fleets[i].tags[0];
-                    for(j=1; j<fleets[i].tags.length; j++) {
-                        display_str += "/" + fleets[i].tags[j]; 
-                    }
-                    display_str += ")";
-                }
-                display_str += " BY " + fleets[i].provider;
-            }
-            sendMessageToChannel(message.channel, display_str).then((res) => {
-              displaying_menu = { MESSAGE: res,
-                                  FLEET: fleets,
-                                  LOGIC: function(token, msg) {
-                                    if(isNaN(token)) {
-                                      displaying_menu = null;
-                                      msg.delete();
-                                      console.log("res=" + JSON.stringify(res));
-                                      this.res.delete();
-                                      return;
-                                    } else {
-                                      var option = parseInt(token);
-                                      if(option < 1 || option > this.FLEET.length) {
+            if(fleets.length > 0) {
+              var display_str = "**Please choose one fleet**";
+              for(i=0; i<fleets.length; i++) {
+                  display_str += "\n" + (i+1) + ")\t[" + fleets[i].id + "]" + fleets[i].name;
+                  if(fleets[i].tags !== null) {
+                      display_str += "(" + fleets[i].tags[0];
+                      for(j=1; j<fleets[i].tags.length; j++) {
+                          display_str += "/" + fleets[i].tags[j]; 
+                      }
+                      display_str += ")";
+                  }
+                  display_str += " BY " + fleets[i].provider;
+              }
+              sendMessageToChannel(message.channel, display_str).then((res) => {
+                displaying_menu = { MESSAGE: res,
+                                    FLEET: fleets,
+                                    LOGIC: function(token, msg) {
+                                      if(isNaN(token)) {
                                         displaying_menu = null;
                                         msg.delete();
-                                        console.log("res=" + JSON.stringify(res));                                        
+                                        console.log("res=" + JSON.stringify(res));
                                         this.res.delete();
                                         return;
                                       } else {
-                                        var selected_fleet = this.FLEET[option-1];
-                                        var sql2 = "SELECT s.ja_jp, s.slot, s1.ja_jp item1, m.item1lv, m.item1alv, "
-                                                  +"s2.ja_jp item2, m.item2lv, m.item2alv, "
-                                                  +"s3.ja_jp item3, m.item3lv, m.item3alv, "
-                                                  +"s4.ja_jp item4, m.item4lv, m.item4alv, "
-                                                  +"s5.ja_jp item5, m.item5lv, m.item5alv, "
-                                                  +"s6.ja_jp item6, m.item6lv, m.item6alv"
-                                                  +" FROM Fleet_Member m INNER JOIN Ship s ON m.ship_id = s.id "
-                                                  +" LEFT JOIN Item s1 ON m.item1 = s1.id"
-                                                  +" LEFT JOIN Item s2 ON m.item2 = s2.id"
-                                                  +" LEFT JOIN Item s3 ON m.item3 = s3.id"
-                                                  +" LEFT JOIN Item s4 ON m.item4 = s4.id"
-                                                  +" LEFT JOIN Item s5 ON m.item5 = s5.id"
-                                                  +" LEFT JOIN Item s6 ON m.item6 = s6.id"
-                                                  +" WHERE fleet_id = " + selected_fleet.id;
-                                        DB4FREE(sql2).then((res) => {
-                                          var displaying_str = "**" + selected_fleet.name + "**";
-                                          let a;
-                                          for(a=0; a<res.length; a++) {
-                                              let slot_token = res[a].slot.split("/");
-                                              displaying_str += "\n*" + res[a].ja_jp + "*";
-                                              if(res[a].item1 !== null) {
-                                                displaying_str += "\n[" + checkStringUndefined(slot_token[0]) + "]" + res[a].item1 + ((res[a].item1lv > 0)?" \u2606" + res[a].item1lv:"") + convertALVtoSymbol(res[a].item1alv);
-                                                if(res[a].item2 !== null) {
-                                                  displaying_str += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res[a].item2 + ((res[a].item2lv > 0)?" \u2606" + res[a].item2lv:"") + convertALVtoSymbol(res[a].item2alv);
-                                                  if(res[a].item3 !== null) {
-                                                    displaying_str += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res[a].item3 + ((res[a].item3lv > 0)?" \u2606" + res[a].item3lv:"") + convertALVtoSymbol(res[a].item3alv);
-                                                    if(res[a].item4 !== null) {
-                                                      displaying_str += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res[a].item4 + ((res[a].item4lv > 0)?" \u2606" + res[a].item4lv:"") + convertALVtoSymbol(res[a].item4alv);
-                                                      if(res[a].item5 !== null) {
-                                                        displaying_str += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res[a].item5 + ((res[a].item5lv > 0)?" \u2606" + res[a].item5lv:"") + convertALVtoSymbol(res[a].item5alv);
-                                                        if(res[a].item6 !== null) {
-                                                          displaying_str += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res[a].item6 + ((res[a].item6lv > 0)?" \u2606" + res[a].item6lv:"") + convertALVtoSymbol(res[a].item6alv);
+                                        var option = parseInt(token);
+                                        if(option < 1 || option > this.FLEET.length) {
+                                          displaying_menu = null;
+                                          msg.delete();
+                                          console.log("res=" + JSON.stringify(res));                                        
+                                          this.res.delete();
+                                          return;
+                                        } else {
+                                          var selected_fleet = this.FLEET[option-1];
+                                          var sql2 = "SELECT s.ja_jp, s.slot, s1.ja_jp item1, m.item1lv, m.item1alv, "
+                                                    +"s2.ja_jp item2, m.item2lv, m.item2alv, "
+                                                    +"s3.ja_jp item3, m.item3lv, m.item3alv, "
+                                                    +"s4.ja_jp item4, m.item4lv, m.item4alv, "
+                                                    +"s5.ja_jp item5, m.item5lv, m.item5alv, "
+                                                    +"s6.ja_jp item6, m.item6lv, m.item6alv"
+                                                    +" FROM Fleet_Member m INNER JOIN Ship s ON m.ship_id = s.id "
+                                                    +" LEFT JOIN Item s1 ON m.item1 = s1.id"
+                                                    +" LEFT JOIN Item s2 ON m.item2 = s2.id"
+                                                    +" LEFT JOIN Item s3 ON m.item3 = s3.id"
+                                                    +" LEFT JOIN Item s4 ON m.item4 = s4.id"
+                                                    +" LEFT JOIN Item s5 ON m.item5 = s5.id"
+                                                    +" LEFT JOIN Item s6 ON m.item6 = s6.id"
+                                                    +" WHERE fleet_id = " + selected_fleet.id;
+                                          DB4FREE(sql2).then((res) => {
+                                            var displaying_str = "**" + selected_fleet.name + "**";
+                                            let a;
+                                            for(a=0; a<res.length; a++) {
+                                                let slot_token = res[a].slot.split("/");
+                                                displaying_str += "\n*" + res[a].ja_jp + "*";
+                                                if(res[a].item1 !== null) {
+                                                  displaying_str += "\n[" + checkStringUndefined(slot_token[0]) + "]" + res[a].item1 + ((res[a].item1lv > 0)?" \u2606" + res[a].item1lv:"") + convertALVtoSymbol(res[a].item1alv);
+                                                  if(res[a].item2 !== null) {
+                                                    displaying_str += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res[a].item2 + ((res[a].item2lv > 0)?" \u2606" + res[a].item2lv:"") + convertALVtoSymbol(res[a].item2alv);
+                                                    if(res[a].item3 !== null) {
+                                                      displaying_str += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res[a].item3 + ((res[a].item3lv > 0)?" \u2606" + res[a].item3lv:"") + convertALVtoSymbol(res[a].item3alv);
+                                                      if(res[a].item4 !== null) {
+                                                        displaying_str += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res[a].item4 + ((res[a].item4lv > 0)?" \u2606" + res[a].item4lv:"") + convertALVtoSymbol(res[a].item4alv);
+                                                        if(res[a].item5 !== null) {
+                                                          displaying_str += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res[a].item5 + ((res[a].item5lv > 0)?" \u2606" + res[a].item5lv:"") + convertALVtoSymbol(res[a].item5alv);
+                                                          if(res[a].item6 !== null) {
+                                                            displaying_str += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res[a].item6 + ((res[a].item6lv > 0)?" \u2606" + res[a].item6lv:"") + convertALVtoSymbol(res[a].item6alv);
+                                                          }
                                                         }
                                                       }
-                                                    }
-                                                  }   
+                                                    }   
+                                                  }
                                                 }
-                                              }
-                                          }
-                                          displaying_menu = null;
-                                          this.MESSAGE.edit(displaying_str);
-                                          msg.delete();
-                                        }).catch((err) => {
-                                          message.reply("Something error! Please refer to the log on Heroku");
-                                          console.log(err)  ;
-                                        })
+                                            }
+                                            displaying_menu = null;
+                                            this.MESSAGE.edit(displaying_str);
+                                            msg.delete();
+                                          }).catch((err) => {
+                                            message.reply("Something error! Please refer to the log on Heroku");
+                                            console.log(err)  ;
+                                          })
+                                        }
                                       }
                                     }
                                   }
-                                }
-            }).catch((err) => {
-              message.reply("Something error! Please refer to the log on Heroku");
-              console.log(err);
-            });
+              }).catch((err) => {
+                message.reply("Something error! Please refer to the log on Heroku");
+                console.log(err);
+              });
+            } else {
+              sendMessageToChannel(message.channel, "No result");
+            }
         }).catch((err) => {
             message.reply("Something error! Please refer to the log on Heroku");
             console.log(err);
