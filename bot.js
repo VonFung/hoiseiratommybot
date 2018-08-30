@@ -865,11 +865,7 @@ var func_test = {
         }).catch((err) => {
             console.log(err);
         });*/
-        DB4FREE("SELECT ja_jp FROM Item WHERE id = 298").then((res) => {
-          message.reply("ja_jp = " + res[0].ja_jp);
-        }).catch((err) => {
-          console.log(err);
-        })
+        console.log("Guild id: " + message.guild.id);
 
     }
   
@@ -1108,6 +1104,7 @@ var func_searchfleet = {
               sendMessageToChannel(message.channel, display_str).then((res2) => {
                 displaying_menu = { MESSAGE: res2,
                                     FLEET: fleets,
+                                    CHANNEL_ID: message.channel.id,
                                     LOGIC: function(token2, msg) {
                                       if(isNaN(token2)) {
                                         msg.delete();
@@ -1559,7 +1556,7 @@ client.on('message', message => {
   
     var func_group_no = -1;
   
-    if(displaying_menu !== null) {
+    if(displaying_menu !== null && message.channel.id === displaying_menu.CHANNEL_ID) {
         displaying_menu.LOGIC(message.content, message);
         displaying_menu = null;
     }
