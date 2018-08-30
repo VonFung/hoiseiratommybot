@@ -1122,7 +1122,7 @@ var func_searchfleet = {
                                           return;
                                         } else {
                                           var selected_fleet = this.FLEET[option-1];
-                                          var sql2 = "SELECT s.ja_jp, m.ship_lv, s.slot, s.los ship_los, s.los_max ship_los_max"
+                                          var sql2 = "SELECT s.ja_jp, m.ship_lv, s.slot, s.los ship_los, s.los_max ship_los_max, "
                                                     +"s1.ja_jp item1, s1.type item1type, s1.los item1los, m.item1lv, m.item1alv, "
                                                     +"s2.ja_jp item2, s2.type item2type, s2.los item2los, m.item2lv, m.item2alv, "
                                                     +"s3.ja_jp item3, s3.type item3type, s3.los item3los, m.item3lv, m.item3alv, "
