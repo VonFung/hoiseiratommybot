@@ -1508,6 +1508,7 @@ var func_updateitem = {
 //Register new function to this func array
 var normal_func = { STARTWITH : "$", 
                     NAME : "Normal functions",
+                    AVAILABLE: [process.env.HOISEIRATOMMY_GUILD_ID],
                     FUNCTIONS : [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_addplaylist, func_addmusictopl, 
                                 func_playlist, func_playqueue, func_musicdetail, func_stop, 
                                 func_next, func_pause, func_resume, func_volume, func_loop,
@@ -1517,7 +1518,8 @@ var normal_func = { STARTWITH : "$",
 
 var kancolle_func = { STARTWITH : "%", 
                       NAME : "Kancolle functions",
-                      FUNCTIONS : [func_createfleet, func_editfleettag, func_searchship, func_searchitem,
+                      AVAILABLE: [],
+                      FUNCTIONS : [func_help, func_createfleet, func_editfleettag, func_searchship, func_searchitem,
                                    func_searchfleet, func_editfleetmember, func_updateship, func_updateitem]
                     }
 
@@ -1564,7 +1566,7 @@ client.on('message', message => {
     var i;
   
     for(i=0; i<func.length; i++) {
-        if(message.content.charAt(0) === func[i].STARTWITH) {
+        if(message.content.charAt(0) === func[i].STARTWITH && (func[i].AVAILABLE.length === 0 || func[i].AVAILABLE.indexOf(message.guild.id))) {
             func_group_no = i; 
         }
     }
