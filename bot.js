@@ -1105,22 +1105,22 @@ var func_searchfleet = {
                   }
                   display_str += " BY " + fleets[i].provider;
               }
-              sendMessageToChannel(message.channel, display_str).then((res) => {
-                displaying_menu = { MESSAGE: res,
+              sendMessageToChannel(message.channel, display_str).then((res2) => {
+                displaying_menu = { MESSAGE: res2,
                                     FLEET: fleets,
                                     LOGIC: function(token, msg) {
                                       if(isNaN(token)) {
                                         msg.delete();
-                                        console.log("res=" + util.inspect(this.MESSAGE,{depth:null}));
+                                        console.log("res2=" + util.inspect(this.MESSAGE,{depth:null}));
                                         this.MESSAGE.delete();
-                                        return true;
+                                        return;
                                       } else {
                                         var option = parseInt(token);
                                         if(option < 1 || option > this.FLEET.length) {
                                           msg.delete();
-                                          console.log("res=" + util.inspect(this.MESSAGE,{depth:null}));                                        
+                                          console.log("res2=" + util.inspect(this.MESSAGE,{depth:null}));                                        
                                           this.MESSAGE.delete();
-                                          return true;
+                                          return;
                                         } else {
                                           var selected_fleet = this.FLEET[option-1];
                                           var sql2 = "SELECT s.ja_jp, m.ship_lv, s.slot, s1.ja_jp item1, m.item1lv, m.item1alv, "
@@ -1137,24 +1137,24 @@ var func_searchfleet = {
                                                     +" LEFT JOIN Item s5 ON m.item5 = s5.id"
                                                     +" LEFT JOIN Item s6 ON m.item6 = s6.id"
                                                     +" WHERE fleet_id = " + selected_fleet.id;
-                                          DB4FREE(sql2).then((res2) => {
+                                          DB4FREE(sql2).then((res3) => {
                                             var displaying_str = "**" + selected_fleet.name + "**";
                                             let a;
-                                            for(a=0; a<res.length; a++) {
-                                                let slot_token = res2[a].slot.split("/");
-                                                displaying_str += "\n*" + res2[a].ja_jp + (res2[a].ship_lv === null?"":" LV" + res2[a].ship_lv) + "*";
-                                                if(res[a].item1 !== null) {
-                                                  displaying_str += "\n[" + checkStringUndefined(slot_token[0]) + "]" + res2[a].item1 + ((res2[a].item1lv > 0)?" \u2606" + res2[a].item1lv:"") + convertALVtoSymbol(res2[a].item1alv);
-                                                  if(res[a].item2 !== null) {
-                                                    displaying_str += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res2[a].item2 + ((res2[a].item2lv > 0)?" \u2606" + res2[a].item2lv:"") + convertALVtoSymbol(res2[a].item2alv);
-                                                    if(res[a].item3 !== null) {
-                                                      displaying_str += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res2[a].item3 + ((res2[a].item3lv > 0)?" \u2606" + res2[a].item3lv:"") + convertALVtoSymbol(res2[a].item3alv);
-                                                      if(res[a].item4 !== null) {
-                                                        displaying_str += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res2[a].item4 + ((res2[a].item4lv > 0)?" \u2606" + res2[a].item4lv:"") + convertALVtoSymbol(res2[a].item4alv);
-                                                        if(res[a].item5 !== null) {
-                                                          displaying_str += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res2[a].item5 + ((res2[a].item5lv > 0)?" \u2606" + res2[a].item5lv:"") + convertALVtoSymbol(res2[a].item5alv);
-                                                          if(res[a].item6 !== null) {
-                                                            displaying_str += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res2[a].item6 + ((res2[a].item6lv > 0)?" \u2606" + res2[a].item6lv:"") + convertALVtoSymbol(res2[a].item6alv);
+                                            for(a=0; a<res3.length; a++) {
+                                                let slot_token = res3[a].slot.split("/");
+                                                displaying_str += "\n*" + res3[a].ja_jp + (res3[a].ship_lv === null?"":" LV" + res3[a].ship_lv) + "*";
+                                                if(res3[a].item1 !== null) {
+                                                  displaying_str += "\n[" + checkStringUndefined(slot_token[0]) + "]" + res3[a].item1 + ((res3[a].item1lv > 0)?" \u2606" + res3[a].item1lv:"") + convertALVtoSymbol(res3[a].item1alv);
+                                                  if(res3[a].item2 !== null) {
+                                                    displaying_str += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res3[a].item2 + ((res3[a].item2lv > 0)?" \u2606" + res3[a].item2lv:"") + convertALVtoSymbol(res3[a].item2alv);
+                                                    if(res3[a].item3 !== null) {
+                                                      displaying_str += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res3[a].item3 + ((res3[a].item3lv > 0)?" \u2606" + res3[a].item3lv:"") + convertALVtoSymbol(res3[a].item3alv);
+                                                      if(res3[a].item4 !== null) {
+                                                        displaying_str += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res3[a].item4 + ((res3[a].item4lv > 0)?" \u2606" + res3[a].item4lv:"") + convertALVtoSymbol(res3[a].item4alv);
+                                                        if(res3[a].item5 !== null) {
+                                                          displaying_str += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res3[a].item5 + ((res3[a].item5lv > 0)?" \u2606" + res3[a].item5lv:"") + convertALVtoSymbol(res3[a].item5alv);
+                                                          if(res3[a].item6 !== null) {
+                                                            displaying_str += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res3[a].item6 + ((res3[a].item6lv > 0)?" \u2606" + res3[a].item6lv:"") + convertALVtoSymbol(res3[a].item6alv);
                                                           }
                                                         }
                                                       }
