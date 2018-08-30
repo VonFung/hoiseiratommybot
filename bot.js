@@ -1190,15 +1190,20 @@ var func_editfleetmember = {
   
     DESCRIPTION : "Add or delete member of a fleet",
   
-    SYNTAX : "{%EDITFLEETMEMBER | fleet_id | (+/-)member(s)}",
+    SYNTAX : "{%EDITFLEETMEMBER | fleet_id | (+/-/~)member(s)}",
   
     MANUAL : "**fleet_id : **The internal id of fleet in database.(You can find by %searchfleet)"
-            +"\n**(+/-)member(s) : **Add new or delete existing member from fleet. Manual below : "
-            +"\nFor delete members(-): Only need to add internal ship_id(in kancolle db) or part/full name of ship which can identify the ship name"
-            +"\n***For example: -呂500改 OR -436***"
-            +"\nFor add members(+): You can append the slotitem id or part/fullname ot slotitem which can identify th item name"
+            +"\n**(+/-/~)member(s) : **Add new, delete or modify existing member from fleet. Manual below : "
+            +"\nFor delete members(-): Only need to add internal ship_id(in kancolle db) or part/full name of ship which can identify the ship name."
+            +" Also, you can use a (#) to indicate the fleet number (1 ~ 7) of a fleet.
+            +"\n***For example: -呂500改 OR -436 OR -#2(which indicates the second member of this fleet)***"
+            +"\nFor add members(+): You can append the item id or part/fullname of item which can identify th item name"
             +"\nUse @ to identify the \u2606 and (|OR\\\\OR>>) to identify the skill level of flight(Please use '\' instead of '/')"
-            +"\n***For example: +大淀改 (3号)@9 (3号)@9 零式水上観@10>> WG42 +500改 8門 8門***",
+            +"\n***For example: +大淀改 (3号)@9 (3号)@9 零式水上観@10>> WG42 +500改 8門 8門***"
+            +"\nFor modify members: Please use a (#) to indicate which member you need to modify. Then, input the information as "
+            +"adding member except the (+) prefix. Last, if the information is not need to in specify column, you can put a (=) instead."
+            +"\n***For example: ~#2 =(ship name/id) =(first item) =(second item) 53型@10>> = = This will only change the third item of second member in the fleet"
+            +"\n***Please remember to put (=) after the column you want to modify. Otherwise, the column doesn't put a (=) will change to null(item not set)",
   
     LOGIC : function(input_token, message) {
         var token = input_token;
@@ -1225,6 +1230,11 @@ var func_editfleetmember = {
                         +" AND ship_id IN (SELECT id FROM Ship WHERE ja_jp LIKE '%" + fleet_name + "%' OR"
                         +" ja_kana LIKE '%" + fleet_name + "%' OR ja_romaji LIKE '%" + fleet_name + "%' OR"
                         +" zh_tw LIKE '%" + fleet_name + "%')";
+                } else if(token[i].includes("{") && token[i].includes("}")) {
+                  let no = paresInt(token[i].substring(token[i].indexOf("{")+1, token[i].indexOf("}")));
+                  sql += "DELETE FROM Fleet_Member WHERE fleet_id = " + fleet_id
+                        +" AND id IN (SELECT id FROM Fleet_Member WHERE fleet_id = " + fleet_id
+                        +" ORDER BY id ASC LIMIT " + (no-1) + ", 1)";
                 } else {
                   sql += "DELETE FROM Fleet_Member WHERE ship_id = " + parseInt(token[i].substring(1)) + " AND fleet_id = " + fleet_id;
                 }
@@ -1234,11 +1244,11 @@ var func_editfleetmember = {
                 }
                 var nextShipIdx = token.length;
                 for(j=token.length-1; j>i+1; j--) {
-                   if(token[j].charAt(0) === "+" || token[j].charAt(0) === "-") {
+                   if(token[j].charAt(0) === "+" || token[j].charAt(0) === "-" || token[j].charAt(0) === "~") {
                       nextShipIdx = j;
                    }
                 }
-                if(!isNaN(token[i].substring(1))) {
+                /*if(!isNaN(token[i].substring(1))) {
                    sql += "INSERT INTO Fleet_Member (fleet_id, ship_id";
                    for(j=1; j<nextShipIdx-i; j++) {
                        sql += ", item" + j + ", item" + j + "lv, item" + j + "alv";
@@ -1339,9 +1349,151 @@ var func_editfleetmember = {
                           sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10);   //Search item by id
                         }
                    }
-                   sql += " ORDER BY a.ja_jp LIMIT 1";
+                   sql += " ORDER BY s.ja_jp LIMIT 1";
                    i = nextShipIdx - 1;
+                }*/
+                let no = paresInt(token[i].substring(token[i].indexOf("{")+1, token[i].indexOf("}")));
+                var ship_name_token = token[i].substring(1).split("LV");
+                sql += "INSERT INTO Fleet_Member (fleet_id, ship_id, ship_lv";
+                for(j=1; j<nextShipIdx-i; j++) {
+                    sql += ", item" + j + ", item" + j + "lv, item" + j + "alv";
                 }
+                sql += ") SELECT " + fleet_id + ", s.id, " + (ship_name_token[1] === undefined?null:ship_name_token[1]);
+                var table_name = ['a', 'b', 'c', 'd', 'e', 'f'];
+                for(j=i+1; j<nextShipIdx; j++) {
+                    let alv = 0;
+                    if(token[j].includes(">>")) {
+                       alv = 7; 
+                       token [j] = token[j].replace(">>", "");
+                    } else if (token[j].includes("\\\\\\")) {
+                       alv = 6;
+                       token [j] = token[j].replace("\\\\\\", "");
+                    } else if (token[j].includes("\\\\")) {
+                       alv = 5;
+                       token [j] = token[j].replace("\\\\", "");
+                    } else if (token[j].includes("\\")) {
+                       alv = 4;
+                       token [j] = token[j].replace("\\", "");
+                    } else if (token[j].includes("|||")) {
+                       alv = 3;
+                       token [j] = token[j].replace("|||", "");
+                    } else if (token[j].includes("||")) {
+                       alv = 2;
+                       token [j] = token[j].replace("||", "");
+                    } else if (token[j].includes("|")) {
+                       alv = 1;
+                       token [j] = token[j].replace("|", "");
+                    }    //Convert air level symbol to int
+                    var temp = token[j].split("@");  //Split item name from level if it has
+                    token[j] = temp[0];
+                    sql += ", " + table_name[j-i-1] + ".id, " + (temp[1] === undefined?0:parseInt(temp[1])) + ", " + alv;
+                }
+                sql += " FROM Ship s";
+                for(j=i+1; j<nextShipIdx; j++) {
+                    sql += ", Item " + table_name[j-i-1];
+                }
+                if(isNaN(token[i].substring(1))) {
+                  sql += " WHERE (s.ja_jp LIKE '%" + token[i].substring(1) + "%' OR"
+                        +" s.ja_kana LIKE '%" + token[i].substring(1) + "%' OR"
+                        +" s.ja_romaji LIKE '%" + token[i].substring(1) + "%' OR"
+                        +" s.zh_tw LIKE '%" + token[i].substring(1) + "%')";   //Search ship by name in different format
+                } else {
+                  sql += " WHERE s.id = " + parseInt(token[i].substring(1), 10);
+                }
+                for(j=i+1; j<nextShipIdx; j++) {
+                     if(isNaN(token[j])) {
+                       sql += " AND (" + table_name[j-i-1] + ".ja_jp LIKE '%" + token[j] + "%' OR "
+                         + table_name[j-i-1] + ".zh_tw LIKE '%" + token[j] + "%')";    //Search item by ja_jp name or zh_tw name
+                     } else {
+                       sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10);   //Search item by id
+                     }
+                }
+                sql += " ORDER BY LENGTH(s.ja_jp) ASC LIMIT 1";
+                i = nextShipIdx - 1;
+            } else if(token[i].charAt(0) === "~") {
+                if(i !== 2) {
+                   sql += "; ";
+                }
+                var nextShipIdx = token.length;
+                for(j=token.length-1; j>i+1; j--) {
+                   if(token[j].charAt(0) === "+" || token[j].charAt(0) === "-" || token[j].charAt(0) === "~") {
+                      nextShipIdx = j;
+                   }
+                }
+                sql += "UPDATE Fleet_Member fm";
+                j = i + 1;
+                if(token[j] !== "=") {
+                    sql += ", Ship s";
+                }
+                var table_name = ['a', 'b', 'c', 'd', 'e', 'f'];
+                for(j=i+2; j<nextShipIdx; j++) {
+                    if(token[j] !== "=") {
+                      sql += ", Item " + table_name[j-i-2];
+                    }
+                }
+                sql += " SET";
+                j = i + 1;
+                if(token[j] !== "=") {
+                    var ship_name_token = token[j].split("LV");
+                    sql += " fm.ship_id = s.id, fm.ship_lv = " + (ship_name_token[1] === undefined?null:ship_name_token[1]);
+                }
+                for(j=i+2; j<i+8; j++) {
+                    if(j >= nextShipIdx) {
+                        sql += " fm.item" + (j-i-1) + " = null, fm.item" + (j-i-1) + "lv = null, fm.item" + (j-i-1) + "alv = null"; 
+                    } else if(token[j] !== "=") {
+                        let alv = 0;
+                        if(token[j].includes(">>")) {
+                           alv = 7; 
+                           token [j] = token[j].replace(">>", "");
+                        } else if (token[j].includes("\\\\\\")) {
+                           alv = 6;
+                           token [j] = token[j].replace("\\\\\\", "");
+                        } else if (token[j].includes("\\\\")) {
+                           alv = 5;
+                           token [j] = token[j].replace("\\\\", "");
+                        } else if (token[j].includes("\\")) {
+                           alv = 4;
+                           token [j] = token[j].replace("\\", "");
+                        } else if (token[j].includes("|||")) {
+                           alv = 3;
+                           token [j] = token[j].replace("|||", "");
+                        } else if (token[j].includes("||")) {
+                           alv = 2;
+                           token [j] = token[j].replace("||", "");
+                        } else if (token[j].includes("|")) {
+                           alv = 1;
+                           token [j] = token[j].replace("|", "");
+                        }    //Convert air level symbol to int
+                        var temp = token[j].split("@");  //Split item name from level if it has
+                        token[j] = temp[0];
+                        sql += " item" + (j-i-1) + " = " + table_name[j-i-2] + ".id, item" + (j-i-1) + "lv = "
+                              +(temp[1] === undefined?0:parseInt(temp[1])) + ", item" + (j-i-1) + "alv = " + alv;
+                    }
+                }
+                sql += " WHERE fm.id IN (SELECT id FROM (SELECT id FROM Fleet_Member WHERE fleet_id = " + fleet_id
+                      +" ORDER BY id ASC LIMIT " + (no-1) + ", 1) tmp )";
+                j = i + 1;
+                if(token[j] !== "=") {
+                    if(isNaN(token[j])) {
+                      sql += " AND (s.ja_jp LIKE '%" + token[j] + "%' OR"
+                            +" s.ja_kana LIKE '%" + token[j] + "%' OR"
+                            +" s.ja_romaji LIKE '%" + token[j] + "%' OR"
+                            +" s.zh_tw LIKE '%" + token[j] + "%')";   //Search ship by name in different format
+                    } else {
+                      sql += " AND s.id = " + parseInt(token[j], 10);
+                    }
+                }
+                for(j=i+2; j<nextShipIdx; j++) {
+                    if(token[j] !== "=") {
+                        if(isNaN(token[j])) {
+                          sql += " AND (" + table_name[j-i-1] + ".ja_jp LIKE '%" + token[j] + "%' OR "
+                            + table_name[j-i-1] + ".zh_tw LIKE '%" + token[j] + "%')";    //Search item by ja_jp name or zh_tw name
+                        } else {
+                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10);   //Search item by id
+                        }
+                    }
+                }
+                i = nextShipIdx - 1;
             }
             console.log("i=" + i);
         }
