@@ -1307,7 +1307,7 @@ var func_editfleetmember = {
                     token[j] = temp[0];
                     sql += ", " + table_name[j-i-1] + ".id, " + (temp[1] === undefined?0:parseInt(temp[1])) + ", " + alv;
                 }
-                sql += " FROM Ship s, Fleet f";
+                sql += " FROM Ship s, Fleet fl";
                 for(j=i+1; j<nextShipIdx; j++) {
                     sql += ", Item " + table_name[j-i-1];
                 }
@@ -1327,7 +1327,7 @@ var func_editfleetmember = {
                        sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10);   //Search item by id
                      }
                 }
-                sql += " AND f.provider = '" + message.author.id + "' ORDER BY LENGTH(s.ja_jp)";
+                sql += " AND fl.provider = '" + message.author.id + "' ORDER BY LENGTH(s.ja_jp)";
                 for(j=i+1; j<nextShipIdx; j++) {
                     sql += ", LENGTH(" + table_name[j-i-1] + ".ja_jp) "; 
                 }
@@ -1418,7 +1418,7 @@ var func_editfleetmember = {
                         }
                     }
                 }
-                sql += " AND f.provider = '" + message.author.id + "'";
+                sql += " AND fl.provider = '" + message.author.id + "'";
                 i = nextShipIdx - 1;
             }
             console.log("i=" + i);
