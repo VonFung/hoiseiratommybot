@@ -1520,7 +1520,7 @@ var kancolle_func = { STARTWITH : "%",
                       NAME : "Kancolle functions",
                       AVAILABLE: [],
                       FUNCTIONS : [func_help, func_createfleet, func_editfleettag, func_searchship, func_searchitem,
-                                   func_searchfleet, func_editfleetmember, func_updateship, func_updateitem]
+                                   func_searchfleet, func_editfleetmember, func_updateship, func_updateitem, func_clear]
                     }
 
 var func = [normal_func, kancolle_func];
@@ -1639,52 +1639,6 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
             }
         }
     }
-    /*if(newMember.id === "340126981905448962") {   //社長ID
-        interupt_music = {
-          code : 'TESTING',
-          url : 'https://www.youtube.com/watch?v=0nc6lx2i4-Q',
-          volume : 0.8
-        };
-        if(now_playing_music) {
-          if(!playlist_mode) {
-            let temp_loop = music_loop;
-            music_loop = true;
-            dispatcher.end();
-            music_loop = temp_loop;
-          } else {
-            dispatcher.end(); 
-          }
-        } else {
-          voiceChannel = newMember.voiceChannel;
-          voiceChannel.join().then(connection => {
-            voice_conn = connection;
-            PlayMusicInQueue();
-          }).catch(err => console.log(err));
-        }
-    }*/
-    /*if(newMember.id === "340127083848269834") {
-        interupt_music = {
-          code : 'TESTING',
-          url : 'https://www.youtube.com/watch?v=0nc6lx2i4-Q',
-          volume : 0.8
-        };
-        if(now_playing_music) {
-          if(!playlist_mode) {
-            let temp_loop = music_loop;
-            music_loop = true;
-            dispatcher.end();
-            music_loop = temp_loop;
-          } else {
-            dispatcher.end(); 
-          }
-        } else {
-          voiceChannel = newMember.voiceChannel;
-          voiceChannel.join().then(connection => {
-            voice_conn = connection;
-            PlayMusicInQueue();
-          }).catch(err => console.log(err));
-        }
-    }*/
   } else if(newUserChannel === undefined){
 
     // User leaves a voice channel
@@ -2134,11 +2088,11 @@ const ship_suffix = [["改", "かい", "kai", "改"],
                      ["乙改", "おつかい", "otsukai", "乙改"],
                      ["丁改", "ちょうかい", "choukai", "丁改"]]
 
-function addShipSuffix(shipname, name_ln, suffix_type) {
+function addShipSuffix(shipname, name_language, suffix_type) {
     if(suffix_type === null ) {
         return shipname; 
     }
-    return "" + shipname + ship_suffix[suffix_type-1][name_ln];
+    return "" + shipname + ship_suffix[suffix_type-1][name_language];
 }
 
 function checkStringUndefined(input) {
