@@ -1470,8 +1470,8 @@ var func_editfleetmember = {
                         }    //Convert air level symbol to int
                         var temp = token[j].split("@");  //Split item name from level if it has
                         token[j] = temp[0];
-                        sql += " item" + (j-i-1) + " = " + table_name[j-i-2] + ".id, item" + (j-i-1) + "lv = "
-                              +(temp[1] === undefined?0:parseInt(temp[1])) + ", item" + (j-i-1) + "alv = " + alv;
+                        sql += ", fm.item" + (j-i-1) + " = " + table_name[j-i-2] + ".id, fm.item" + (j-i-1) + "lv = "
+                              +(temp[1] === undefined?0:parseInt(temp[1])) + ", fm.item" + (j-i-1) + "alv = " + alv;
                     }
                 }
                 sql += " WHERE fm.id IN (SELECT id FROM (SELECT id FROM Fleet_Member WHERE fleet_id = " + fleet_id
