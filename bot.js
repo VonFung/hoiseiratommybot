@@ -1195,7 +1195,7 @@ var func_editfleetmember = {
     MANUAL : "**fleet_id : **The internal id of fleet in database.(You can find by %searchfleet)"
             +"\n**(+/-/~)member(s) : **Add new, delete or modify existing member from fleet. Manual below : "
             +"\nFor delete members(-): Only need to add internal ship_id(in kancolle db) or part/full name of ship which can identify the ship name."
-            +" Also, you can use a (#) to indicate the fleet number (1 ~ 7) of a fleet.
+            +" Also, you can use a (#) to indicate the fleet number (1 ~ 7) of a fleet."
             +"\n***For example: -呂500改 OR -436 OR -#2(which indicates the second member of this fleet)***"
             +"\nFor add members(+): You can append the item id or part/fullname of item which can identify th item name"
             +"\nUse @ to identify the \u2606 and (|OR\\\\OR>>) to identify the skill level of flight(Please use '\' instead of '/')"
