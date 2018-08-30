@@ -3,7 +3,6 @@ const ytdl = require('ytdl-core');  //For music streaming
 const Webhook = require('webhook-discord');
 var mysql = require('mysql');
 var to_zh_tw = require('chinese-conv');
-var util = require('util');
 
 const hook = new Webhook(process.env.WEBHOOK_URL);
 
@@ -965,8 +964,10 @@ var func_searchship = {
     SYNTAX : "{%SEARCHSHIP | id/name(in kanji, romaji, hiragana or in traditional chinese)}",
   
     MANUAL : "**id/name : **The keyword to search from database."
-            +"\n**The whole keyword can be convert to number will counted as id, if you want to search with some name in number,"
-            +" please start the keyword with '%'. For example, search ro-500 with '%500' instead of '500'**",
+            +"\n**The whole keyword will be convert to number will counted as id. If you want to search with some name in number,"
+            +" please start the keyword with '%'. For example, search ro-500 with '%500' instead of '500' and you can also"
+            +" use this wildcard '%' in searching such as 'Sara%Mod.2' to search for 'Saratoga Mk.II Mod.2' instead of only"
+            +" 'Saratoga Mk.II'.**",
   
     LOGIC : function(token, message) {
         if(token.length < 2) {
@@ -1014,7 +1015,8 @@ var func_searchitem = {
   
     MANUAL : "**id/name : **The keyword to search from database."
             +"\n**The whole keyword can be convert to number will counted as id, if you want to search with some name in number,"
-            +" please start the keyword with '%'. For example, search Re.2005 改 with '%2005' instead of '2005'**",
+            +" please start the keyword with '%'. For example, search Re.2005 改 with '%2005' instead of '2005' and you can also"
+            +" use this wildcard '%' in searching such as '零%観' to search for '零式水上観測機' skipping some of the words.**",
   
     LOGIC : function(token, message) {
         if(token.length < 2) {
@@ -1188,22 +1190,26 @@ var func_editfleetmember = {
   
     CODE : "EDITFLEETMEMBER",
   
-    DESCRIPTION : "Add or delete member of a fleet",
+    DESCRIPTION : "Add, delete or modify member(s) of a fleet",
   
-    SYNTAX : "{%EDITFLEETMEMBER | fleet_id | (+/-/~)member(s)}",
+    SYNTAX : "{%EDITFLEETMEMBER | fleet_id | [[(+/-/~)member1 | item1 | item2 ...] [(+/-/~)member2 | item1 | item2 ...]...]}",
   
     MANUAL : "**fleet_id : **The internal id of fleet in database.(You can find by %searchfleet)"
             +"\n**(+/-/~)member(s) : **Add new, delete or modify existing member from fleet. Manual below : "
             +"\nFor delete members(-): Only need to add internal ship_id(in kancolle db) or part/full name of ship which can identify the ship name."
-            +" Also, you can use a (#) to indicate the fleet number (1 ~ 7) of a fleet."
-            +"\n***For example: -呂500改 OR -436 OR -#2(which indicates the second member of this fleet)***"
-            +"\nFor add members(+): You can append the item id or part/fullname of item which can identify th item name"
+            +" Also, you can use a (#) to indicate the fleet number (1 ~ 7) of a fleet. No need to input items."
+            +"\n***For example: -呂500改 OR -436 OR -{2}(which indicates the second member of this fleet)***"
+            +"\nFor add members(+): You can append the item id or part/fullname of item which can identify th item name in the following format:"
+            +"\n**+[ship] [item1] [item2]...**"
             +"\nUse @ to identify the \u2606 and (|OR\\\\OR>>) to identify the skill level of flight(Please use '\' instead of '/')"
-            +"\n***For example: +大淀改 (3号)@9 (3号)@9 零式水上観@10>> WG42 +500改 8門 8門***"
-            +"\nFor modify members: Please use a (#) to indicate which member you need to modify. Then, input the information as "
-            +"adding member except the (+) prefix. Last, if the information is not need to in specify column, you can put a (=) instead."
-            +"\n***For example: ~#2 =(ship name/id) =(first item) =(second item) 53型@10>> = = This will only change the third item of second member in the fleet"
-            +"\n***Please remember to put (=) after the column you want to modify. Otherwise, the column doesn't put a (=) will change to null(item not set)",
+            +"\n***For example: +大淀改 (3号)@9 (3号)@9 零式水上観@10>> WG42 +%500 8門 8門***"
+            +"\nFor modify members: Please use a bracket ({}) to indicate which member you need to modify. Then, input the information as "
+            +"adding member except the (+) prefix. Last, if the information is no need to change in specify column, you can put a (=) instead."
+            +"\n***For example: ~{2} = = = 53型@10>> = = This will only change the third item of second member in the fleet"
+            +"\n**Please remember to put (=) after the column you want to modify. Otherwise, the column doesn't put a (=) will change to null(item not set)**"
+            +"\n\n**You can put wildcard '%' into name you want to search such as 零%観, system will default search like '%keyword%' "
+            +"and will save the item with the shortest name in japanese if mulitple results provide by the confusing searching keyword"
+            +"\n**For example: search by '16inch' will give,
   
     LOGIC : function(input_token, message) {
         var token = input_token;
