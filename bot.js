@@ -98,7 +98,7 @@ var func_help = {
             var i;
             var msg = "**Functions List**";
             for(i=0; i<func.length; i++) {
-                msg += "\n**" + func[i].NAME + "**";
+                msg += "\n**" + func[i].NAME + " (All functions are startwith '" + func[i].STARTWITH + "')**";
                 var j;
                 for(j=0; j<func[i].FUNCTIONS.length; j++) {
                   msg += "\n" + func[i].FUNCTIONS[j].CODE + "\t\t\t" + func[i].FUNCTIONS[j].DESCRIPTION;
@@ -1209,7 +1209,8 @@ var func_editfleetmember = {
             +"\n**Please remember to put (=) after the column you want to modify. Otherwise, the column doesn't put a (=) will change to null(item not set)**"
             +"\n\n**You can put wildcard '%' into name you want to search such as 零%観, system will default search like '%keyword%' "
             +"and will save the item with the shortest name in japanese if mulitple results provide by the confusing searching keyword"
-            +"\n**For example: search by '16inch' will give,
+            +"\n**For example: search by '16inch%Mk.7' will give '16inch三連装砲 Mk.7' and '16inch三連装砲 Mk.7+GFCS'. By default sorting"
+            +", the system will take it as '16inch三連装砲 Mk.7' since it has a shorter length in name.",
   
     LOGIC : function(input_token, message) {
         var token = input_token;
