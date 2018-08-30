@@ -1124,7 +1124,7 @@ var func_searchfleet = {
                                           return;
                                         } else {
                                           var selected_fleet = this.FLEET[option-1];
-                                          var sql2 = "SELECT s.ja_jp, s.slot, s1.ja_jp item1, m.item1lv, m.item1alv, "
+                                          var sql2 = "SELECT s.ja_jp, m.ship_lv, s.slot, s1.ja_jp item1, m.item1lv, m.item1alv, "
                                                     +"s2.ja_jp item2, m.item2lv, m.item2alv, "
                                                     +"s3.ja_jp item3, m.item3lv, m.item3alv, "
                                                     +"s4.ja_jp item4, m.item4lv, m.item4alv, "
@@ -1139,7 +1139,7 @@ var func_searchfleet = {
                                                     +" LEFT JOIN Item s6 ON m.item6 = s6.id"
                                                     +" WHERE fleet_id = " + selected_fleet.id;
                                           DB4FREE(sql2).then((res) => {
-                                            var displaying_str = "**" + selected_fleet.name + "**";
+                                            var displaying_str = "**" + selected_fleet.name + (ship_lv === null?"":" LV" + ship_lv) + "**";
                                             let a;
                                             for(a=0; a<res.length; a++) {
                                                 let slot_token = res[a].slot.split("/");
