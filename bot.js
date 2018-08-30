@@ -1394,7 +1394,7 @@ var func_editfleetmember = {
                 for(j=i+1; j<nextShipIdx; j++) {
                     sql += ", Item " + table_name[j-i-1];
                 }
-                if(isNaN(token[i].substring(1))) {
+                if(isNaN(ship_name_token[0])) {
                   sql += " WHERE (s.ja_jp LIKE '%" + ship_name_token[0] + "%' OR"
                         +" s.ja_kana LIKE '%" + ship_name_token[0] + "%' OR"
                         +" s.ja_romaji LIKE '%" + ship_name_token[0] + "%' OR"
@@ -1478,7 +1478,7 @@ var func_editfleetmember = {
                       +" ORDER BY id ASC LIMIT " + (no-1) + ", 1) tmp )";
                 j = i + 1;
                 if(token[j] !== "=") {
-                    if(isNaN(token[j])) {
+                    if(isNaN(ship_name_token[0])) {
                       sql += " AND (s.ja_jp LIKE '%" + ship_name_token[0] + "%' OR"
                             +" s.ja_kana LIKE '%" + ship_name_token[0] + "%' OR"
                             +" s.ja_romaji LIKE '%" + ship_name_token[0] + "%' OR"
