@@ -1444,7 +1444,7 @@ var func_updateship = {
               let anchor = 0;
               anchor = res_json.indexOf("\ufffd",anchor);
               while (anchor !== -1) {
-                  console.log("indexOf('\ufffd')[" + anchor + "]:" + res_json.substring(Math.max(0, anchor-10), anchor+10));
+                  console.log("indexOf('\ufffd')[" + anchor + "]:" + res_json.substring(Math.max(0, anchor-30), anchor+30));
                   anchor = res_json.indexOf("\ufffd",anchor+1);
               }
               var shipdata = JSON.parse(res_json);
@@ -1470,7 +1470,7 @@ var func_updateship = {
                                      shipdata[i].consum.fuel, shipdata[i].consum.ammo, slot_str, 
                                      shipdata[i].type]];
                   values.push(...temp_value);
-                  console.log("Appended: " + i);
+                  //console.log("Appended: " + i);
               }
               DB4FREEWITHVALUES(sql, values).then((res) => {
                   message.reply("Update complete!");
@@ -1508,7 +1508,7 @@ var func_updateitem = {
               let anchor = 0;
               anchor = res_json.indexOf("\ufffd",anchor);
               while (anchor !== -1) {
-                  console.log("indexOf('\ufffd')[" + anchor + "]:" + res_json.substring(Math.max(0, anchor-10), anchor+10));
+                  console.log("indexOf('\ufffd')[" + anchor + "]:" + res_json.substring(Math.max(0, anchor-30), anchor+30));
                   anchor = res_json.indexOf("\ufffd",anchor+1);
               }
               var itemdata = JSON.parse(res_json);
@@ -1519,7 +1519,7 @@ var func_updateitem = {
                   let temp_value = [[itemdata[i].id, itemdata[i].name.ja_jp, to_zh_tw.tify(itemdata[i].name.zh_cn), itemdata[i].type, 
                                      itemdata[i].stat.aa, itemdata[i].stat.asw, itemdata[i].stat.los]];
                   values.push(...temp_value);
-                  console.log("Appended: " + i);
+                  //console.log("Appended: " + i);
               }
               DB4FREEWITHVALUES(sql, values).then((res) => {
                   message.reply("Update complete!");
