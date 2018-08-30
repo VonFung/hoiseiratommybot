@@ -3,6 +3,7 @@ const ytdl = require('ytdl-core');  //For music streaming
 const Webhook = require('webhook-discord');
 var mysql = require('mysql');
 var to_zh_tw = require('chinese-conv');
+var util = require('util');
 
 const hook = new Webhook(process.env.WEBHOOK_URL);
 
@@ -1138,24 +1139,24 @@ var func_searchfleet = {
                                                     +" LEFT JOIN Item s5 ON m.item5 = s5.id"
                                                     +" LEFT JOIN Item s6 ON m.item6 = s6.id"
                                                     +" WHERE fleet_id = " + selected_fleet.id;
-                                          DB4FREE(sql2).then((res) => {
-                                            var displaying_str = "**" + selected_fleet.name + (ship_lv === null?"":" LV" + ship_lv) + "**";
+                                          DB4FREE(sql2).then((res2) => {
+                                            var displaying_str = "**" + selected_fleet.name + "**";
                                             let a;
                                             for(a=0; a<res.length; a++) {
-                                                let slot_token = res[a].slot.split("/");
-                                                displaying_str += "\n*" + res[a].ja_jp + "*";
+                                                let slot_token = res2[a].slot.split("/");
+                                                displaying_str += "\n*" + res2[a].ja_jp + (res2[a].ship_lv === null?"":" LV" + res2[a].ship_lv) + "*";
                                                 if(res[a].item1 !== null) {
-                                                  displaying_str += "\n[" + checkStringUndefined(slot_token[0]) + "]" + res[a].item1 + ((res[a].item1lv > 0)?" \u2606" + res[a].item1lv:"") + convertALVtoSymbol(res[a].item1alv);
+                                                  displaying_str += "\n[" + checkStringUndefined(slot_token[0]) + "]" + res2[a].item1 + ((res2[a].item1lv > 0)?" \u2606" + res2[a].item1lv:"") + convertALVtoSymbol(res2[a].item1alv);
                                                   if(res[a].item2 !== null) {
-                                                    displaying_str += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res[a].item2 + ((res[a].item2lv > 0)?" \u2606" + res[a].item2lv:"") + convertALVtoSymbol(res[a].item2alv);
+                                                    displaying_str += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res2[a].item2 + ((res2[a].item2lv > 0)?" \u2606" + res2[a].item2lv:"") + convertALVtoSymbol(res2[a].item2alv);
                                                     if(res[a].item3 !== null) {
-                                                      displaying_str += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res[a].item3 + ((res[a].item3lv > 0)?" \u2606" + res[a].item3lv:"") + convertALVtoSymbol(res[a].item3alv);
+                                                      displaying_str += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res2[a].item3 + ((res2[a].item3lv > 0)?" \u2606" + res2[a].item3lv:"") + convertALVtoSymbol(res2[a].item3alv);
                                                       if(res[a].item4 !== null) {
-                                                        displaying_str += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res[a].item4 + ((res[a].item4lv > 0)?" \u2606" + res[a].item4lv:"") + convertALVtoSymbol(res[a].item4alv);
+                                                        displaying_str += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res2[a].item4 + ((res2[a].item4lv > 0)?" \u2606" + res2[a].item4lv:"") + convertALVtoSymbol(res2[a].item4alv);
                                                         if(res[a].item5 !== null) {
-                                                          displaying_str += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res[a].item5 + ((res[a].item5lv > 0)?" \u2606" + res[a].item5lv:"") + convertALVtoSymbol(res[a].item5alv);
+                                                          displaying_str += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res2[a].item5 + ((res2[a].item5lv > 0)?" \u2606" + res2[a].item5lv:"") + convertALVtoSymbol(res2[a].item5alv);
                                                           if(res[a].item6 !== null) {
-                                                            displaying_str += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res[a].item6 + ((res[a].item6lv > 0)?" \u2606" + res[a].item6lv:"") + convertALVtoSymbol(res[a].item6alv);
+                                                            displaying_str += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res2[a].item6 + ((res2[a].item6lv > 0)?" \u2606" + res2[a].item6lv:"") + convertALVtoSymbol(res2[a].item6alv);
                                                           }
                                                         }
                                                       }
