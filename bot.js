@@ -986,6 +986,7 @@ var func_searchship = {
         } else {
             sql = "SELECT id, ja_jp, ja_kana, ja_romaji, zh_tw FROM Ship WHERE id = " + parseInt(token[1]);
         }
+        sql += " ORDER BY LENGTH(ja_jp) ASC";
         DB4FREE(sql).then((res) => {
             var display_str = "";
             if(res.length === 0) {
@@ -1029,6 +1030,7 @@ var func_searchitem = {
         } else {
             sql = "SELECT id, ja_jp FROM Item WHERE id = " + parseInt(token[1]);
         }
+        sql += " ORDER BY LENGTH(ja_jp) ASC";
         DB4FREE(sql).then((res) => {
             var display_str = "";
             if(res.length === 0) {
@@ -1230,8 +1232,8 @@ var func_editfleetmember = {
                 if(token[i].includes("{") && token[i].includes("}")) {
                   let no = parseInt(token[i].substring(token[i].indexOf("{")+1, token[i].indexOf("}")));
                   sql += "DELETE FROM Fleet_Member WHERE fleet_id = " + fleet_id
-                        +" AND id IN (SELECT id FROM Fleet_Member WHERE fleet_id = " + fleet_id
-                        +" ORDER BY id ASC LIMIT " + (no-1) + ", 1)";
+                        +" AND id IN (SELECT id FROM (SELECT id FROM Fleet_Member WHERE fleet_id = " + fleet_id
+                        +" ORDER BY id ASC LIMIT " + (no-1) + ", 1) tmp)";
                 } else if(isNaN(token[i].substring(1))) {
                   let fleet_name = token[i].substring(1);
                   sql += "DELETE FROM Fleet_Member WHERE fleet_id = " + fleet_id 
@@ -1251,110 +1253,6 @@ var func_editfleetmember = {
                       nextShipIdx = j;
                    }
                 }
-                /*if(!isNaN(token[i].substring(1))) {
-                   sql += "INSERT INTO Fleet_Member (fleet_id, ship_id";
-                   for(j=1; j<nextShipIdx-i; j++) {
-                       sql += ", item" + j + ", item" + j + "lv, item" + j + "alv";
-                   }
-                   sql += ") SELECT " + fleet_id + ", s.id";
-                   var table_name = ['a', 'b', 'c', 'd', 'e', 'f'];
-                   for(j=i+1; j<nextShipIdx; j++) {
-                       let alv = 0;
-                       if(token[j].includes(">>")) {
-                          alv = 7; 
-                          token [j] = token[j].replace(">>", "");
-                       } else if (token[j].includes("\\\\\\")) {
-                          alv = 6;
-                          token [j] = token[j].replace("\\\\\\", "");
-                       } else if (token[j].includes("\\\\")) {
-                          alv = 5;
-                          token [j] = token[j].replace("\\\\", "");
-                       } else if (token[j].includes("\\")) {
-                          alv = 4;
-                          token [j] = token[j].replace("\\", "");
-                       } else if (token[j].includes("|||")) {
-                          alv = 3;
-                          token [j] = token[j].replace("|||", "");
-                       } else if (token[j].includes("||")) {
-                          alv = 2;
-                          token [j] = token[j].replace("||", "");
-                       } else if (token[j].includes("|")) {
-                          alv = 1;
-                          token [j] = token[j].replace("|", "");
-                       }    //Convert air level symbol to int
-                       var temp = token[j].split("@");  //Split item name from level if it has
-                       token[j] = temp[0];
-                       sql += ", " + table_name[j-i-1] + ".id, " + ((temp.length > 1)?parseInt(temp[1], 10):0) + ", " + alv;
-                   }
-                   sql += " FROM Ship s";
-                   for(j=i+1; j<nextShipIdx; j++) {
-                       sql += ", Item " + table_name[j-i-1];
-                   }
-                   sql += " WHERE s.id = " + parseInt(token[i].substring(1), 10);
-                   for(j=i+1; j<nextShipIdx; j++) {
-                        if(isNaN(token[j])) {
-                          sql += " AND (" + table_name[j-i-1] + ".ja_jp LIKE '%" + token[j] + "%' OR "
-                            + table_name[j-i-1] + ".zh_tw LIKE '%" + token[j] + "%')";    //Search item by ja_jp name or zh_tw name
-                        } else {
-                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10);   //Search item by id
-                        }
-                   }
-                   sql += " ORDER BY s.ja_jp LIMIT 1";
-                   i = nextShipIdx - 1;
-                } else {
-                   sql += "INSERT INTO Fleet_Member (fleet_id, ship_id";
-                   for(j=1; j<nextShipIdx-i; j++) {
-                       sql += ", item" + j + ", item" + j + "lv, item" + j + "alv";
-                   }
-                   sql += ") SELECT " + fleet_id + ", s.id";
-                   var table_name = ['a', 'b', 'c', 'd', 'e', 'f'];
-                   for(j=i+1; j<nextShipIdx; j++) {
-                       let alv = 0;
-                       if(token[j].includes(">>")) {
-                          alv = 7; 
-                          token [j] = token[j].replace(">>", "");
-                       } else if (token[j].includes("\\\\\\")) {
-                          alv = 6;
-                          token [j] = token[j].replace("\\\\\\", "");
-                       } else if (token[j].includes("\\\\")) {
-                          alv = 5;
-                          token [j] = token[j].replace("\\\\", "");
-                       } else if (token[j].includes("\\")) {
-                          alv = 4;
-                          token [j] = token[j].replace("\\", "");
-                       } else if (token[j].includes("|||")) {
-                          alv = 3;
-                          token [j] = token[j].replace("|||", "");
-                       } else if (token[j].includes("||")) {
-                          alv = 2;
-                          token [j] = token[j].replace("||", "");
-                       } else if (token[j].includes("|")) {
-                          alv = 1;
-                          token [j] = token[j].replace("|", "");
-                       }    //Convert air level symbol to int
-                       var temp = token[j].split("@");  //Split item name from level if it has
-                       token[j] = temp[0];
-                       sql += ", " + table_name[j-i-1] + ".id, " + ((temp.length > 1)?parseInt(temp[1], 10):0) + ", " + alv;
-                   }
-                   sql += " FROM Ship s";
-                   for(j=i+1; j<nextShipIdx; j++) {
-                       sql += ", Item " + table_name[j-i-1];
-                   }
-                   sql += " WHERE (s.ja_jp LIKE '%" + token[i].substring(1) + "%' OR"
-                         +" s.ja_kana LIKE '%" + token[i].substring(1) + "%' OR"
-                         +" s.ja_romaji LIKE '%" + token[i].substring(1) + "%' OR"
-                         +" s.zh_tw LIKE '%" + token[i].substring(1) + "%')";   //Search ship by name in different format
-                   for(j=i+1; j<nextShipIdx; j++) {
-                        if(isNaN(token[j])) {
-                          sql += " AND (" + table_name[j-i-1] + ".ja_jp LIKE '%" + token[j] + "%' OR "
-                            + table_name[j-i-1] + ".zh_tw LIKE '%" + token[j] + "%')";    //Search item by ja_jp name or zh_tw name
-                        } else {
-                          sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10);   //Search item by id
-                        }
-                   }
-                   sql += " ORDER BY s.ja_jp LIMIT 1";
-                   i = nextShipIdx - 1;
-                }*/
                 var ship_name_token = token[i].substring(1).split("LV");
                 sql += "INSERT INTO Fleet_Member (fleet_id, ship_id, ship_lv";
                 for(j=1; j<nextShipIdx-i; j++) {
@@ -1410,7 +1308,11 @@ var func_editfleetmember = {
                        sql += " AND " + table_name[j-i-1] + ".id = " + parseInt(token[j], 10);   //Search item by id
                      }
                 }
-                sql += " ORDER BY LENGTH(s.ja_jp) ASC LIMIT 1";
+                sql += " ORDER BY LENGTH(s.ja_jp)";
+                for(j=i+1; j<nextShipIdx; j++) {
+                    sql += ", LENGTH(" + table_name[j-i-1] + ".ja_jp) "; 
+                }
+                sql += " ASC LIMIT 1";
                 i = nextShipIdx - 1;
             } else if(token[i].charAt(0) === "~") {
                 if(i !== 2) {
@@ -1479,10 +1381,10 @@ var func_editfleetmember = {
                 j = i + 1;
                 if(token[j] !== "=") {
                     if(isNaN(ship_name_token[0])) {
-                      sql += " AND (s.ja_jp LIKE '%" + ship_name_token[0] + "%' OR"
-                            +" s.ja_kana LIKE '%" + ship_name_token[0] + "%' OR"
-                            +" s.ja_romaji LIKE '%" + ship_name_token[0] + "%' OR"
-                            +" s.zh_tw LIKE '%" + ship_name_token[0] + "%')";   //Search ship by name in different format
+                      sql += " AND s.id IN (SELECT id FROM (SELECT id FROM Ship WHERE ja_jp LIKE '%" + ship_name_token[0] + "%' OR"
+                            +" ja_kana LIKE '%" + ship_name_token[0] + "%' OR"
+                            +" ja_romaji LIKE '%" + ship_name_token[0] + "%' OR"
+                            +" zh_tw LIKE '%" + ship_name_token[0] + "%' ORDER BY LENGTH(ja_jp) ASC LIMIT 1) tmp)";   //Search ship by name in different format
                     } else {
                       sql += " AND s.id = " + parseInt(ship_name_token[0], 10);
                     }
@@ -1490,8 +1392,8 @@ var func_editfleetmember = {
                 for(j=i+2; j<nextShipIdx; j++) {
                     if(token[j] !== "=") {
                         if(isNaN(token[j])) {
-                          sql += " AND (" + table_name[j-i-2] + ".ja_jp LIKE '%" + token[j] + "%' OR "
-                            + table_name[j-i-1] + ".zh_tw LIKE '%" + token[j] + "%')";    //Search item by ja_jp name or zh_tw name
+                          sql += " AND " + table_name[j-i-2] + ".id IN (SELECT id FROM (SELECT id FROM Item WHERE ja_jp LIKE '%" + token[j] + "%' OR "
+                            +"zh_tw LIKE '%" + token[j] + "%' ORDER BY LENGTH(ja_jp) ASC LIMIT 1) tmp)";    //Search item by ja_jp name or zh_tw name
                         } else {
                           sql += " AND " + table_name[j-i-2] + ".id = " + parseInt(token[j], 10);   //Search item by id
                         }
