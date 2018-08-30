@@ -1344,7 +1344,7 @@ var func_editfleetmember = {
                       nextShipIdx = j;
                    }
                 }
-                sql += "UPDATE Fleet_Member fm, Fleet f";
+                sql += "UPDATE Fleet_Member fm, Fleet fl";
                 j = i + 1;
                 if(token[j] !== "=") {
                     sql += ", Ship s";
