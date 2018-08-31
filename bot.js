@@ -1138,51 +1138,65 @@ var func_searchfleet = {
                                                     +" LEFT JOIN Item s6 ON m.item6 = s6.id"
                                                     +" WHERE fleet_id = " + selected_fleet.id;
                                           DB4FREE(sql2).then((res3) => {
-                                            var displaying_str = "**" + selected_fleet.name + "**";
+                                            var tags = "";
                                             let a;
+                                            for(a=0; a<selected_fleet.tags.length; a++) {
+                                              tags += selected_fleet.tags[a] + " ";
+                                            }
+                                            var embed_msg = {
+                                                                embed:{
+                                                                    color: 3447003,
+                                                                    author: {name: client.user.username},
+                                                                    title: selected_fleet.name,
+                                                                    description: tags,
+                                                                    fields: []
+                                                                 }
+                                                            }
+                                            var ship;
                                             let los_ship = 0;
                                             let los_item = 0;
-                                            let no_of_ship = 0;
                                             let aa = 0;
                                             let min_aa = 0;
                                             let max_aa = 0;
                                             for(a=0; a<res3.length; a++) {
-                                                no_of_ship++;
+                                                ship = {
+                                                        name: res3[a].ja_jp + (res3[a].ship_lv === null?"":" LV" + res3[a].ship_lv),
+                                                        value: ""
+                                                       }
                                                 let slot_token = res3[a].slot.split("/");
-                                                displaying_str += "\n*" + res3[a].ja_jp + (res3[a].ship_lv === null?"":" LV" + res3[a].ship_lv) + "*";
                                                 los_ship += Math.sqrt((res3[a].ship_los_max - res3[a].ship_los) * (res3[a].ship_lv === null?1:res3[a].ship_lv) / 99 + res3[a].ship_los);
                                                 if(res3[a].item1 !== null) {
-                                                  displaying_str += "\n[" + checkStringUndefined(slot_token[0]) + "]" + res3[a].item1 + ((res3[a].item1lv > 0)?" \u2606" + res3[a].item1lv:"") + convertALVtoSymbol(res3[a].item1alv);
+                                                  ship.value += "[" + checkStringUndefined(slot_token[0]) + "]" + res3[a].item1 + ((res3[a].item1lv > 0)?" \u2606" + res3[a].item1lv:"") + convertALVtoSymbol(res3[a].item1alv);
                                                   los_item += getLosByItem(res3[a].item1type, res3[a].item1los, res3[a].item1lv);
                                                   aa += getAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
                                                   min_aa += getMinAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
                                                   max_aa += getMaxAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
                                                   if(res3[a].item2 !== null) {
-                                                    displaying_str += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res3[a].item2 + ((res3[a].item2lv > 0)?" \u2606" + res3[a].item2lv:"") + convertALVtoSymbol(res3[a].item2alv);
+                                                    ship.value += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res3[a].item2 + ((res3[a].item2lv > 0)?" \u2606" + res3[a].item2lv:"") + convertALVtoSymbol(res3[a].item2alv);
                                                     los_item += getLosByItem(res3[a].item2type, res3[a].item2los, res3[a].item2lv);
                                                     aa += getAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
                                                     min_aa += getMinAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
                                                     max_aa += getMaxAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
                                                     if(res3[a].item3 !== null) {
-                                                      displaying_str += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res3[a].item3 + ((res3[a].item3lv > 0)?" \u2606" + res3[a].item3lv:"") + convertALVtoSymbol(res3[a].item3alv);
+                                                      ship.value += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res3[a].item3 + ((res3[a].item3lv > 0)?" \u2606" + res3[a].item3lv:"") + convertALVtoSymbol(res3[a].item3alv);
                                                       los_item += getLosByItem(res3[a].item3type, res3[a].item3los, res3[a].item3lv);
                                                       aa += getAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
                                                       min_aa += getMinAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
                                                       max_aa += getMaxAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
                                                       if(res3[a].item4 !== null) {
-                                                        displaying_str += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res3[a].item4 + ((res3[a].item4lv > 0)?" \u2606" + res3[a].item4lv:"") + convertALVtoSymbol(res3[a].item4alv);
+                                                        ship.value += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res3[a].item4 + ((res3[a].item4lv > 0)?" \u2606" + res3[a].item4lv:"") + convertALVtoSymbol(res3[a].item4alv);
                                                         los_item += getLosByItem(res3[a].item4type, res3[a].item4los, res3[a].item4lv);
                                                         aa += getAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
                                                         min_aa += getMinAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
                                                         max_aa += getMaxAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
                                                         if(res3[a].item5 !== null) {
-                                                          displaying_str += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res3[a].item5 + ((res3[a].item5lv > 0)?" \u2606" + res3[a].item5lv:"") + convertALVtoSymbol(res3[a].item5alv);
+                                                          ship.value += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res3[a].item5 + ((res3[a].item5lv > 0)?" \u2606" + res3[a].item5lv:"") + convertALVtoSymbol(res3[a].item5alv);
                                                           los_item += getLosByItem(res3[a].item5type, res3[a].item5los, res3[a].item5lv);
                                                           aa += getAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
                                                           min_aa += getMinAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
                                                           max_aa += getMaxAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
                                                           if(res3[a].item6 !== null) {
-                                                            displaying_str += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res3[a].item6 + ((res3[a].item6lv > 0)?" \u2606" + res3[a].item6lv:"") + convertALVtoSymbol(res3[a].item6alv);
+                                                            ship.value += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res3[a].item6 + ((res3[a].item6lv > 0)?" \u2606" + res3[a].item6lv:"") + convertALVtoSymbol(res3[a].item6alv);
                                                             los_item += getLosByItem(res3[a].item6type, res3[a].item6los, res3[a].item6lv);
                                                           }
                                                         }
@@ -1190,15 +1204,18 @@ var func_searchfleet = {
                                                     }   
                                                   }
                                                 }
+                                                embed_msg.embed.fields.push(...ship);
                                             }
-                                            displaying_str += "\n索敵(33式):" + (los_ship + los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=1)/"
-                                                             +(los_ship + 3 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=3)/"
-                                                             +(los_ship + 4 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=4)";
-                                            displaying_str += "\n制空: " + Math.floor(aa) + "(" + Math.floor(min_aa) + "~" + Math.floor(max_aa) + ")";
-                                            this.MESSAGE.edit(displaying_str);
+                                            embed_msg.embed.fields.push(...{name: "索敵(33式):", values: (los_ship + los_item - 48 + 2 * (6 - embed_msg.fields.length)).toFixed(2) + "(n=1)/"
+                                                             +(los_ship + 3 * los_item - 48 + 2 * (6 - embed_msg.fields.length)).toFixed(2) + "(n=3)/"
+                                                             +(los_ship + 4 * los_item - 48 + 2 * (6 - embed_msg.fields.length)).toFixed(2) + "(n=4)"});
+                                            embed_msg.embed.field.push(...{name: "制空:", values: Math.floor(aa) + "(" + Math.floor(min_aa) + "~" + Math.floor(max_aa) + ")"});
+                                            this.MESSAGE.delete();
+                                            msg.channel.send(embed_msg);
                                             msg.delete();
                                           }).catch((err) => {
-                                            message.reply("Something error! Please refer to the log on Heroku");
+                                            msg.reply("Something error! Please refer to the log on Heroku");
+                                            msg.delete();
                                             console.log(err)  ;
                                           })
                                         }
