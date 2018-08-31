@@ -1204,7 +1204,7 @@ var func_searchfleet = {
                                                     }   
                                                   }
                                                 }
-                                                embed_msg.embed.fields.push(...ship);
+                                                embed_msg.embed.fields.push(ship);
                                             }
                                             embed_msg.embed.fields.push(...{name: "索敵(33式):", values: (los_ship + los_item - 48 + 2 * (6 - embed_msg.fields.length)).toFixed(2) + "(n=1)/"
                                                              +(los_ship + 3 * los_item - 48 + 2 * (6 - embed_msg.fields.length)).toFixed(2) + "(n=3)/"
