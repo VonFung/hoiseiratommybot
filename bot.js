@@ -1661,7 +1661,7 @@ var kancolle_func = { STARTWITH : "%",
                                    func_searchfleet, func_editfleetmember, func_updateship, func_updateitem]
                     }
 
-var func = [normal_func, kancolle_func];
+var func = [common_func, hoiseiratommy_func, kancolle_func];
 
 
 
