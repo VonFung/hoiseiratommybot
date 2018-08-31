@@ -2260,7 +2260,7 @@ function getMinAAByItem(slot, type, aa, improvement, alv) {
       case 45:
       case 55:
       case 61:
-        return getAAByItem(slot, type, aa, improvment, 0);
+        return getAAByItem(slot, type, aa, improvement, 0);
       default:
         return 0;
     }
@@ -2278,7 +2278,7 @@ function getMaxAAByItem(slot, type, aa, improvement, alv) {
       case 45:
       case 55:
       case 61:
-        return getAAByItem(slot, type, aa, improvment, 7);
+        return getAAByItem(slot, type, aa, improvement, 7);
       default:
         return 0;
     }
