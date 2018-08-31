@@ -1155,22 +1155,32 @@ var func_searchfleet = {
                                                   displaying_str += "\n[" + checkStringUndefined(slot_token[0]) + "]" + res3[a].item1 + ((res3[a].item1lv > 0)?" \u2606" + res3[a].item1lv:"") + convertALVtoSymbol(res3[a].item1alv);
                                                   los_item += getLosByItem(res3[a].item1type, res3[a].item1los, res3[a].item1lv);
                                                   aa += getAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
+                                                  min_aa += getMinAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
+                                                  max_aa += getMaxAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
                                                   if(res3[a].item2 !== null) {
                                                     displaying_str += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res3[a].item2 + ((res3[a].item2lv > 0)?" \u2606" + res3[a].item2lv:"") + convertALVtoSymbol(res3[a].item2alv);
                                                     los_item += getLosByItem(res3[a].item2type, res3[a].item2los, res3[a].item2lv);
                                                     aa += getAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
+                                                    min_aa += getMinAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
+                                                    max_aa += getMaxAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
                                                     if(res3[a].item3 !== null) {
                                                       displaying_str += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res3[a].item3 + ((res3[a].item3lv > 0)?" \u2606" + res3[a].item3lv:"") + convertALVtoSymbol(res3[a].item3alv);
                                                       los_item += getLosByItem(res3[a].item3type, res3[a].item3los, res3[a].item3lv);
                                                       aa += getAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
+                                                      min_aa += getMinAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
+                                                      max_aa += getMaxAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
                                                       if(res3[a].item4 !== null) {
                                                         displaying_str += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res3[a].item4 + ((res3[a].item4lv > 0)?" \u2606" + res3[a].item4lv:"") + convertALVtoSymbol(res3[a].item4alv);
                                                         los_item += getLosByItem(res3[a].item4type, res3[a].item4los, res3[a].item4lv);
                                                         aa += getAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
+                                                        min_aa += getMinAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
+                                                        max_aa += getMaxAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
                                                         if(res3[a].item5 !== null) {
                                                           displaying_str += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res3[a].item5 + ((res3[a].item5lv > 0)?" \u2606" + res3[a].item5lv:"") + convertALVtoSymbol(res3[a].item5alv);
                                                           los_item += getLosByItem(res3[a].item5type, res3[a].item5los, res3[a].item5lv);
                                                           aa += getAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
+                                                          min_aa += getMinAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
+                                                          max_aa += getMaxAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
                                                           if(res3[a].item6 !== null) {
                                                             displaying_str += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res3[a].item6 + ((res3[a].item6lv > 0)?" \u2606" + res3[a].item6lv:"") + convertALVtoSymbol(res3[a].item6alv);
                                                             los_item += getLosByItem(res3[a].item6type, res3[a].item6los, res3[a].item6lv);
@@ -1184,7 +1194,7 @@ var func_searchfleet = {
                                             displaying_str += "\n索敵(33式):" + (los_ship + los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=1)/"
                                                              +(los_ship + 3 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=3)/"
                                                              +(los_ship + 4 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=4)";
-                                            displaying_str += "\n制空: " + aa;
+                                            displaying_str += "\n制空: " + Math.floor(aa) + "(" + Math.floor(min_aa) + "~" + Math.floor(max_aa) + ")";
                                             this.MESSAGE.edit(displaying_str);
                                             msg.delete();
                                           }).catch((err) => {
@@ -2196,7 +2206,6 @@ function getLosByItem(type, los, improvement) {
       default:
         return 0;
     }
-    return 0;
 }
 
 const aa_const = [[0, 1, 2, 3, 4, 5, 7, 10],
@@ -2222,22 +2231,57 @@ function getAAByItem(slot, type, aa, improvement, alv) {
         break;
     }
     switch(type) {
+      case 18:  //艦戰
+      case 51:  //水戰
+      case 60:  //夜戰
+        return temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv]) + aa_const[1][alv];
+      case 17:  //水爆
+        return temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv]) + aa_const[2][alv];
+      case 19:  //艦攻
+      case 20:  //艦爆
+      case 45:  //大艇
+      case 55:  //噴射機
+      case 61:  //夜攻
+        return temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv]);
+      default:
+        return 0;
+    }
+}
+
+function getMinAAByItem(slot, type, aa, improvement, alv) {
+    switch (type) {
       case 18:
       case 51:
       case 60:
-        return temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv]) + aa_const[1][alv];
+        return getAAByItem(slot, type, aa, improvement, alv);
       case 17:
-        return temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv]) + aa_const[2][alv];
       case 19:
       case 20:
       case 45:
       case 55:
       case 61:
-        return temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv]);
+        return getAAByItem(slot, type, aa, improvment, 0);
       default:
         return 0;
     }
-    return 0;
+}
+
+function getMaxAAByItem(slot, type, aa, improvement, alv) {
+    switch (type) {
+      case 18:
+      case 51:
+      case 60:
+        return getAAByItem(slot, type, aa, improvement, alv);
+      case 17:
+      case 19:
+      case 20:
+      case 45:
+      case 55:
+      case 61:
+        return getAAByItem(slot, type, aa, improvment, 7);
+      default:
+        return 0;
+    }
 }
 
 function checkStringUndefined(input) {
