@@ -913,6 +913,52 @@ var func_createfleet = {
   
 }
 
+var func_addfleet = {
+ 
+    CODE : "ADDFLEET",
+  
+    DESCRIPTION : "Add fleet in JSON format(such as provided by poooi)",
+  
+    SYNTAX : "{%ADDFLEET | fleet_name | json_file(without space) | tag(s)}",
+  
+    MANUAL : "**fleet_name : **The name of the fleet."
+            +"\n*json_file : **The input file of fleet in JSON format(do not exceed 2000 characters)."
+            +"\n***tag(s) : ***[Optional] You can add tags to the fleet for searching (Max: 5tags).",
+  
+    LOGIC : function(token, message) {
+        if(token.length < 3) {
+            message.reply("Incorrect Syntax!\n" + this.SYNTAX);
+            return;
+        }
+      
+        var sql = "INSERT INTO Fleet (`name`, provider) VALUES ('" + token[1] + "', '" + message.author.id + "')"
+        DB4FREE(sql).then((res) => {
+            var fleet_id = res.insertId;
+            var json_data = JSON.parse(token[2]);
+            var sql2 = "INSERT INTO Fleet_Member(ship_id, ship_lv, fleet_id, item1, item1lv, item1alv"
+                      +", item2, item2lv, item2alv, item3, item3lv, item3alv, item4, item4lv, item4alv"
+                      +", item5, item5lv, item5alv, item6, item6lv, item6alv) VALUES (";
+            if(token.length > 3) {
+                sql2 += "; INSERT INTO Fleet_Tag (tag, fleet_id) VALUES ('" + token[3] + "', " + fleet_id + ")";
+                var i;
+                for(i=4; i<token.length && i<8; i++) {
+                    sql2 += "; INSERT INTO Fleet_Tag (tag, fleet_id) VALUES ('" + token[i] + "', " + fleet_id + ")";
+                }
+            }
+            DB4FREE(sql2).then((res2) => {
+                message.reply("Create successully! The fleet id is " + fleet_id + ".");
+            }).catch((err) => {
+                message.reply("Something error! Please refer to the log on Heroku");
+                console.log(err);
+            });
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
+    }
+  
+}
+
 var func_editfleettag = {
  
     CODE : "EDITFLEETTAG",
