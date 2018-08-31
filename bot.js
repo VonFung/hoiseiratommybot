@@ -1207,10 +1207,10 @@ var func_searchfleet = {
                                                 embed_msg.embed.fields.push(ship);
                                             }
                                             let no_of_ship = embed_msg.embed.fields.length;
-                                            embed_msg.embed.fields.push({name: "索敵(33式):", values: (los_ship + los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=1)/"
+                                            embed_msg.embed.fields.push({name: "索敵(33式):", value: (los_ship + los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=1)/"
                                                              +(los_ship + 3 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=3)/"
                                                              +(los_ship + 4 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=4)"});
-                                            embed_msg.embed.fields.push({name: "制空:", values: Math.floor(aa) + "(" + Math.floor(min_aa) + "~" + Math.floor(max_aa) + ")"});
+                                            embed_msg.embed.fields.push({name: "制空:", value: Math.floor(aa) + "(" + Math.floor(min_aa) + "~" + Math.floor(max_aa) + ")"});
                                             this.MESSAGE.delete();
                                             msg.channel.send(embed_msg);
                                             msg.delete();
