@@ -2141,10 +2141,53 @@ function addShipSuffix(shipname, name_language, suffix_type) {
 }
 
 function getLosByItem(type, los, improvement) {
-    /*switch(type) {
-      case    
-    }*/
-    return los;
+    var result = los;
+    switch(type) {
+      case 15:
+        result += improvement * 1.2;
+        break;
+      case 24:
+        result += improvement * 1.25;
+        break;
+      case 25:
+      case 47:
+        result += improvement * 1.4;
+        break;
+    }
+    switch(type) {
+      case 18:
+      case 20:
+      case 23:
+      case 24:
+      case 25:
+      case 27:
+      case 36:
+      case 37:
+      case 39:
+      case 43:
+      case 45:
+      case 46:
+      case 47:
+      case 51:
+      case 55:
+      case 58:
+      case 60:
+        return result * 0.6;
+      case 19:
+      case 61:
+        return result * 0.8;
+      case 21:
+      case 50:
+        return result;
+      case 17:
+        return result * 1.1;
+      case 15:
+      case 16:
+        return result * 1.2;
+      default:
+        return 0;
+    }
+    return 0;
 }
 
 function checkStringUndefined(input) {
