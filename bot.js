@@ -24,7 +24,7 @@ var stream;                //  For Play Music
 var dispatcher = null;     //===================
 var voice_conn = null;
 
-var clear_command = false;
+var clear_command = [];
 
 var music_loop = false;
 var master_volume = 0.2;
@@ -88,7 +88,7 @@ var func_help = {
     
     DESCRIPTION : "{$help | code_name | ***[optional] -D***} for syntax of command",
 
-    SYNTAX : "{$HELP | ***[optional] code_name***}",
+    SYNTAX : "HELP | ***[optional] code_name***",
 
     MANUAL : "**code_name : **The target code name you want to know about."
          + "\n**-D : **Add -d if you need more details.",
@@ -101,7 +101,7 @@ var func_help = {
                 msg += "\n**" + func[i].NAME + " (All functions are startwith '" + func[i].STARTWITH + "')**";
                 var j;
                 for(j=0; j<func[i].FUNCTIONS.length; j++) {
-                  msg += "\n" + func[i].FUNCTIONS[j].CODE + "\t\t\t" + func[i].FUNCTIONS[j].DESCRIPTION;
+                  msg += "\n" + func[i].STARTWITH + func[i].FUNCTIONS[j].CODE + "\t\t\t" + func[i].FUNCTIONS[j].DESCRIPTION;
                 }
             }
             msg = msg + "\n\n**All commands are CASE INSENSITIVE**";
@@ -113,9 +113,9 @@ var func_help = {
                 for(j=0; j<func[i].FUNCTIONS.length; j++) {
                   if(token[1].toUpperCase() === func[i].FUNCTIONS[j].CODE) {
                       if(token.length > 2 && token[2].toUpperCase() === "-D") {
-                        message.reply(func[i].FUNCTIONS[j].SYNTAX + "\n\n" + func[i].FUNCTIONS[j].MANUAL);
+                        message.reply("{" + func[i].STARTWITH + func[i].FUNCTIONS[j].SYNTAX + "}\n\n" + func[i].FUNCTIONS[j].MANUAL);
                       } else {
-                        message.reply(func[i].FUNCTIONS[j].SYNTAX);
+                        message.reply("{" + func[i].STARTWITH + func[i].FUNCTIONS[j].SYNTAX + "}");
                       }
                       return;
                   }
@@ -132,7 +132,7 @@ var func_ready = {      //Ready function
   
     DESCRIPTION : "Test for the bot is online",
   
-    SYNTAX : "{$READY}",
+    SYNTAX : "READY",
   
     MANUAL : "",
   
@@ -147,7 +147,7 @@ var func_addmusic = {
   
     DESCRIPTION : "Add new music to the database",
   
-    SYNTAX : "{$ADDMUSIC | music_code | URL | ***[optional] default_volume(float between 0 to 1)***}",
+    SYNTAX : "ADDMUSIC | music_code | URL | ***[optional] default_volume(float between 0 to 1)***",
    
     MANUAL : "**music_code : **Define a new code that you want to play this music."
               + "\n**URL : **Provide an URL which this bot can get the music."
@@ -179,7 +179,7 @@ var func_searchmusic = {
   
     DESCRIPTION : "Search all music in the database",
   
-    SYNTAX : "{$SEARCHMUSIC | [optional] searching keyword}",
+    SYNTAX : "SEARCHMUSIC | [optional] searching keyword",
   
     MANUAL : "***searching keyword : ***[Optional] **ONE** keyword you want to search with SQL %keyword%.",
   
@@ -219,7 +219,7 @@ var func_play = {
    
     DESCRIPTION : "Add music to the music queue and play if no music playing",
    
-    SYNTAX : "{$PLAY | music_code | [optional] volume(float between 0 to 1)}",
+    SYNTAX : "PLAY | music_code | [optional] volume(float between 0 to 1)",
 
     MANUAL : "**music_code : **The code of music you want to play."
               + "\n***volume : ***[Optional] Play the music in this volume.",
@@ -274,7 +274,7 @@ var func_addplaylist = {
   
     DESCRIPTION : "Add a new playlist",
   
-    SYNTAX : "{$ADDPLAYLIST | playlist_name}",
+    SYNTAX : "ADDPLAYLIST | playlist_name",
   
     MANUAL : "**playlist_name : **The name of playlist."
             +"\n**Please use $ADDMUSICTOPL to add new music into an exist playlist**",
@@ -304,7 +304,7 @@ var func_addmusictopl = {
   
     DESCRIPTION : "Add music by code to an exist playlist",
   
-    SYNTAX : "{$ADDMUSICTOPL | music_code | playlist_name}",
+    SYNTAX : "ADDMUSICTOPL | music_code | playlist_name",
   
     MANUAL : "**music_code : **The code of music."
             +"\n**playlist_name : **The name of playlist."
@@ -336,7 +336,7 @@ var func_playlist = {
   
     DESCRIPTION : "Play music in playlist mode by a defined playlist",
   
-    SYNTAX : "{$PLAYLIST | playlist_name | [optional]-RAND}",
+    SYNTAX : "PLAYLIST | playlist_name | [optional]-RAND",
   
     MANUAL : "**playlist_name : **The name of playlist."
             +"\n***-RAND : ***[Optional] Play the playlist in random order."
@@ -395,7 +395,7 @@ var func_playqueue = {
   
     DESCRIPTION : "Show the music playing queue OR the whole playlist in playlist mode",
   
-    SYNTAX : "{$PLAYQUEUE}",
+    SYNTAX : "PLAYQUEUE",
   
     MANUAL : "",
   
@@ -429,7 +429,7 @@ var func_musicdetail = {
   
     DESCRIPTION : "Show the detail of music player",
   
-    SYNTAX : "{$MUSICDETAIL | [optional]-CLEAR}",
+    SYNTAX : "MUSICDETAIL | [optional]-CLEAR",
   
     MANUAL : "***-CLEAR : ***[Optional]If you want to delete the detail message.",
   
@@ -470,7 +470,7 @@ var func_stop = {
   
     DESCRIPTION : "Stop playing music and CLEAR all music in the queue",
 
-    SYNTAX : "{$STOP}",
+    SYNTAX : "STOP",
 
     MANUAL : "",
   
@@ -486,7 +486,7 @@ var func_next = {
   
     DESCRIPTION : "Play the next music in the queue. (Stop if no music in the queue)",
   
-    SYNTAX : "{$NEXT}",
+    SYNTAX : "NEXT",
   
     MANUAL : "",
   
@@ -502,7 +502,7 @@ var func_pause = {
   
     DESCRIPTION : "Pause the music.",
   
-    SYNTAX : "{$PAUSE}",
+    SYNTAX : "PAUSE",
   
     MANUAL : "",
   
@@ -518,7 +518,7 @@ var func_resume = {
   
     DESCRIPTION : "Resume playing music.",
   
-    SYNTAX : "{$RESUME}",
+    SYNTAX : "RESUME",
   
     MANUAL : "",
   
@@ -534,7 +534,7 @@ var func_volume = {
   
     DESCRIPTION : "Adjust master volume",
   
-    SYNTAX : "{$VOLUME | volume(float between 0 to 1)}",
+    SYNTAX : "VOLUME | volume(float between 0 to 1)",
   
     MANUAL : "**volume : **Adjust master volume, all music will play in [play volume in list * master volume]",
   
@@ -566,7 +566,7 @@ var func_loop = {
   
     DESCRIPTION : "Set music looping",
   
-    SYNTAX : "{$LOOP | isLoop(boolean:'T'/'TRUE'/'F'/'FALSE')}",
+    SYNTAX : "LOOP | isLoop(boolean:'T'/'TRUE'/'F'/'FALSE')",
   
     MANUAL : "**isLoop : **Set true will loop for the current playing music.(Music in playlist will not destory but will not play until disable looping",
   
@@ -595,7 +595,7 @@ var func_setname = {
   
     DESCRIPTION : "Link your Discord ID to a nickname",
   
-    SYNTAX : "{$SETNAME | nickname}",
+    SYNTAX : "SETNAME | nickname",
   
     MANUAL : "**nickname : **The nickname you want to set. Create a new user account if your Discord ID hasn't in the database. "
             +"You can change your nickname if your Discord ID is registered in the database. "
@@ -643,7 +643,7 @@ var func_showvote = {
   
     DESCRIPTION : "Show all votes that are currently available or expired if needed",
   
-    SYNTAX : "{$SHOWVOTE | [optional] -ALL}",
+    SYNTAX : "SHOWVOTE | [optional] -ALL",
   
     MANUAL : "***-ALL : ***[Optional] Add the command if you want to show expired votes",
   
@@ -725,7 +725,7 @@ var func_clear = {
   
     DESCRIPTION : "Clear the commands and message that call bot or create by bot",
   
-    SYNTAX : "{$CLEAR | [optional](amount(int) || ON/OFF ('T'/'TRUE'/'F'/'FALSE'))}",
+    SYNTAX : "CLEAR | [optional](amount(int) || ON/OFF ('T'/'TRUE'/'F'/'FALSE'))",
   
     MANUAL : "***amount : ***[Optional]The amount of message(s) want to delete(Limit: 100)."
          +"\n***ON/OFF : ***[Optional]True to turn on auto clear command mode."
@@ -756,9 +756,13 @@ var func_clear = {
           })
           .catch(console.error);
       } else if(token[1].toUpperCase() === 'T' || token[1].toUpperCase() === 'TRUE') {
-        clear_command = true;
+        if(!clear_command.includes(message.channel.id)) {
+          clear_command.push(message.channel.id); 
+        }
       } else {
-        clear_command = false; 
+        if(clear_command.includes(message.channel.id)) {
+          clear_command.splice(clear_command.indexOf(message.channel.id), 1); 
+        }
       }
     }
   
@@ -770,7 +774,7 @@ var func_sql = {
   
     DESCRIPTION : "Direct execute SQL",
   
-    SYNTAX : "{$SQL | sql_command}",
+    SYNTAX : "SQL | sql_command",
   
     MANUAL : "**sql_command : **The SQL command you want to execute"
             +"\n**The display of SELECT will be in JSON format"
@@ -809,7 +813,7 @@ var func_test = {
   
     DESCRIPTION : "A test function to test new features",
   
-    SYNTAX : "{$TEST}",
+    SYNTAX : "TEST",
   
     MANUAL : "",
   
@@ -876,7 +880,7 @@ var func_createfleet = {
   
     DESCRIPTION : "Create a new fleet to store the fleet info",
   
-    SYNTAX : "{%CREATEFLEET | fleet_name | [optional]tag(s)}",
+    SYNTAX : "CREATEFLEET | fleet_name | [optional]tag(s)",
   
     MANUAL : "**fleet_name : **The name of the fleet."
             +"\n***tag(s) : ***[Optional] You can add tags to the fleet for searching (Max: 5tags).",
@@ -919,7 +923,7 @@ var func_addfleet = {
   
     DESCRIPTION : "Add fleet in JSON format(such as provided by poooi)",
   
-    SYNTAX : "{%ADDFLEET | fleet_name | json_file(without space) | tag(s)}",
+    SYNTAX : "ADDFLEET | fleet_name | json_file(without space) | tag(s)",
   
     MANUAL : "**fleet_name : **The name of the fleet."
             +"\n*json_file : **The input file of fleet in JSON format(do not exceed 2000 characters)."
@@ -965,7 +969,7 @@ var func_editfleettag = {
   
     DESCRIPTION : "Edit the tags of fleet",
   
-    SYNTAX : "{%EDITFLEETTAG | fleet_id | (+/-)tag(s)}",
+    SYNTAX : "EDITFLEETTAG | fleet_id | (+/-)tag(s)",
   
     MANUAL : "**fleet_id : **The internal id of fleet in database.(You can find by %searchfleet)"
             +"\n**(+/-)tag(s) : **Add new or Delete existing Tag with prefix(+ OR -)."
@@ -1007,7 +1011,7 @@ var func_searchship = {
   
     DESCRIPTION : "Search the ship database by id or name",
   
-    SYNTAX : "{%SEARCHSHIP | id/name(in kanji, romaji, hiragana or in traditional chinese)}",
+    SYNTAX : "SEARCHSHIP | id/name(in kanji, romaji, hiragana or in traditional chinese)",
   
     MANUAL : "**id/name : **The keyword to search from database."
             +"\n**The whole keyword will be convert to number will counted as id. If you want to search with some name in number,"
@@ -1057,7 +1061,7 @@ var func_searchitem = {
   
     DESCRIPTION : "Search the item database by id or name",
   
-    SYNTAX : "{%SEARCHITEM | id/name(in kanji, romaji, hiragana or in traditional chinese)}",
+    SYNTAX : "SEARCHITEM | id/name(in kanji, romaji, hiragana or in traditional chinese)",
   
     MANUAL : "**id/name : **The keyword to search from database."
             +"\n**The whole keyword can be convert to number will counted as id, if you want to search with some name in number,"
@@ -1102,7 +1106,7 @@ var func_searchfleet = {
     
     DESCRIPTION : "Search the fleet database by name or tag",
   
-    SYNTAX : "{%SEARCHFLEET | [optional]keyword}",
+    SYNTAX : "SEARCHFLEET | [optional]keyword",
   
     MANUAL : "***keyword : ***[Optional] keyword for searching.",
   
@@ -1290,7 +1294,7 @@ var func_editfleetmember = {
   
     DESCRIPTION : "Add, delete or modify member(s) of a fleet",
   
-    SYNTAX : "{%EDITFLEETMEMBER | fleet_id | [[(+/-/~)member1 | item1 | item2 ...] [(+/-/~)member2 | item1 | item2 ...]...]}",
+    SYNTAX : "EDITFLEETMEMBER | fleet_id | [[(+/-/~)member1 | item1 | item2 ...] [(+/-/~)member2 | item1 | item2 ...]...]",
   
     MANUAL : "**fleet_id : **The internal id of fleet in database.(You can find by %searchfleet)"
             +"\n**(+/-/~)member(s) : **Add new, delete or modify existing member from fleet. Manual below : "
@@ -1527,7 +1531,7 @@ var func_updateship = {
   
     DESCRIPTION : "Update the ship database from api provide by whocallsthefleet",
   
-    SYNTAX : "{%UPDATESHIP}",
+    SYNTAX : "UPDATESHIP",
   
     MANUAL : "**DO NOT USE SO FREQUENTLY**",
   
@@ -1591,7 +1595,7 @@ var func_updateitem = {
   
     DESCRIPTION : "Update the item database from api provide by whocallsthefleet",
   
-    SYNTAX : "{%UPDATEITEM}",
+    SYNTAX : "UPDATEITEM",
   
     MANUAL : "**DO NOT USE SO FREQUENTLY**",
   
@@ -1634,21 +1638,27 @@ var func_updateitem = {
 }
 
 //Register new function to this func array
-var normal_func = { STARTWITH : "$", 
-                    NAME : "Normal functions",
+var common_func = { STARTWITH : "!",
+                    NAME : "Common functions",
+                    AVAILABLE: [],
+                    FUNCTIONS : [func_help, func_ready, func_clear]
+                  }
+
+var hoiseiratommy_func = { STARTWITH : "$", 
+                    NAME : "Hoiseiratommy functions",
                     AVAILABLE: [process.env.HOISEIRATOMMY_GUILD_ID],
-                    FUNCTIONS : [func_help, func_ready, func_addmusic, func_searchmusic, func_play, func_addplaylist, func_addmusictopl, 
+                    FUNCTIONS : [func_addmusic, func_searchmusic, func_play, func_addplaylist, func_addmusictopl, 
                                 func_playlist, func_playqueue, func_musicdetail, func_stop, 
                                 func_next, func_pause, func_resume, func_volume, func_loop,
                                 func_setname, func_vote, func_showvote, func_addvote,
-                                func_clear, func_sql, func_test]
+                                func_sql, func_test]
                   }
 
 var kancolle_func = { STARTWITH : "%", 
                       NAME : "Kancolle functions",
-                      AVAILABLE: [],
-                      FUNCTIONS : [func_help, func_createfleet, func_editfleettag, func_searchship, func_searchitem,
-                                   func_searchfleet, func_editfleetmember, func_updateship, func_updateitem, func_clear]
+                      AVAILABLE: [process.env.HOISEIRATOMMY_GUILD_ID, process.env.KANCOLLEFLEET_GUILD_ID],
+                      FUNCTIONS : [func_createfleet, func_editfleettag, func_searchship, func_searchitem,
+                                   func_searchfleet, func_editfleetmember, func_updateship, func_updateitem]
                     }
 
 var func = [normal_func, kancolle_func];
@@ -1719,7 +1729,7 @@ client.on('message', message => {
               message.reply(err);
               console.log(err);
             }
-            if(clear_command) {
+            if(clear_command.includes(message.channel.id)) {
               message.delete("Clean view")
                 .then(msg => console.log('Command Deleted'))
                 .catch(console.error);
