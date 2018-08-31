@@ -86,7 +86,7 @@ var func_help = {
     
     CODE : "HELP",
     
-    DESCRIPTION : "{$help | code_name | ***[optional] -D***} for syntax of command",
+    DESCRIPTION : "{!help | code_name | ***[optional] -D***} for syntax of command",
 
     SYNTAX : "HELP | ***[optional] code_name***",
 
@@ -1300,11 +1300,12 @@ var func_editfleetmember = {
             +"\n**(+/-/~)member(s) : **Add new, delete or modify existing member from fleet. Manual below : "
             +"\nFor delete members(-): Only need to add internal ship_id(in kancolle db) or part/full name of ship which can identify the ship name."
             +" Also, you can use a bracket ({}) to indicate the fleet number (1 ~ 7) of a fleet. No need to input items."
-            +"\n***For example: -呂500 OR -436 OR -{2}(which indicates the second member of this fleet)***"
+            +"\n***For example: -呂500 OR -436LV OR -{2}(which indicates the second member of this fleet)***"
             +"\nFor add members(+): You can append the item id or part/fullname of item which can identify th item name in the following format:"
             +"\n**+[ship] [item1] [item2]...**"
+            +"\nYou can put LV after the ship searching keyword the set the level of member, which is useful for los calculation."
             +"\nUse @ to identify the \u2606 and (|OR\\\\OR>>) to identify the skill level of flight(Please use '\\' instead of '/')"
-            +"\n***For example: +大淀改 (3号)@9 (3号)@9 零式水上観@10>> WG42 +%500 8門 8門***"
+            +"\n***For example: +大淀改LV127 (3号)@9 (3号)@9 零式水上観@10>> WG42 +%500LV99 8門 8門***"
             +"\nFor modify members: Please use a bracket ({}) to indicate which member you need to modify. Then, input the information as "
             +"adding member except the (+) prefix. Last, if the information is no need to change in specify column, you can put a (=) instead."
             +"\n***For example: ~{2} = = = 53型@10>> = = This will only change the third item of second member in the fleet***"
