@@ -1123,12 +1123,12 @@ var func_searchfleet = {
                                         } else {
                                           var selected_fleet = this.FLEET[option-1];
                                           var sql2 = "SELECT s.ja_jp, m.ship_lv, s.slot, s.los ship_los, s.los_max ship_los_max, "
-                                                    +"s1.ja_jp item1, s1.type item1type, s1.los item1los, m.item1lv, m.item1alv, "
-                                                    +"s2.ja_jp item2, s2.type item2type, s2.los item2los, m.item2lv, m.item2alv, "
-                                                    +"s3.ja_jp item3, s3.type item3type, s3.los item3los, m.item3lv, m.item3alv, "
-                                                    +"s4.ja_jp item4, s4.type item4type, s4.los item4los, m.item4lv, m.item4alv, "
-                                                    +"s5.ja_jp item5, s5.type item5type, s5.los item5los, m.item5lv, m.item5alv, "
-                                                    +"s6.ja_jp item6, s6.type item6type, s6.los item6los, m.item6lv, m.item6alv"
+                                                    +"s1.ja_jp item1, s1.type item1type, s1.aa item1aa, s1.los item1los, m.item1lv, m.item1alv, "
+                                                    +"s2.ja_jp item2, s2.type item2type, s2.aa item2aa, s2.los item2los, m.item2lv, m.item2alv, "
+                                                    +"s3.ja_jp item3, s3.type item3type, s3.aa item3aa, s3.los item3los, m.item3lv, m.item3alv, "
+                                                    +"s4.ja_jp item4, s4.type item4type, s4.aa item4aa, s4.los item4los, m.item4lv, m.item4alv, "
+                                                    +"s5.ja_jp item5, s5.type item5type, s5.aa item5aa, s5.los item5los, m.item5lv, m.item5alv, "
+                                                    +"s6.ja_jp item6, s6.type item6type, s6.aa item6aa, s6.los item6los, m.item6lv, m.item6alv"
                                                     +" FROM Fleet_Member m INNER JOIN Ship s ON m.ship_id = s.id "
                                                     +" LEFT JOIN Item s1 ON m.item1 = s1.id"
                                                     +" LEFT JOIN Item s2 ON m.item2 = s2.id"
@@ -1143,6 +1143,9 @@ var func_searchfleet = {
                                             let los_ship = 0;
                                             let los_item = 0;
                                             let no_of_ship = 0;
+                                            let aa = 0;
+                                            let min_aa = 0;
+                                            let max_aa = 0;
                                             for(a=0; a<res3.length; a++) {
                                                 no_of_ship++;
                                                 let slot_token = res3[a].slot.split("/");
@@ -1151,18 +1154,23 @@ var func_searchfleet = {
                                                 if(res3[a].item1 !== null) {
                                                   displaying_str += "\n[" + checkStringUndefined(slot_token[0]) + "]" + res3[a].item1 + ((res3[a].item1lv > 0)?" \u2606" + res3[a].item1lv:"") + convertALVtoSymbol(res3[a].item1alv);
                                                   los_item += getLosByItem(res3[a].item1type, res3[a].item1los, res3[a].item1lv);
+                                                  aa += getAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
                                                   if(res3[a].item2 !== null) {
                                                     displaying_str += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res3[a].item2 + ((res3[a].item2lv > 0)?" \u2606" + res3[a].item2lv:"") + convertALVtoSymbol(res3[a].item2alv);
                                                     los_item += getLosByItem(res3[a].item2type, res3[a].item2los, res3[a].item2lv);
+                                                    aa += getAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
                                                     if(res3[a].item3 !== null) {
                                                       displaying_str += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res3[a].item3 + ((res3[a].item3lv > 0)?" \u2606" + res3[a].item3lv:"") + convertALVtoSymbol(res3[a].item3alv);
                                                       los_item += getLosByItem(res3[a].item3type, res3[a].item3los, res3[a].item3lv);
+                                                      aa += getAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
                                                       if(res3[a].item4 !== null) {
                                                         displaying_str += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res3[a].item4 + ((res3[a].item4lv > 0)?" \u2606" + res3[a].item4lv:"") + convertALVtoSymbol(res3[a].item4alv);
                                                         los_item += getLosByItem(res3[a].item4type, res3[a].item4los, res3[a].item4lv);
+                                                        aa += getAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
                                                         if(res3[a].item5 !== null) {
                                                           displaying_str += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res3[a].item5 + ((res3[a].item5lv > 0)?" \u2606" + res3[a].item5lv:"") + convertALVtoSymbol(res3[a].item5alv);
                                                           los_item += getLosByItem(res3[a].item5type, res3[a].item5los, res3[a].item5lv);
+                                                          aa += getAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
                                                           if(res3[a].item6 !== null) {
                                                             displaying_str += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res3[a].item6 + ((res3[a].item6lv > 0)?" \u2606" + res3[a].item6lv:"") + convertALVtoSymbol(res3[a].item6alv);
                                                             los_item += getLosByItem(res3[a].item6type, res3[a].item6los, res3[a].item6lv);
@@ -1176,6 +1184,7 @@ var func_searchfleet = {
                                             displaying_str += "\n索敵(33式):" + (los_ship + los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=1)/"
                                                              +(los_ship + 3 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=3)/"
                                                              +(los_ship + 4 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=4)";
+                                            displaying_str += "\n制空: " + aa;
                                             this.MESSAGE.edit(displaying_str);
                                             msg.delete();
                                           }).catch((err) => {
@@ -2144,14 +2153,14 @@ function getLosByItem(type, los, improvement) {
     var result = los;
     switch(type) {
       case 15:
-        result += improvement * 1.2;
+        result += Math.sqrt(improvement) * 1.2;
         break;
       case 24:
-        result += improvement * 1.25;
+        result += Math.sqrt(improvement) * 1.25;
         break;
       case 25:
       case 47:
-        result += improvement * 1.4;
+        result += Math.sqrt(improvement) * 1.4;
         break;
     }
     switch(type) {
@@ -2184,6 +2193,47 @@ function getLosByItem(type, los, improvement) {
       case 15:
       case 16:
         return result * 1.2;
+      default:
+        return 0;
+    }
+    return 0;
+}
+
+const aa_const = [[0, 1, 2, 3, 4, 5, 7, 10],
+                  [0, 0, 2, 5, 9, 14, 14, 22],
+                  [0, 0, 1, 1, 1, 3, 3, 6]];
+
+function getAAByItem(slot, type, aa, improvement, alv) {
+    var temp_slot, temp_aa;
+    if(slot === null) {
+      temp_slot = 0; 
+    } else {
+      temp_slot = parseInt(slot); 
+    }
+    temp_aa = aa;
+    switch(type) {
+      case 18:
+      case 51:
+      case 60:
+        temp_aa += improvement * 0.2;
+        break;
+      case 20:
+        temp_aa += improvement * 0.25;
+        break;
+    }
+    switch(type) {
+      case 18:
+      case 51:
+      case 60:
+        return temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv]) + aa_const[1][alv];
+      case 17:
+        return temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv]) + aa_const[2][alv];
+      case 19:
+      case 20:
+      case 45:
+      case 55:
+      case 61:
+        return temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv]);
       default:
         return 0;
     }
