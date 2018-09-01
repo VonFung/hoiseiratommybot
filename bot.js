@@ -1681,7 +1681,7 @@ var hoiseiratommy_func = { STARTWITH : "$",
 var kancolle_func = { STARTWITH : "%", 
                       NAME : "Kancolle functions",
                       AVAILABLE: [process.env.HOISEIRATOMMY_GUILD_ID, process.env.KANCOLLEFLEET_GUILD_ID],
-                      FUNCTIONS : [func_createfleet, func_editfleettag, func_searchship, func_searchitem,
+                      FUNCTIONS : [func_createfleet, func_addfleet, func_editfleettag, func_searchship, func_searchitem,
                                    func_searchfleet, func_editfleetmember, func_updateship, func_updateitem]
                     }
 
