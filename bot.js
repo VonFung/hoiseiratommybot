@@ -17,7 +17,7 @@ const db4free_host = "db4free.net";
 const db4free_user = "hoiseiratommy";
 const db4free_password = process.env.DB_PW;
 const db4free_dbname = "hoiseiratommy";
-
+e
 
 var voiceChannel;          //===================
 var stream;                //  For Play Music
@@ -2372,7 +2372,7 @@ function getMaxAAByItem(slot, type, aa, improvement, alv) {
       case 60:  //夜戰
         return Math.floor(temp_aa * Math.sqrt(temp_slot) + Math.sqrt((aa_const[0][alv+1] - 1) / 10) + aa_const[1][alv]);
       case 17:  //水爆
-        return Math.floor(temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv+1] - 1) / 10) + aa_const[2][alv]);
+        return Math.floor(temp_aa * Math.sqrt(temp_slot) + Math.sqrt((aa_const[0][alv+1] - 1) / 10) + aa_const[2][alv]);
       case 19:  //艦攻
       case 20:  //艦爆
       case 45:  //大艇
