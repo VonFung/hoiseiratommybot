@@ -955,7 +955,7 @@ var func_addfleet = {
                     for(k=0; k<5; i++) {
                         if(j < json_data[i][j].slots.length) {
                             sql2 += ", " + json_data[i][j].slots[k].id + ", " + json_data[i][j].slots[k].lv;
-                            if(json_data[i].slots[k].alv !== undefined) {
+                            if(json_data[i][j].slots[k].alv !== undefined) {
                                 sql2 += ", " + json_data[i][j].slots[k].alv;   
                             } else {
                                 sql2 += ", 0";
