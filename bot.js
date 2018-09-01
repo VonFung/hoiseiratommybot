@@ -1230,7 +1230,6 @@ var func_searchfleet = {
                                             let los_ship = 0;
                                             let los_item = 0;
                                             let aa = 0;
-                                            let min_aa = 0;
                                             let max_aa = 0;
                                             for(a=0; a<res3.length; a++) {
                                                 ship = {
@@ -1243,31 +1242,26 @@ var func_searchfleet = {
                                                   ship.value += "[" + checkStringUndefined(slot_token[0]) + "]" + res3[a].item1 + ((res3[a].item1lv > 0)?" \u2606" + res3[a].item1lv:"") + convertALVtoSymbol(res3[a].item1alv);
                                                   los_item += getLosByItem(res3[a].item1type, res3[a].item1los, res3[a].item1lv);
                                                   aa += getAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
-                                                  min_aa += getMinAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
                                                   max_aa += getMaxAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
                                                   if(res3[a].item2 !== null) {
                                                     ship.value += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res3[a].item2 + ((res3[a].item2lv > 0)?" \u2606" + res3[a].item2lv:"") + convertALVtoSymbol(res3[a].item2alv);
                                                     los_item += getLosByItem(res3[a].item2type, res3[a].item2los, res3[a].item2lv);
                                                     aa += getAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
-                                                    min_aa += getMinAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
                                                     max_aa += getMaxAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
                                                     if(res3[a].item3 !== null) {
                                                       ship.value += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res3[a].item3 + ((res3[a].item3lv > 0)?" \u2606" + res3[a].item3lv:"") + convertALVtoSymbol(res3[a].item3alv);
                                                       los_item += getLosByItem(res3[a].item3type, res3[a].item3los, res3[a].item3lv);
                                                       aa += getAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
-                                                      min_aa += getMinAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
                                                       max_aa += getMaxAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
                                                       if(res3[a].item4 !== null) {
                                                         ship.value += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res3[a].item4 + ((res3[a].item4lv > 0)?" \u2606" + res3[a].item4lv:"") + convertALVtoSymbol(res3[a].item4alv);
                                                         los_item += getLosByItem(res3[a].item4type, res3[a].item4los, res3[a].item4lv);
                                                         aa += getAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
-                                                        min_aa += getMinAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
                                                         max_aa += getMaxAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
                                                         if(res3[a].item5 !== null) {
                                                           ship.value += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res3[a].item5 + ((res3[a].item5lv > 0)?" \u2606" + res3[a].item5lv:"") + convertALVtoSymbol(res3[a].item5alv);
                                                           los_item += getLosByItem(res3[a].item5type, res3[a].item5los, res3[a].item5lv);
                                                           aa += getAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
-                                                          min_aa += getMinAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
                                                           max_aa += getMaxAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
                                                           if(res3[a].item6 !== null) {
                                                             ship.value += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res3[a].item6 + ((res3[a].item6lv > 0)?" \u2606" + res3[a].item6lv:"") + convertALVtoSymbol(res3[a].item6alv);
@@ -1284,7 +1278,7 @@ var func_searchfleet = {
                                             embed_msg.embed.fields.push({name: "索敵(33式):", value: (los_ship + los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=1)/"
                                                              +(los_ship + 3 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=3)/"
                                                              +(los_ship + 4 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=4)"});
-                                            embed_msg.embed.fields.push({name: "制空:", value: Math.floor(aa) + "(" + Math.floor(min_aa) + "~" + Math.floor(max_aa) + ")"});
+                                            embed_msg.embed.fields.push({name: "制空:", value: aa + "+(" + aa + "~" + max_aa + ")"});
                                             this.MESSAGE.delete();
                                             msg.channel.send(embed_msg);
                                             msg.delete();
@@ -2261,7 +2255,13 @@ function addShipSuffix(shipname, name_language, suffix_type) {
 function getLosByItem(type, los, improvement) {
     var result = los;
     switch(type) {
+      case 17:
+        result += Math.sqrt(improvement) * 1.15;
+        break;
       case 15:
+      case 16:
+      case 21:
+      case 50:
         result += Math.sqrt(improvement) * 1.2;
         break;
       case 24:
@@ -2273,41 +2273,42 @@ function getLosByItem(type, los, improvement) {
         break;
     }
     switch(type) {
-      case 18:
-      case 20:
-      case 23:
-      case 24:
-      case 25:
-      case 27:
-      case 36:
-      case 37:
-      case 39:
-      case 43:
-      case 45:
-      case 46:
-      case 47:
-      case 51:
-      case 55:
-      case 58:
-      case 60:
+      case 18:  //艦戰
+      case 20:  //艦戰
+      case 23:  //對潛哨戒機
+      case 24:  //小型電探
+      case 25:  //大型電探
+      case 27:  //聲納
+      case 28:  //大型聲納
+      case 36:  //航空要員
+      case 37:  //水上艦要員
+      case 39:  //探照燈
+      case 43:  //司令部施設
+      case 45:  //大型飛行艇
+      case 46:  //大型探照燈
+      case 47:  //超大型電探
+      case 51:  //水戰
+      case 55:  //噴式戰鬥機
+      case 58:  //潛水艦裝備
+      case 60:  //夜戰
         return result * 0.6;
-      case 19:
-      case 61:
+      case 19:  //艦攻
+      case 61:  //夜攻
         return result * 0.8;
-      case 21:
-      case 50:
+      case 21:  //艦偵
+      case 50:  //艦偵II
         return result;
-      case 17:
+      case 17:  //水爆
         return result * 1.1;
-      case 15:
-      case 16:
+      case 15:  //水偵
+      case 16:  //夜偵
         return result * 1.2;
       default:
         return 0;
     }
 }
 
-const aa_const = [[0, 1, 2, 3, 4, 5, 7, 10],
+const aa_const = [[0, 10, 25, 40, 55, 70, 85, 100, 121],
                   [0, 0, 2, 5, 9, 14, 14, 22],
                   [0, 0, 1, 1, 1, 3, 3, 6]];
 
@@ -2333,51 +2334,51 @@ function getAAByItem(slot, type, aa, improvement, alv) {
       case 18:  //艦戰
       case 51:  //水戰
       case 60:  //夜戰
-        return temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv]) + aa_const[1][alv];
+        return Math.floor(temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv] / 10) + aa_const[1][alv]);
       case 17:  //水爆
-        return temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv]) + aa_const[2][alv];
+        return Math.floor(temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv] / 10) + aa_const[2][alv]);
       case 19:  //艦攻
       case 20:  //艦爆
       case 45:  //大艇
       case 55:  //噴射機
       case 61:  //夜攻
-        return temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv]);
-      default:
-        return 0;
-    }
-}
-
-function getMinAAByItem(slot, type, aa, improvement, alv) {
-    switch (type) {
-      case 18:
-      case 51:
-      case 60:
-        return getAAByItem(slot, type, aa, improvement, alv);
-      case 17:
-      case 19:
-      case 20:
-      case 45:
-      case 55:
-      case 61:
-        return getAAByItem(slot, type, aa, improvement, 0);
+        return Math.floor(temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv] / 10));
       default:
         return 0;
     }
 }
 
 function getMaxAAByItem(slot, type, aa, improvement, alv) {
-    switch (type) {
+    var temp_slot, temp_aa;
+    if(slot === null) {
+      temp_slot = 0; 
+    } else {
+      temp_slot = parseInt(slot); 
+    }
+    temp_aa = aa;
+    switch(type) {
       case 18:
       case 51:
       case 60:
-        return getAAByItem(slot, type, aa, improvement, alv);
-      case 17:
-      case 19:
+        temp_aa += improvement * 0.2;
+        break;
       case 20:
-      case 45:
-      case 55:
-      case 61:
-        return getAAByItem(slot, type, aa, improvement, 7);
+        temp_aa += improvement * 0.25;
+        break;
+    }
+    switch(type) {
+      case 18:  //艦戰
+      case 51:  //水戰
+      case 60:  //夜戰
+        return Math.floor(temp_aa * Math.sqrt(temp_slot) + Math.sqrt((aa_const[0][alv+1] - 1) / 10) + aa_const[1][alv]);
+      case 17:  //水爆
+        return Math.floor(temp_aa * Math.sqrt(temp_slot) + Math.sqrt(aa_const[0][alv+1] - 1) / 10) + aa_const[2][alv]);
+      case 19:  //艦攻
+      case 20:  //艦爆
+      case 45:  //大艇
+      case 55:  //噴射機
+      case 61:  //夜攻
+        return Math.floor(temp_aa * Math.sqrt(temp_slot) + Math.sqrt((aa_const[0][alv+1] - 1) / 10));
       default:
         return 0;
     }
