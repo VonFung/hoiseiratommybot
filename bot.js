@@ -1328,7 +1328,7 @@ var func_editfleetmember = {
             +"\nFor add members(+): You can append the item id or part/fullname of item which can identify th item name in the following format:"
             +"\n**+[ship] [item1] [item2]...**"
             +"\nYou can put LV after the ship searching keyword the set the level of member, which is useful for los calculation."
-            +"\nUse @ to identify the \u2606 and (|OR\\\\OR>>) to identify the skill level of flight(Please use '\\' instead of '/')"
+            +"\nUse @ to identify the \u2606 and (|OR//OR>>) to identify the skill level of flight(Please use '/' instead of '\\')"
             +"\n***For example: +大淀改LV127 (3号)@9 (3号)@9 零式水上観@10>> WG42 +%500LV99 8門 8門***"
             +"\nFor modify members: Please use a bracket ({}) to indicate which member you need to modify. Then, input the information as "
             +"adding member except the (+) prefix. Last, if the information is no need to change in specify column, you can put a (=) instead."
@@ -1396,15 +1396,15 @@ var func_editfleetmember = {
                     if(token[j].includes(">>")) {
                        alv = 7; 
                        token [j] = token[j].replace(">>", "");
-                    } else if (token[j].includes("\\\\\\")) {
+                    } else if (token[j].includes("///")) {
                        alv = 6;
-                       token [j] = token[j].replace("\\\\\\", "");
-                    } else if (token[j].includes("\\\\")) {
+                       token [j] = token[j].replace("///", "");
+                    } else if (token[j].includes("//")) {
                        alv = 5;
-                       token [j] = token[j].replace("\\\\", "");
-                    } else if (token[j].includes("\\")) {
+                       token [j] = token[j].replace("//", "");
+                    } else if (token[j].includes("/")) {
                        alv = 4;
-                       token [j] = token[j].replace("\\", "");
+                       token [j] = token[j].replace("/", "");
                     } else if (token[j].includes("|||")) {
                        alv = 3;
                        token [j] = token[j].replace("|||", "");
@@ -1482,15 +1482,15 @@ var func_editfleetmember = {
                         if(token[j].includes(">>")) {
                            alv = 7; 
                            token [j] = token[j].replace(">>", "");
-                        } else if (token[j].includes("\\\\\\")) {
+                        } else if (token[j].includes("///")) {
                            alv = 6;
-                           token [j] = token[j].replace("\\\\\\", "");
-                        } else if (token[j].includes("\\\\")) {
+                           token [j] = token[j].replace("///", "");
+                        } else if (token[j].includes("//")) {
                            alv = 5;
-                           token [j] = token[j].replace("\\\\", "");
-                        } else if (token[j].includes("\\")) {
+                           token [j] = token[j].replace("//", "");
+                        } else if (token[j].includes("/")) {
                            alv = 4;
-                           token [j] = token[j].replace("\\", "");
+                           token [j] = token[j].replace("/", "");
                         } else if (token[j].includes("|||")) {
                            alv = 3;
                            token [j] = token[j].replace("|||", "");
