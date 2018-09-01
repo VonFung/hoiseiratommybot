@@ -17,7 +17,7 @@ const db4free_host = "db4free.net";
 const db4free_user = "hoiseiratommy";
 const db4free_password = process.env.DB_PW;
 const db4free_dbname = "hoiseiratommy";
-e
+
 
 var voiceChannel;          //===================
 var stream;                //  For Play Music
