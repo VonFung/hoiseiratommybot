@@ -944,10 +944,10 @@ var func_addfleet = {
             var i, j, k;
             var sql2 = "";
             for(i=0; i<json_data.length; i++) {
-                if(i !== 0) {
-                    sql2 += "; ";
-                }
                 for(j=0; j<json_data[i].length; j++) {
+                    if(!(i === 0 && j === 0)) {
+                        sql2 += "; ";
+                    }
                     sql2 += "INSERT INTO Fleet_Member(ship_id, ship_lv, fleet_id, item1, item1lv, item1alv"
                           +", item2, item2lv, item2alv, item3, item3lv, item3alv, item4, item4lv, item4alv"
                           +", item5, item5lv, item5alv) VALUES (" + json_data[i][j].id
@@ -964,6 +964,7 @@ var func_addfleet = {
                             sql2 += ", null, null, null";   
                         }
                     }
+                    sql2 += ")"
                 }
             }
             
