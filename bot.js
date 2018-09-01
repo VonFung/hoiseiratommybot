@@ -1238,7 +1238,7 @@ var func_searchfleet = {
                                                         value: ""
                                                        }
                                                 let slot_token = res3[a].slot.split("/");
-                                                los_ship += Math.sqrt((res3[a].ship_los_max - res3[a].ship_los) * (res3[a].ship_lv === null?1:res3[a].ship_lv) / 99 + res3[a].ship_los);
+                                                los_ship += Math.sqrt(Math.floor((res3[a].ship_los_max - res3[a].ship_los) * (res3[a].ship_lv === null?1:res3[a].ship_lv) / 99 + res3[a].ship_los));
                                                 if(res3[a].item1 !== null) {
                                                   ship.value += "[" + checkStringUndefined(slot_token[0]) + "]" + res3[a].item1 + ((res3[a].item1lv > 0)?" \u2606" + res3[a].item1lv:"") + convertALVtoSymbol(res3[a].item1alv);
                                                   los_item += getLosByItem(res3[a].item1type, res3[a].item1los, res3[a].item1lv);
