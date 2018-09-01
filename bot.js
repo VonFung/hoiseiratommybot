@@ -953,10 +953,10 @@ var func_addfleet = {
                           +", item5, item5lv, item5alv) VALUES (" + json_data[i][j].id
                           +", " + json_data[i][j].lv + ", " + fleet_id;
                     for(k=0; k<5; i++) {
-                        if(j < json_data[i][j].slot.length) {
-                            sql2 += ", " + json_data[i][j].slot[k].id + ", " + json_data[i][j].slot[k].lv;
-                            if(json_data[i].slot[k].alv !== undefined) {
-                                sql2 += ", " + json_data[i][j].slot[k].alv;   
+                        if(j < json_data[i][j].slots.length) {
+                            sql2 += ", " + json_data[i][j].slots[k].id + ", " + json_data[i][j].slots[k].lv;
+                            if(json_data[i].slots[k].alv !== undefined) {
+                                sql2 += ", " + json_data[i][j].slots[k].alv;   
                             } else {
                                 sql2 += ", 0";
                             }
