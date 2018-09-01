@@ -927,7 +927,9 @@ var func_addfleet = {
   
     MANUAL : "**fleet_name : **The name of the fleet."
             +"\n*json_file : **The input file of fleet in JSON format(do not exceed 2000 characters)."
-            +"\n***tag(s) : ***[Optional] You can add tags to the fleet for searching (Max: 5tags).",
+            +"\n***tag(s) : ***[Optional] You can add tags to the fleet for searching (Max: 5tags)."
+            +"\nJSON Format: [{fleets : [[{ship1_in_fleet1(id, lv, slots:[{slot1, slot2..}]), {ship2}..], "
+            +"[{ship1_in_fleet2}, {ship2}..]]}]",
   
     LOGIC : function(token, message) {
         if(token.length < 3) {
@@ -939,26 +941,28 @@ var func_addfleet = {
         DB4FREE(sql).then((res) => {
             var fleet_id = res.insertId;
             var json_data = JSON.parse(token[2]).fleets;
-            var i, j;
+            var i, j, k;
             var sql2 = "";
             for(i=0; i<json_data.length; i++) {
                 if(i !== 0) {
                     sql2 += "; ";
                 }
-                sql2 += "INSERT INTO Fleet_Member(ship_id, ship_lv, fleet_id, item1, item1lv, item1alv"
-                      +", item2, item2lv, item2alv, item3, item3lv, item3alv, item4, item4lv, item4alv"
-                      +", item5, item5lv, item5alv) VALUES (" + json_data[i].id
-                      +", " + json_data[i].lv + ", " + fleet_id;
-                for(j=0; j<5; i++) {
-                    if(j < json_data[i].slot.length) {
-                        sql2 += ", " + json_data[i].slot[j].id + ", " + json_data[i].slot[j].lv;
-                        if(json_data[i].slot[j].alv !== undefined) {
-                            sql2 += ", " + json_data[i].slot[j].alv;   
+                for(j=0; j<json_data[i].length; j++) {
+                    sql2 += "INSERT INTO Fleet_Member(ship_id, ship_lv, fleet_id, item1, item1lv, item1alv"
+                          +", item2, item2lv, item2alv, item3, item3lv, item3alv, item4, item4lv, item4alv"
+                          +", item5, item5lv, item5alv) VALUES (" + json_data[i][j].id
+                          +", " + json_data[i][j].lv + ", " + fleet_id;
+                    for(k=0; k<5; i++) {
+                        if(j < json_data[i][j].slot.length) {
+                            sql2 += ", " + json_data[i][j].slot[k].id + ", " + json_data[i][j].slot[k].lv;
+                            if(json_data[i].slot[k].alv !== undefined) {
+                                sql2 += ", " + json_data[i][j].slot[k].alv;   
+                            } else {
+                                sql2 += ", 0";
+                            }
                         } else {
-                            sql2 += ", 0";
+                            sql2 += ", null, null, null";   
                         }
-                    } else {
-                        sql2 += ", null, null, null";   
                     }
                 }
             }
@@ -1229,7 +1233,7 @@ var func_searchfleet = {
                                             let max_aa = 0;
                                             for(a=0; a<res3.length; a++) {
                                                 ship = {
-                                                        name: res3[a].ja_jp + (res3[a].ship_lv === null?"":" LV" + res3[a].ship_lv),
+                                                        name: (a+1) + ")\t" + res3[a].ja_jp + (res3[a].ship_lv === null?"":" LV" + res3[a].ship_lv),
                                                         value: ""
                                                        }
                                                 let slot_token = res3[a].slot.split("/");
