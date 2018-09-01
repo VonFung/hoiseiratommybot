@@ -923,7 +923,7 @@ var func_addfleet = {
   
     DESCRIPTION : "Add fleet in JSON format(such as provided by poooi)",
   
-    SYNTAX : "ADDFLEET | fleet_name | json_file(without space) | tag(s)",
+    SYNTAX : "ADDFLEET | fleet_name | [json_file(without space)] | tag(s)",
   
     MANUAL : "**fleet_name : **The name of the fleet."
             +"\n*json_file : **The input file of fleet in JSON format(do not exceed 2000 characters)."
@@ -938,14 +938,33 @@ var func_addfleet = {
         var sql = "INSERT INTO Fleet (`name`, provider) VALUES ('" + token[1] + "', '" + message.author.id + "')"
         DB4FREE(sql).then((res) => {
             var fleet_id = res.insertId;
-            var json_data = JSON.parse(token[2]);
-            var sql2 = "INSERT INTO Fleet_Member(ship_id, ship_lv, fleet_id, item1, item1lv, item1alv"
+            var json_data = JSON.parse(token[2]).fleets;
+            var i, j;
+            var sql2 = "";
+            for(i=0; i<json_data.length; i++) {
+                if(i !== 0) {
+                    sql2 += "; ";
+                }
+                sql2 += "INSERT INTO Fleet_Member(ship_id, ship_lv, fleet_id, item1, item1lv, item1alv"
                       +", item2, item2lv, item2alv, item3, item3lv, item3alv, item4, item4lv, item4alv"
-                      +", item5, item5lv, item5alv, item6, item6lv, item6alv) VALUES (";
+                      +", item5, item5lv, item5alv) VALUES (" + json_data[i].id
+                      +", " + json_data[i].lv + ", " + fleet_id;
+                for(j=0; j<5; i++) {
+                    if(j < json_data[i].slot.length) {
+                        sql2 += ", " + json_data[i].slot[j].id + ", " + json_data[i].slot[j].lv;
+                        if(json_data[i].slot[j].alv !== undefined) {
+                            sql2 += ", " + json_data[i].slot[j].alv;   
+                        } else {
+                            sql2 += ", 0";
+                        }
+                    } else {
+                        sql2 += ", null, null, null";   
+                    }
+                }
+            }
+            
             if(token.length > 3) {
-                sql2 += "; INSERT INTO Fleet_Tag (tag, fleet_id) VALUES ('" + token[3] + "', " + fleet_id + ")";
-                var i;
-                for(i=4; i<token.length && i<8; i++) {
+                for(i=3; i<token.length && i<8; i++) {
                     sql2 += "; INSERT INTO Fleet_Tag (tag, fleet_id) VALUES ('" + token[i] + "', " + fleet_id + ")";
                 }
             }
