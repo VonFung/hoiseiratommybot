@@ -977,7 +977,14 @@ var func_addfleet = {
                 message.reply("Create successully! The fleet id is " + fleet_id + ".");
                 var sql3 = "SELECT Fleet.id, Fleet.name, Fleet.provider, Fleet_Tag.tag FROM Fleet LEFT JOIN Fleet_Tag ON Fleet.id = Fleet_Tag.fleet_id WHERE Fleet.id = " + fleet_id;
                 DB4FREE(sql3).then((res3) => {
-                    var fleet_object = { id: res3[0].id, name: res3[0].name, provider: GetUserName(res3[0].provider), tags: ［res3[0].tag］ };
+                    var fleet_object = { id: res3[0].id, name: res3[0].name, provider: GetUserName(res3[0].provider) };
+                    var tags;
+                    if(res3[0].tag === null) {
+                        tags = null;
+                    } else {
+                        tags = [res3[0].tag]; 
+                    }
+                    fleet_object.tags = tags;
                     let a;
                     for(a=1; a<res3.length; a++) {
                         fleet_object.tags.push(...[res3[a].tag]);    
@@ -1468,7 +1475,14 @@ var func_editfleetmember = {
             if(res.insertId !== 0 || res.affectedRows !== 0) {
                 message.reply("Fleet Member added or modified successfully!");var sql3 = "SELECT Fleet.id, Fleet.name, Fleet.provider, Fleet_Tag.tag FROM Fleet LEFT JOIN Fleet_Tag ON Fleet.id = Fleet_Tag.fleet_id WHERE Fleet.id = " + fleet_id;
                 DB4FREE(sql3).then((res3) => {
-                    var fleet_object = { id: res3[0].id, name: res3[0].name, provider: GetUserName(res3[0].provider), tags: ［res3[0].tag］ };
+                    var fleet_object = { id: res3[0].id, name: res3[0].name, provider: GetUserName(res3[0].provider) };
+                    var tags;
+                    if(res3[0].tag === null) {
+                        tags = null;
+                    } else {
+                        tags = [res3[0].tag]; 
+                    }
+                    fleet_object.tags = tags;
                     let a;
                     for(a=1; a<res3.length; a++) {
                         fleet_object.tags.push(...[res3[a].tag]);    
