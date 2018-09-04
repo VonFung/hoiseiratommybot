@@ -330,27 +330,80 @@ var func_addmusictopl = {
   
 }
 
+var func_addtodefaultpl = {
+    
+    CODE : "ADDTODEFAULTPL",
+    
+    DESCRIPTION : "Add music directly to the default playlist by url and name",
+    
+    SYNTAX : "ADDTODEFAULTPL | music_name | url | [optional]default_volume",
+    
+    MANUAL : "**music_name : **The name of music."
+            +"\n**url : **The direct url or youtube url of music."
+            +"\n***default_volume : ***[Optional]The default volume(0~1) while playing.(Default is 0.5)",
+    
+    LOGIC : function(token, message) {
+        if(token.length < 3) {
+            message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
+            return;
+        }
+        var sql = "INSERT INTO defaultplaylist (CODE, url, default_volume) VALUES ('"
+                + token[1] + "', '" + token[2] + "'" + (token.length > 3?", " + token[3]:"") + ")";
+        ExecuteSQL(sql).then((result) => {
+            message.reply("Added successfully!");
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
+    }
+    
+}
+
 var func_playlist = {
     
     CODE : "PLAYLIST",
   
     DESCRIPTION : "Play music in playlist mode by a defined playlist",
   
-    SYNTAX : "PLAYLIST | playlist_name | [optional]-RAND",
+    SYNTAX : "PLAYLIST | [optional]playlist_name | [optional]-RAND",
   
-    MANUAL : "**playlist_name : **The name of playlist."
+    MANUAL : "***playlist_name : ***The name of playlist.(If no input, it will play the default playlist)"
             +"\n***-RAND : ***[Optional] Play the playlist in random order."
             +"\n**Please stop all music before playing a playlist**",
   
-    LOGIC : function(token, message) {
-        if(token.length < 2) {
-            message.reply("Incorrent Syntax!\n" + this.SYNTAX);   
-            return;
-        }
-      
+    LOGIC : function(token, message) {      
         if(music_queue.length > 0) {
             message.reply("Please stop all music before playing a playlist");
             return;
+        }
+      
+        if(token.length < 2 || token[1].toUpperCase() === '-RAND) {
+            var sql = "SELECT CODE, URL, DEFAULT_VOLUME FROM defaultplaylist ORDER BY id";
+            if(token.length > 1 && token[1].toUpperCase() === '-RAND) {
+                random_playlist = true;
+            } else {
+                ExecuteSQL(sql).then((result) => {
+                    for(var i=0; i<result.length; i++) {
+                        var music_instance = {
+                          code : result[i].CODE,
+                          url : result[i].URL,
+                          volume : result[i].DEFAULT_VOLUME
+                        };
+                        music_queue.push(music_instance);
+                    }
+
+                    voiceChannel = message.member.voiceChannel;
+                    voiceChannel.join().then(connection => {
+                      voice_conn = connection;
+                      playlist_mode = token[1].toUpperCase();
+                      PlayMusicInQueue();
+                    }).catch(err => console.log(err));
+                }).catch((err) => {
+                    message.reply("Something error! Please refer to the log on Heroku");
+                    console.log(err);
+                });
+            }
+            return;   
         }
       
         var sql = "SELECT CODE, URL, DEFAULT_VOLUME FROM musiclist WHERE id IN "
@@ -1631,7 +1684,7 @@ var hoiseiratommy_func = { STARTWITH : "$",
                     NAME : "Hoiseiratommy functions",
                     AVAILABLE: [process.env.HOISEIRATOMMY_GUILD_ID],
                     FUNCTIONS : [func_addmusic, func_searchmusic, func_play, func_addplaylist, func_addmusictopl, 
-                                func_playlist, func_playqueue, func_musicdetail, func_stop, 
+                                func_addtodefaultpl, func_playlist, func_playqueue, func_musicdetail, func_stop, 
                                 func_next, func_pause, func_resume, func_volume, func_loop,
                                 func_setname, func_vote, func_showvote, func_addvote,
                                 func_sql, func_test]
