@@ -377,32 +377,33 @@ var func_playlist = {
             return;
         }
       
-        if(token.length < 2 || token[1].toUpperCase() === '-RAND) {
+        if(token.length < 2 || token[1].toUpperCase() === '-RAND') {
             var sql = "SELECT CODE, URL, DEFAULT_VOLUME FROM defaultplaylist ORDER BY id";
             if(token.length > 1 && token[1].toUpperCase() === '-RAND) {
                 random_playlist = true;
             } else {
-                ExecuteSQL(sql).then((result) => {
-                    for(var i=0; i<result.length; i++) {
-                        var music_instance = {
-                          code : result[i].CODE,
-                          url : result[i].URL,
-                          volume : result[i].DEFAULT_VOLUME
-                        };
-                        music_queue.push(music_instance);
-                    }
-
-                    voiceChannel = message.member.voiceChannel;
-                    voiceChannel.join().then(connection => {
-                      voice_conn = connection;
-                      playlist_mode = token[1].toUpperCase();
-                      PlayMusicInQueue();
-                    }).catch(err => console.log(err));
-                }).catch((err) => {
-                    message.reply("Something error! Please refer to the log on Heroku");
-                    console.log(err);
-                });
+                random_playlist = false;
             }
+             ExecuteSQL(sql).then((result) => {
+                  for(var i=0; i<result.length; i++) {
+                      var music_instance = {
+                        code : result[i].CODE,
+                        url : result[i].URL,
+                        volume : result[i].DEFAULT_VOLUME
+                      };
+                      music_queue.push(music_instance);
+                  }
+
+                  voiceChannel = message.member.voiceChannel;
+                  voiceChannel.join().then(connection => {
+                    voice_conn = connection;
+                    playlist_mode = token[1].toUpperCase();
+                    PlayMusicInQueue();
+                  }).catch(err => console.log(err));
+              }).catch((err) => {
+                  message.reply("Something error! Please refer to the log on Heroku");
+                  console.log(err);
+              });
             return;   
         }
       
