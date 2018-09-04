@@ -975,6 +975,23 @@ var func_addfleet = {
             }
             DB4FREE(sql2).then((res2) => {
                 message.reply("Create successully! The fleet id is " + fleet_id + ".");
+                var sql3 = "SELECT Fleet.id, Fleet.name, Fleet.provider, Fleet_Tag.tag FROM Fleet LEFT JOIN Fleet_Tag ON Fleet.id = Fleet_Tag.fleet_id WHERE Fleet.id = " + fleet_id;
+                DB4FREE(sql3).then((res3) => {
+                    var fleet_object = { id: res3[0].id, name: res3[0].name, provider: GetUserName(res3[0].provider), tags: res3[0].tag };
+                    let a;
+                    for(a=1; a<res3.length; a++) {
+                        fleet_object.tags.push(...[res3[a].tag]);    
+                    }
+                    DisplayFleet(fleet_object).then((res4) => {
+                        message.channel.send(res4);
+                    }).catch((err) => {
+                        message.reply("Something error! Please refer to the log on Heroku");
+                        console.log(err);
+                    });
+                }).catch((err) => {
+                    message.reply("Something error! Please refer to the log on Heroku");
+                    console.log(err);
+                });
             }).catch((err) => {
                 message.reply("Something error! Please refer to the log on Heroku");
                 console.log(err);
@@ -1184,109 +1201,26 @@ var func_searchfleet = {
                                     LOGIC: function(token2, msg) {
                                       if(isNaN(token2)) {
                                         msg.delete();
-                                        //console.log("res3=" + util.inspect(this.MESSAGE,{depth:null}));
                                         this.MESSAGE.delete();
                                         return;
                                       } else {
                                         var option = parseInt(token2);
                                         if(option < 1 || option > this.FLEET.length) {
-                                          msg.delete();
-                                          //console.log("res3=" + util.inspect(this.MESSAGE,{depth:null}));                                        
+                                          msg.delete();                                   
                                           this.MESSAGE.delete();
                                           return;
                                         } else {
-                                          var selected_fleet = this.FLEET[option-1];
-                                          var sql2 = "SELECT s.ja_jp, m.ship_lv, s.slot, s.los ship_los, s.los_max ship_los_max, "
-                                                    +"s1.ja_jp item1, s1.type item1type, s1.aa item1aa, s1.los item1los, m.item1lv, m.item1alv, "
-                                                    +"s2.ja_jp item2, s2.type item2type, s2.aa item2aa, s2.los item2los, m.item2lv, m.item2alv, "
-                                                    +"s3.ja_jp item3, s3.type item3type, s3.aa item3aa, s3.los item3los, m.item3lv, m.item3alv, "
-                                                    +"s4.ja_jp item4, s4.type item4type, s4.aa item4aa, s4.los item4los, m.item4lv, m.item4alv, "
-                                                    +"s5.ja_jp item5, s5.type item5type, s5.aa item5aa, s5.los item5los, m.item5lv, m.item5alv, "
-                                                    +"s6.ja_jp item6, s6.type item6type, s6.aa item6aa, s6.los item6los, m.item6lv, m.item6alv"
-                                                    +" FROM Fleet_Member m INNER JOIN Ship s ON m.ship_id = s.id "
-                                                    +" LEFT JOIN Item s1 ON m.item1 = s1.id"
-                                                    +" LEFT JOIN Item s2 ON m.item2 = s2.id"
-                                                    +" LEFT JOIN Item s3 ON m.item3 = s3.id"
-                                                    +" LEFT JOIN Item s4 ON m.item4 = s4.id"
-                                                    +" LEFT JOIN Item s5 ON m.item5 = s5.id"
-                                                    +" LEFT JOIN Item s6 ON m.item6 = s6.id"
-                                                    +" WHERE fleet_id = " + selected_fleet.id;
-                                          DB4FREE(sql2).then((res3) => {
-                                            var tags = "";
-                                            let a;
-                                            for(a=0; a<selected_fleet.tags.length; a++) {
-                                              tags += selected_fleet.tags[a] + " ";
-                                            }
-                                            var embed_msg = {
-                                                                embed:{
-                                                                    color: 3447003,
-                                                                    author: {name: client.user.username},
-                                                                    title: selected_fleet.name,
-                                                                    description: tags,
-                                                                    fields: []
-                                                                 }
-                                                            }
-                                            var ship;
-                                            let los_ship = 0;
-                                            let los_item = 0;
-                                            let aa = 0;
-                                            let max_aa = 0;
-                                            for(a=0; a<res3.length; a++) {
-                                                ship = {
-                                                        name: (a+1) + ")\t" + res3[a].ja_jp + (res3[a].ship_lv === null?"":" LV" + res3[a].ship_lv),
-                                                        value: ""
-                                                       }
-                                                let slot_token = res3[a].slot.split("/");
-                                                los_ship += Math.sqrt(Math.floor((res3[a].ship_los_max - res3[a].ship_los) * (res3[a].ship_lv === null?1:res3[a].ship_lv) / 99 + res3[a].ship_los));
-                                                if(res3[a].item1 !== null) {
-                                                  ship.value += "[" + checkStringUndefined(slot_token[0]) + "]" + res3[a].item1 + ((res3[a].item1lv > 0)?" \u2606" + res3[a].item1lv:"") + convertALVtoSymbol(res3[a].item1alv);
-                                                  los_item += getLosByItem(res3[a].item1type, res3[a].item1los, res3[a].item1lv);
-                                                  aa += getAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
-                                                  max_aa += getMaxAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
-                                                  if(res3[a].item2 !== null) {
-                                                    ship.value += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res3[a].item2 + ((res3[a].item2lv > 0)?" \u2606" + res3[a].item2lv:"") + convertALVtoSymbol(res3[a].item2alv);
-                                                    los_item += getLosByItem(res3[a].item2type, res3[a].item2los, res3[a].item2lv);
-                                                    aa += getAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
-                                                    max_aa += getMaxAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
-                                                    if(res3[a].item3 !== null) {
-                                                      ship.value += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res3[a].item3 + ((res3[a].item3lv > 0)?" \u2606" + res3[a].item3lv:"") + convertALVtoSymbol(res3[a].item3alv);
-                                                      los_item += getLosByItem(res3[a].item3type, res3[a].item3los, res3[a].item3lv);
-                                                      aa += getAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
-                                                      max_aa += getMaxAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
-                                                      if(res3[a].item4 !== null) {
-                                                        ship.value += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res3[a].item4 + ((res3[a].item4lv > 0)?" \u2606" + res3[a].item4lv:"") + convertALVtoSymbol(res3[a].item4alv);
-                                                        los_item += getLosByItem(res3[a].item4type, res3[a].item4los, res3[a].item4lv);
-                                                        aa += getAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
-                                                        max_aa += getMaxAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
-                                                        if(res3[a].item5 !== null) {
-                                                          ship.value += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res3[a].item5 + ((res3[a].item5lv > 0)?" \u2606" + res3[a].item5lv:"") + convertALVtoSymbol(res3[a].item5alv);
-                                                          los_item += getLosByItem(res3[a].item5type, res3[a].item5los, res3[a].item5lv);
-                                                          aa += getAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
-                                                          max_aa += getMaxAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
-                                                          if(res3[a].item6 !== null) {
-                                                            ship.value += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res3[a].item6 + ((res3[a].item6lv > 0)?" \u2606" + res3[a].item6lv:"") + convertALVtoSymbol(res3[a].item6alv);
-                                                            los_item += getLosByItem(res3[a].item6type, res3[a].item6los, res3[a].item6lv);
-                                                          }
-                                                        }
-                                                      }
-                                                    }   
-                                                  }
-                                                }
-                                                embed_msg.embed.fields.push(ship);
-                                            }
-                                            let no_of_ship = embed_msg.embed.fields.length;
-                                            embed_msg.embed.fields.push({name: "索敵(33式):", value: (los_ship + los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=1)/"
-                                                             +(los_ship + 3 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=3)/"
-                                                             +(los_ship + 4 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=4)"});
-                                            embed_msg.embed.fields.push({name: "制空:", value: aa + "+(" + aa + "~" + max_aa + ")"});
-                                            this.MESSAGE.delete();
-                                            msg.channel.send(embed_msg);
-                                            msg.delete();
-                                          }).catch((err) => {
-                                            msg.reply("Something error! Please refer to the log on Heroku");
-                                            msg.delete();
-                                            console.log(err)  ;
-                                          })
+                                            var selected_fleet = this.FLEET[option-1];
+                                            
+                                            DisplayFleet(selected_fleet).then((res3) => {
+                                                this.MESSAGE.delete();
+                                                msg.channel.send(res3);
+                                                msg.delete();  
+                                            }).catch((err) => {
+                                                msg.reply("Something error! Please refer to the log on Heroku");
+                                                msg.delete();
+                                                console.log(err);
+                                            })
                                         }
                                       }
                                     }
@@ -1532,7 +1466,23 @@ var func_editfleetmember = {
       
         DB4FREE(sql).then((res) => {
             if(res.insertId !== 0 || res.affectedRows !== 0) {
-              message.reply("Fleet Member added or modified successfully!");
+                message.reply("Fleet Member added or modified successfully!");var sql3 = "SELECT Fleet.id, Fleet.name, Fleet.provider, Fleet_Tag.tag FROM Fleet LEFT JOIN Fleet_Tag ON Fleet.id = Fleet_Tag.fleet_id WHERE Fleet.id = " + fleet_id;
+                DB4FREE(sql3).then((res3) => {
+                    var fleet_object = { id: res3[0].id, name: res3[0].name, provider: GetUserName(res3[0].provider), tags: res3[0].tag };
+                    let a;
+                    for(a=1; a<res3.length; a++) {
+                        fleet_object.tags.push(...[res3[a].tag]);    
+                    }
+                    DisplayFleet(fleet_object).then((res4) => {
+                        message.channel.send(res4);
+                    }).catch((err) => {
+                        message.reply("Something error! Please refer to the log on Heroku");
+                        console.log(err);
+                    });
+                }).catch((err) => {
+                    message.reply("Something error! Please refer to the log on Heroku");
+                    console.log(err);
+                });
             } else {
               message.reply("No record added or modified, maybe something is wrong or you are not the provider of this fleet"); 
             }
@@ -2188,6 +2138,102 @@ function httpsRequest(url) {
       reject(err);
     });
   });
+}
+
+function DisplayFleet(fleet) {
+    /* 
+    a fleet object : {id, name, provider ,tags}    
+    */
+    var sql = "SELECT s.ja_jp, m.ship_lv, s.slot, s.los ship_los, s.los_max ship_los_max, "
+            +"s1.ja_jp item1, s1.type item1type, s1.aa item1aa, s1.los item1los, m.item1lv, m.item1alv, "
+            +"s2.ja_jp item2, s2.type item2type, s2.aa item2aa, s2.los item2los, m.item2lv, m.item2alv, "
+            +"s3.ja_jp item3, s3.type item3type, s3.aa item3aa, s3.los item3los, m.item3lv, m.item3alv, "
+            +"s4.ja_jp item4, s4.type item4type, s4.aa item4aa, s4.los item4los, m.item4lv, m.item4alv, "
+            +"s5.ja_jp item5, s5.type item5type, s5.aa item5aa, s5.los item5los, m.item5lv, m.item5alv, "
+            +"s6.ja_jp item6, s6.type item6type, s6.aa item6aa, s6.los item6los, m.item6lv, m.item6alv"
+            +" FROM Fleet_Member m INNER JOIN Ship s ON m.ship_id = s.id "
+            +" LEFT JOIN Item s1 ON m.item1 = s1.id"
+            +" LEFT JOIN Item s2 ON m.item2 = s2.id"
+            +" LEFT JOIN Item s3 ON m.item3 = s3.id"
+            +" LEFT JOIN Item s4 ON m.item4 = s4.id"
+            +" LEFT JOIN Item s5 ON m.item5 = s5.id"
+            +" LEFT JOIN Item s6 ON m.item6 = s6.id"
+            +" WHERE fleet_id = " + fleet.id;
+    
+    return new Promise((resolve, reject) => {
+        DB4FREE(sql).then((res3) => {
+            var tags = "";
+            let a;
+            for(a=0; a<fleet.tags.length; a++) {
+              tags += fleet.tags[a] + " ";
+            }
+            var embed_msg = {
+                                embed:{
+                                    color: 3447003,
+                                    author: {name: client.user.username},
+                                    title: fleet.name,
+                                    description: tags,
+                                    fields: []
+                                 }
+                            }
+            var ship;
+            let los_ship = 0;
+            let los_item = 0;
+            let aa = 0;
+            let max_aa = 0;
+            for(a=0; a<res3.length; a++) {
+                ship = {
+                        name: (a+1) + ")\t" + res3[a].ja_jp + (res3[a].ship_lv === null?"":" LV" + res3[a].ship_lv),
+                        value: ""
+                       }
+                let slot_token = res3[a].slot.split("/");
+                los_ship += Math.sqrt(Math.floor((res3[a].ship_los_max - res3[a].ship_los) * (res3[a].ship_lv === null?1:res3[a].ship_lv) / 99 + res3[a].ship_los));
+                if(res3[a].item1 !== null) {
+                  ship.value += "[" + checkStringUndefined(slot_token[0]) + "]" + res3[a].item1 + ((res3[a].item1lv > 0)?" \u2606" + res3[a].item1lv:"") + convertALVtoSymbol(res3[a].item1alv);
+                  los_item += getLosByItem(res3[a].item1type, res3[a].item1los, res3[a].item1lv);
+                  aa += getAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
+                  max_aa += getMaxAAByItem(slot_token[0], res3[a].item1type, res3[a].item1aa, res3[a].item1lv, res3[a].item1alv);
+                  if(res3[a].item2 !== null) {
+                    ship.value += "\n[" + checkStringUndefined(slot_token[1]) + "]" + res3[a].item2 + ((res3[a].item2lv > 0)?" \u2606" + res3[a].item2lv:"") + convertALVtoSymbol(res3[a].item2alv);
+                    los_item += getLosByItem(res3[a].item2type, res3[a].item2los, res3[a].item2lv);
+                    aa += getAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
+                    max_aa += getMaxAAByItem(slot_token[1], res3[a].item2type, res3[a].item2aa, res3[a].item2lv, res3[a].item2alv);
+                    if(res3[a].item3 !== null) {
+                      ship.value += "\n[" + checkStringUndefined(slot_token[2]) + "]" + res3[a].item3 + ((res3[a].item3lv > 0)?" \u2606" + res3[a].item3lv:"") + convertALVtoSymbol(res3[a].item3alv);
+                      los_item += getLosByItem(res3[a].item3type, res3[a].item3los, res3[a].item3lv);
+                      aa += getAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
+                      max_aa += getMaxAAByItem(slot_token[2], res3[a].item3type, res3[a].item3aa, res3[a].item3lv, res3[a].item3alv);
+                      if(res3[a].item4 !== null) {
+                        ship.value += "\n[" + checkStringUndefined(slot_token[3]) + "]" + res3[a].item4 + ((res3[a].item4lv > 0)?" \u2606" + res3[a].item4lv:"") + convertALVtoSymbol(res3[a].item4alv);
+                        los_item += getLosByItem(res3[a].item4type, res3[a].item4los, res3[a].item4lv);
+                        aa += getAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
+                        max_aa += getMaxAAByItem(slot_token[3], res3[a].item4type, res3[a].item4aa, res3[a].item4lv, res3[a].item4alv);
+                        if(res3[a].item5 !== null) {
+                          ship.value += "\n[" + checkStringUndefined(slot_token[4]) + "]" + res3[a].item5 + ((res3[a].item5lv > 0)?" \u2606" + res3[a].item5lv:"") + convertALVtoSymbol(res3[a].item5alv);
+                          los_item += getLosByItem(res3[a].item5type, res3[a].item5los, res3[a].item5lv);
+                          aa += getAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
+                          max_aa += getMaxAAByItem(slot_token[4], res3[a].item5type, res3[a].item5aa, res3[a].item5lv, res3[a].item5alv);
+                          if(res3[a].item6 !== null) {
+                            ship.value += "\n[" + checkStringUndefined(slot_token[5]) + "]" + res3[a].item6 + ((res3[a].item6lv > 0)?" \u2606" + res3[a].item6lv:"") + convertALVtoSymbol(res3[a].item6alv);
+                            los_item += getLosByItem(res3[a].item6type, res3[a].item6los, res3[a].item6lv);
+                          }
+                        }
+                      }
+                    }   
+                  }
+                }
+                embed_msg.embed.fields.push(ship);
+            }
+            let no_of_ship = embed_msg.embed.fields.length;
+            embed_msg.embed.fields.push({name: "索敵(33式):", value: (los_ship + los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=1)/"
+                             +(los_ship + 3 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=3)/"
+                             +(los_ship + 4 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=4)"});
+            embed_msg.embed.fields.push({name: "制空:", value: aa + "+(" + aa + "~" + max_aa + ")"});
+            resolve(embed_msg);
+        }).catch((err) => {
+            reject(err);
+        })
+    }
 }
 
 function sendMessageToChannel(channel, msg) {
