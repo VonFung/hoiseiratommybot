@@ -348,7 +348,7 @@ var func_addtodefaultpl = {
             return;
         }
         var sql = "INSERT INTO defaultplaylist (CODE, url, default_volume) VALUES ('"
-                + token[1] + "', '" + token[2] + "', " + (token.length > 3?token[3]:"0,5") + ")";
+                + token[1] + "', '" + token[2] + "', " + (token.length > 3?token[3]:"0.5") + ")";
         ExecuteSQL(sql).then((result) => {
             message.reply("Added successfully!");
         }).catch((err) => {
