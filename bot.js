@@ -2232,8 +2232,8 @@ function DisplayFleet(fleet) {
             resolve(embed_msg);
         }).catch((err) => {
             reject(err);
-        })
-    }
+        });
+    });
 }
 
 function sendMessageToChannel(channel, msg) {
