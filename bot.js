@@ -379,7 +379,7 @@ var func_playlist = {
       
         if(token.length < 2 || token[1].toUpperCase() === '-RAND') {
             var sql = "SELECT CODE, URL, DEFAULT_VOLUME FROM defaultplaylist ORDER BY id";
-            if(token.length > 1 && token[1].toUpperCase() === '-RAND) {
+            if(token.length > 1 && token[1].toUpperCase() === '-RAND') {
                 random_playlist = true;
             } else {
                 random_playlist = false;
