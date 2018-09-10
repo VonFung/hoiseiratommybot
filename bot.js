@@ -787,6 +787,11 @@ var func_clear = {
          +"\n**amount and ON/OFF cannot be both trigger!**",
   
     LOGIC : function(token, message) {
+        
+        if(message.author.id !== process.env.ADMIN_ID) {
+            message.reply("You have no permission to update"); 
+            return;
+        }
       if(token.length < 2 || !isNaN(parseInt(token[1]))) {
         let amount = (token.length < 2)?100:parseInt(token[1]);
         if(amount < 1) amount = 1;
@@ -971,13 +976,13 @@ var func_createfleet = {
   
 }
 
-var func_addfleet = {
+var func_importfleet = {
  
-    CODE : "ADDFLEET",
+    CODE : "IMPORTFLEET",
   
-    DESCRIPTION : "Add fleet in JSON format(such as provided by poooi)",
+    DESCRIPTION : "Import fleet in JSON format(such as provided by poooi)",
   
-    SYNTAX : "ADDFLEET | fleet_name | [json_file(without space)] | tag(s)",
+    SYNTAX : "IMPORTFLEET | fleet_name | [json_file(without space)] | tag(s)",
   
     MANUAL : "**fleet_name : **The name of the fleet."
             +"\n*json_file : **The input file of fleet in JSON format(do not exceed 2000 characters)."
@@ -1031,7 +1036,7 @@ var func_addfleet = {
                 message.reply("Create successully! The fleet id is " + fleet_id + ".");
                 var sql3 = "SELECT Fleet.id, Fleet.name, Fleet.provider, Fleet_Tag.tag FROM Fleet LEFT JOIN Fleet_Tag ON Fleet.id = Fleet_Tag.fleet_id WHERE Fleet.id = " + fleet_id;
                 DB4FREE(sql3).then((res3) => {
-                    var fleet_object = { id: res3[0].id, name: res3[0].name, provider: GetUserName(res3[0].provider) };
+                    var fleet_object = { id: res3[0].id, name: res3[0].name, provider: GetUserName(res3[0].provider), remark: null };
                     var tags;
                     if(res3[0].tag === null) {
                         tags = null;
@@ -1090,9 +1095,12 @@ var func_editfleettag = {
                 sql += "; ";
             }
             if(token[i].charAt(0) === "+") {
-                sql += "INSERT INTO Fleet_Tag (tag, fleet_id) VALUES ('" + token[i].substring(1) + "', " + token[1] + ")";
+                //sql += "INSERT INTO Fleet_Tag (tag, fleet_id) VALUES ('" + token[i].substring(1) + "', " + token[1] + ")";
+                sql += "INSERT INTO Fleet_tag(tag, fleet_id) SELECT '" + token[i].substring(1) + "', " + token[1] + " FROM Fleet "
+                        +"WHERE id = " + token[1] + " AND provider = '" + message.author.id + "'";
             } else if (token[i].charAt(0) === "-") {
-                sql += "DELETE FROM Fleet_Tag WHERE tag = '" + token[i].substring(1) + "' AND fleet_id = " + token[1];
+                sql += "DELETE FROM Fleet_Tag WHERE tag = '" + token[i].substring(1) + "' AND fleet_id = " + token[1] + " AND "
+                        +"EXISTS (SELECT * FROM Fleet WHERE id = " + token[i].substring(1) + " AND provider = '" + message.author.id + "')";
             } else {
                 throw "Please use prefix (+/-)!"; 
             }
@@ -1213,7 +1221,7 @@ var func_searchfleet = {
     MANUAL : "***keyword : ***[Optional] keyword for searching.",
   
     LOGIC : function(token, message) {
-        var sql = "SELECT Fleet.id, Fleet.name, Fleet.provider, Fleet_Tag.tag FROM Fleet LEFT JOIN Fleet_Tag ON Fleet.id = Fleet_Tag.fleet_id";
+        var sql = "SELECT Fleet.id, Fleet.name, Fleet.provider, Fleet.remark, Fleet_Tag.tag FROM Fleet LEFT JOIN Fleet_Tag ON Fleet.id = Fleet_Tag.fleet_id";
         if(token.length > 1) {
           sql += " WHERE Fleet.name LIKE '%" + token[1] + "%' OR Fleet.id in (SELECT fleet_id FROM Fleet_Tag WHERE tag LIKE '%" + token[1] + "%')";
         }
@@ -1231,7 +1239,7 @@ var func_searchfleet = {
                 if(j + 1) {
                   fleets[j].tags.push(...[res[i].tag]);
                 } else {
-                  let new_fleet = [{ id: res[i].id, name: res[i].name, provider: GetUserName(res[i].provider)}];
+                  let new_fleet = [{ id: res[i].id, name: res[i].name, provider: GetUserName(res[i].provider), remark: res[i].remark}];
                   let tags;
                   if(res[i].tag === null) {
                       tags = null;
@@ -1562,6 +1570,44 @@ var func_editfleetmember = {
   
 }
 
+var func_editremark = { 
+ 
+    CODE : "EDITREMARK",
+    
+    DESCRIPTION : "Edit fleet remark",
+    
+    SYNTAX : "EDITREMARK | fleet_id | remark",
+    
+    MANUAL : "**fleet_id : **ID of the fleet you want to edit remark."
+            +"**remark : **The content you want to add/edit.",
+    
+    LOGIC : function(token, message) {
+        if(token.length < 3) {
+            message.reply("Incorrect Syntax!\n" + this.SYNTAX);
+            return;
+        }
+        
+        var remark_str = token[2];
+        var i;
+        for(i=3; i<token.length; i++) {
+            remark_str += " " + token[i];
+        }
+        var sql = "UPDATE Fleet SET remark = '" + remark_str + "' WHERE id = " + token[1];
+        
+        DB4FREE(sql).then((res) => {
+            if(res.affectedRows !== 0) {
+                message.reply("Remark update successfully!");
+            } else {
+                message.reply("The fleet id is invalid or you are not the provider of the fleet!");   
+            }
+        }).catch((err) => {
+            message.reply("Something error! Please refer to the log on Heroku");
+            console.log(err);
+        });
+    }
+  
+}
+
 var func_updateship = {
    
     CODE : "UPDATESHIP",
@@ -1694,7 +1740,7 @@ var hoiseiratommy_func = { STARTWITH : "$",
 var kancolle_func = { STARTWITH : "%", 
                       NAME : "Kancolle functions",
                       AVAILABLE: [process.env.HOISEIRATOMMY_GUILD_ID, process.env.KANCOLLEFLEET_GUILD_ID],
-                      FUNCTIONS : [func_createfleet, func_addfleet, func_editfleettag, func_searchship, func_searchitem,
+                      FUNCTIONS : [func_createfleet, func_addfleet, func_editfleettag, func_editremark, func_searchship, func_searchitem,
                                    func_searchfleet, func_editfleetmember, func_updateship, func_updateitem]
                     }
 
@@ -2297,6 +2343,9 @@ function DisplayFleet(fleet) {
                              +(los_ship + 3 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=3)/"
                              +(los_ship + 4 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=4)"});
             embed_msg.embed.fields.push({name: "制空:", value: aa + "+(" + aa + "~" + max_aa + ")"});
+            if(!(fleet.remark === undefined || fleet.remark === null)) {
+                embed_msg.embed.fields.push({name: "Remark:", value: fleet.remark});
+            }
             resolve(embed_msg);
         }).catch((err) => {
             reject(err);
