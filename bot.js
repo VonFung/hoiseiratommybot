@@ -1115,6 +1115,61 @@ var func_editfleettag = {
   
 }
 
+var func_deletefleet = {
+  
+    CODE : "DELETEFLEET",
+  
+    DESCRIPTION : "Delete a fleet by id (only provider)",
+  
+    SYNTAX : "DELETEFLEET | id",
+  
+    MANUAL : "**id : **The id of fleet you want to delete",
+  
+    LOGIC : function(token, message) {
+        if(token.length < 2) {
+            message.reply("Incorrect Syntax!\n" + this.SYNTAX);
+            return;
+        }
+        var display_str = "Are you sure to delete fleet " + token[1] + "?(Type 'Y' to confirm or otherwise to cancel)";
+        sendMessageToChannel(message.channel, display_str).then((res) => {
+              displaying_menu = { MESSAGE: res,
+                                  CHANNEL_ID: message.channel.id,
+                                  LOGIC: function(token2, msg) {
+                                    if(token2.toUpperCase() === "Y") {
+                                      var sql = "DELETE FROM Fleet_Member WHERE fleet_id = " + token[1] + " AND "
+                                                +"EXISTS (SELECT * FROM Fleet WHERE id = " + token[1] + " AND provider = '" + message.author.id + "'); "
+                                                +"DELETE FROM Fleet_Tag WHERE fleet_id = " + token[1] + " AND "
+                                                +"EXISTS (SELECT * FROM Fleet WHERE id = " + token[1] + " AND provider = '" + message.author.id + "'); "
+                                                +"DELETE FROM Fleet WHERE FLeet WHERE id = " + token[1] + " AND provider = '" + message.author.id + "'";
+                                      DB4FREE(sql).then((res2) => {
+                                          this.MESSAGE.delete();
+                                          if(res2.affectedRows === 0) {
+                                              msg.reply("No data was deleted! Maybe you are not the provider or the id is invalid!"); 
+                                          } else {
+                                              msg.reply("Fleet deleted successfully!"); 
+                                          }
+                                          msg.delete();
+                                      }).catch((err) => {
+                                          msg.reply("Something error! Please refer to the log on Heroku");
+                                          this.MESSAGE.delete();
+                                          msg.delete();
+                                          console.log(err);
+                                      });
+                                    } else {
+                                      msg.delete();
+                                      this.MESSAGE.delete();
+                                      return;
+                                    }
+                                  }
+                                }
+            }).catch((err) => {
+              message.reply("Something error! Please refer to the log on Heroku");
+              console.log(err);
+            });
+    }
+  
+}
+
 var func_searchship = {
   
     CODE : "SEARCHSHIP",
@@ -1740,7 +1795,7 @@ var hoiseiratommy_func = { STARTWITH : "$",
 var kancolle_func = { STARTWITH : "%", 
                       NAME : "Kancolle functions",
                       AVAILABLE: [process.env.HOISEIRATOMMY_GUILD_ID, process.env.KANCOLLEFLEET_GUILD_ID],
-                      FUNCTIONS : [func_createfleet, func_importfleet, func_editfleettag, func_editremark, func_searchship, func_searchitem,
+                      FUNCTIONS : [func_createfleet, func_importfleet, func_editfleettag, func_deletefleet, func_editremark, func_searchship, func_searchitem,
                                    func_searchfleet, func_editfleetmember, func_updateship, func_updateitem]
                     }
 
@@ -2278,8 +2333,12 @@ function DisplayFleet(fleet) {
         DB4FREE(sql).then((res3) => {
             var tags = "";
             let a;
-            for(a=0; a<fleet.tags.length; a++) {
-              tags += fleet.tags[a] + " ";
+            if(fleet.tags !== null || fleet.tags !== undefined || fleet.tags !== "") {
+                for(a=0; a<fleet.tags.length; a++) {
+                  tags += fleet.tags[a] + " ";
+                }   
+            } else {
+                tags = "---";  
             }
             var embed_msg = {
                                 embed:{
