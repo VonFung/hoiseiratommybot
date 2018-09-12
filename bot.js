@@ -1143,7 +1143,7 @@ var func_deletefleet = {
                                                 +"DELETE FROM Fleet WHERE id = " + token[1] + " AND provider = '" + message.author.id + "'";
                                       DB4FREE(sql).then((res2) => {
                                           this.MESSAGE.delete();
-                                          if(res2.affectedRows === 0) {
+                                          if(res2[2].affectedRows === 0) {
                                               msg.reply("No data was deleted! Maybe you are not the provider or the id is invalid!"); 
                                           } else {
                                               msg.reply("Fleet deleted successfully!"); 
