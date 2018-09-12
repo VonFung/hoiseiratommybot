@@ -1140,7 +1140,7 @@ var func_deletefleet = {
                                                 +"EXISTS (SELECT * FROM Fleet WHERE id = " + token[1] + " AND provider = '" + message.author.id + "'); "
                                                 +"DELETE FROM Fleet_Tag WHERE fleet_id = " + token[1] + " AND "
                                                 +"EXISTS (SELECT * FROM Fleet WHERE id = " + token[1] + " AND provider = '" + message.author.id + "'); "
-                                                +"DELETE FROM Fleet WHERE FLeet WHERE id = " + token[1] + " AND provider = '" + message.author.id + "'";
+                                                +"DELETE FROM Fleet WHERE id = " + token[1] + " AND provider = '" + message.author.id + "'";
                                       DB4FREE(sql).then((res2) => {
                                           this.MESSAGE.delete();
                                           if(res2.affectedRows === 0) {
