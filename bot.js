@@ -2395,6 +2395,7 @@ function DisplayFleet(fleet) {
                     }   
                   }
                 }
+                console.log("ship.name = " + ship.name + "\nship.value = " + ship.value);
                 embed_msg.embed.fields.push(ship);
             }
             let no_of_ship = embed_msg.embed.fields.length;
