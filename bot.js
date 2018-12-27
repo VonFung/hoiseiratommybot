@@ -2397,6 +2397,7 @@ function DisplayFleet(fleet) {
                 }
                 embed_msg.embed.fields.push(ship);
             }
+            console.log("embed.fields[2] = " + embed_msg.embed.fields[2].value);
             let no_of_ship = embed_msg.embed.fields.length;
             embed_msg.embed.fields.push({name: "索敵(33式):", value: (los_ship + los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=1)/"
                              +(los_ship + 3 * los_item - 48 + 2 * (6 - no_of_ship)).toFixed(2) + "(n=3)/"
